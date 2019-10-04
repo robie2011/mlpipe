@@ -3,7 +3,7 @@ import numpy as np
 from datasources import DataResult
 
 
-class AbstractPreprocessor(ABC):
+class AbstractProcessor(ABC):
     @abstractmethod
     def process(self, data: DataResult) -> DataResult:
         pass

@@ -1,8 +1,8 @@
-from .abstract_preprocessor import AbstractPreprocessor
+from .abstract_processor import AbstractProcessor
 from datasources import DataResult
 
 
-class UpperLimitProcessor(AbstractPreprocessor):
+class UpperLimitProcessor(AbstractProcessor):
     def __init__(self, upper_limit: [float]):
         self.upper_limit = upper_limit
 

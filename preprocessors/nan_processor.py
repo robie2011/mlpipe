@@ -1,9 +1,9 @@
-from .abstract_preprocessor import AbstractPreprocessor
+from .abstract_processor import AbstractProcessor
 from datasources import DataResult
 import numpy as np
 
 
-class NanProcessor(AbstractPreprocessor):
+class NanProcessor(AbstractProcessor):
     def process(self, data: DataResult) -> DataResult:
         # 1. create boolean matrix which represents NaN as True
         # 2. reduce matrix "any(axis=1)" to 1d-array which
