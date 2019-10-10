@@ -1,6 +1,8 @@
 import unittest
 import numpy as np
-from preprocessors import NanProcessor
+
+from datasources import DataResult
+from preprocessors import NanRemover
 from numpy.testing import assert_array_equal
 
 
@@ -12,8 +14,14 @@ class TestNanProcessor(unittest.TestCase):
             [7, 8, 9],
             [np.nan, np.nan, np.nan]])
 
-        processor = NanProcessor()
-        result = processor.process(data, ['A', 'B', 'C'])
+        stamps = np.arange(
+            np.datetime64('2019-04-19'),
+            np.datetime64('2019-04-20'),
+            np.timedelta64(1, 'h'))
+        processorInput = DataResult(values=data, timestamps=stamps[:4], columns=['A', 'B', 'C'])
+
+        processor = NanRemover()
+        result = processor.process(processorInput)
 
         self.assertEqual(result.columns, ['A', 'B', 'C'])
         assert_array_equal(result.values, np.array([

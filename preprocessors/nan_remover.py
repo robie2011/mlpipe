@@ -3,7 +3,7 @@ from datasources import DataResult
 import numpy as np
 
 
-class NanProcessor(AbstractProcessor):
+class NanRemover(AbstractProcessor):
     def process(self, data: DataResult) -> DataResult:
         # 1. create boolean matrix which represents NaN as True
         # 2. reduce matrix "any(axis=1)" to 1d-array which

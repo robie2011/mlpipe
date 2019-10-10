@@ -1,0 +1,3 @@
+preprocessors:
+- name: test.preprocessors.dummy_processors_args.ProcessorWithArgs
+  non_existing_argument: 401
