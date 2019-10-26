@@ -1,0 +1,87 @@
+# validate + check: https://onlineyamltools.com/convert-yaml-to-json
+project: 'myprojectname'
+version: 1.0
+
+
+#defintions
+colum_selectors: &temperaturs_selector
+  include_columns:
+    - 'temperature'
+    - 'feuchtigkeit'
+  exclude_columns:
+    - 'f1'
+    - 'f2'
+  regex_include: '.*'
+  regex_exclude: '.*'
+
+data_sources:
+ - name: &ds1
+   adapter: 'EmpaCsvReader'
+   options:
+     path: 'file://sdjflkll/dlsf.csv'
+   columns_alias:
+     1032: 'feuchtigkeit'
+     30192: 'temperatur'
+   check_columns: true
+ - name: &ds2
+   adapter: 'Sql'
+   options:
+     query: 'select * from table1 limit 100'
+
+
+preprocessor_chains:
+  - chain: &my_standard_processors
+    - name: 'processors.NanRemover'
+    - name: 'processors.OutlierRemover'
+      target_columns:
+        - name: 'feuchtigkeit'
+          max: 31
+          min: -15.2
+          replace: None
+        - name: 'temperatur'
+          max: 65
+          min: -10.2
+          replace: None
+    - name: 'processors.OutlierRemover'
+      target_columns:
+        - name: 'feuchtigkeit'
+          max: 21
+          min: None
+          replace: 21
+        - name: 'temperatur'
+          max: 35
+          min: None
+          replace: 35
+    - name: 'processors.LineareInterpolation'
+      options:
+        max_unknown_values: 15
+                  select_columns: '.*' # regex, default '.*'
+        exclude_columns:
+          - 'feuchtigkeit'
+
+
+feature_generators:
+  - generators: &my_standard_fe_generator
+      - name: 'features.average'
+        column_selector: *temperaturs_selector
+      - name: 'features.max'
+        column_selector: *temperaturs_selector
+      - name: 'features.min'
+        column_selector: *temperaturs_selector
+
+models:
+  - name: 'mdef1'
+    layers:
+      - name: Dense
+      - options:
+          units: 200
+
+data_sets:
+  - name: 'training 1'
+    source: *ds1
+    preprocessors: *my_standard_processors
+    generators: *my_standard_fe_generator
+
+  - name: 'training 1 w/o features'
+    source: *ds1
+    preprocessors: *my_standard_processors

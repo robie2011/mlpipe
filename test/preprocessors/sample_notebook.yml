@@ -3,6 +3,8 @@ version: 1.0
 datasource:
   adapter: "datasource.EmpaCsvReader"
   connection: "file://path/to/local/file.csv"
+  query: '..'
+  has_columns: 3434, 343, 4
 
 preprocessors:
 - name: preprocessors.NanRemover

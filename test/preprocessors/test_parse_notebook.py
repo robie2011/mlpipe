@@ -1,14 +1,8 @@
 import unittest
-import yaml
 from preprocessors.chain_processor import init_processors, ProcessInitializationFailedException
 from preprocessors import NanRemover
 from test.preprocessors.dummy_processors_args import ProcessorWithArgs
-
-
-def load_yaml(file_path: str):
-    with open(file_path) as f:
-        content = f.read()
-        return yaml.load(content)
+from helpers.data import load_yaml
 
 
 class ChainProcessorTests(unittest.TestCase):

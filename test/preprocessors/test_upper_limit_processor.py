@@ -1,13 +1,13 @@
 import unittest
 import numpy as np
-from preprocessors import UpperLimitProcessor
+from preprocessors import RangeLimiter
 from numpy.testing import assert_array_equal
 from datasources import DataResult
 
 
 class TestUpperLimitProcessor(unittest.TestCase):
     def test_no_limit(self):
-        processor = UpperLimitProcessor(upper_limit=[1000, 1000, 1000])
+        processor = RangeLimiter(limits=[1000, 1000, 1000])
         stamps = np.arange(
             np.datetime64('2019-04-19'),
             np.datetime64('2019-04-20'),
@@ -27,7 +27,7 @@ class TestUpperLimitProcessor(unittest.TestCase):
         assert_array_equal(data.values, result.values)
 
     def test_limit_first_column(self):
-        processor = UpperLimitProcessor(upper_limit=[11, 1000, 1000])
+        processor = RangeLimiter(limits=[11, 1000, 1000])
         stamps = np.arange(
             np.datetime64('2019-04-19'),
             np.datetime64('2019-04-20'),
@@ -46,7 +46,7 @@ class TestUpperLimitProcessor(unittest.TestCase):
         assert_array_equal(data.values[:1], result.values)
 
     def test_limit_multiple_column(self):
-        processor = UpperLimitProcessor(upper_limit=[14, 31, 1000])
+        processor = RangeLimiter(limits=[14, 31, 1000])
         stamps = np.arange(
             np.datetime64('2019-04-19'),
             np.datetime64('2019-04-20'),
