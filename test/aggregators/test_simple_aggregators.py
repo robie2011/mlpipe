@@ -1,8 +1,10 @@
 import unittest
 import numpy as np
-from aggregators import NanCounter, Max, Min, Mean
+from aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
 from numpy.testing import assert_array_equal
 import helpers.data as helper_data
+from aggregators.aggregator_input import AggregatorInput
+from aggregators.aggregator_output import AggregatorOutput
 
 # data = helper_data.generated_3d_data()
 # helpers.print_3d_array
@@ -35,42 +37,72 @@ class TestSimpleAggregators(unittest.TestCase):
         data[0, 0, 0] = np.nan  # first sensor has 1 nan in measurement nr. 0
         data[1, 0:2, 1] = np.nan  # second sensor has 2 nans measurement nr. 1
         data[0:2, 0:2, 2] = np.nan  # third sensor has 2 nans in measurement nr. 0 and in measurement nr.1
+        input_data = AggregatorInput(data=data)
 
         result_expected = np.zeros((3, 4))
         result_expected[0, 0] = 1
         result_expected[1, 1] = 2
         result_expected[0:2, 2] = 2
 
-        result = NanCounter().aggregate(data)
-        assert_array_equal(result_expected, result)
+        result = NanCounter().aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
 
     def test_max(self):
-        data = helper_data.generated_3d_data()
+        input_data = AggregatorInput(data=helper_data.generated_3d_data())
         result_expected = np.array([
             [417, 878, 419, 685],
             [958, 968, 692, 750],
             [989, 748, 909, 789]
         ])
 
-        result = Max().aggregate(data)
-        assert_array_equal(result_expected, result)
+        result = Max().aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
 
     def test_min(self):
-        data = helper_data.generated_3d_data()
+        input_data = AggregatorInput(data=helper_data.generated_3d_data())
         result_expected = np.array([
             147, 92, 0, 198,
             170, 533, 18, 39,
             103, 130, 19, 53]).reshape(3, 4)
 
-        result = Min().aggregate(data)
-        assert_array_equal(result_expected, result)
+        result = Min().aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
 
     def test_mean(self):
-        data = helper_data.generated_3d_data()
+        input_data = AggregatorInput(data=helper_data.generated_3d_data())
         result_expected = np.zeros((3, 4))
-        for sensor in range(data.shape[2]):
-            for row in range(data.shape[0]):
-                result_expected[row, sensor] = np.mean(data[row, :, sensor])
+        for sensor in range(input_data.data.shape[2]):
+            for row in range(input_data.data.shape[0]):
+                result_expected[row, sensor] = np.mean(input_data.data[row, :, sensor])
 
-        result = Mean().aggregate(data)
-        assert_array_equal(result_expected, result)
+        result = Mean().aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
+
+    def test_percentile(self):
+        input_data = AggregatorInput(data=helper_data.generated_3d_data())
+        #  https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=0
+        result_expected = np.array([
+            [204, 539, 27, 302],
+            [687, 835, 85, 316],
+            [212, 147, 280, 294]
+        ])
+        result = Percentile(percentile=.25, interpolation='higher').aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
+
+    def test_outliers(self):
+        input_data = AggregatorInput(helper_data.generated_3d_data())
+        limits = [
+            {'min': 200, 'max': 500},
+            {'min': 200, 'max': 600},
+            {'min': 100, 'max': 400},
+            {'min': 300, 'max': np.nan},
+        ]
+        # https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=120567734
+        result_expected = np.array([
+            [1, 3, 3, 1],
+            [5, 4, 4, 1],
+            [3, 3, 4, 2]
+        ])
+
+        result = Outlier(limits=limits).aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)

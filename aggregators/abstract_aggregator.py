@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
-import numpy as np
+#from aggregators import AggregatorOutput
+from aggregators.aggregator_input import AggregatorInput
+from aggregators.aggregator_output import AggregatorOutput
 
 
 class AbstractAggregator(ABC):
     @abstractmethod
-    def aggregate(self, xxs: np.ndarray) -> np.ndarray:
+    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
+
         """
         input: 3D-Numpy Array
         first axis represents date/time
