@@ -3,7 +3,7 @@ from typing import NamedTuple
 
 
 class AggregatorInput(NamedTuple):
-    data: np.ndarray
+    grouped_data: np.ndarray
 
 
 def create_aggregation_input(data: np.ndarray):

@@ -6,4 +6,4 @@ from aggregators.aggregator_output import AggregatorOutput
 
 class Mean(AbstractAggregator):
     def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
-        return AggregatorOutput(metrics=np.mean(input_data.data, axis=1))
+        return AggregatorOutput(metrics=np.mean(input_data.grouped_data, axis=1))

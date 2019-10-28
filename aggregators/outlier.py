@@ -18,15 +18,15 @@ class Outlier(AbstractAggregator):
         # we have a 1D array in which each element
         # define minimum for each sensor
         # e.g. minimums[0] define minimum for sensor = xxs[:, :, 0]
-        min_matrix = np.zeros(input_data.data.shape, dtype='float')
+        min_matrix = np.zeros(input_data.grouped_data.shape, dtype='float')
         for i in range(len(self.limits)):
             min_matrix[:, :, i] = self.limits[i]['min']
-        min_filter = np.logical_and(np.invert(np.isnan(min_matrix)), input_data.data < min_matrix)
+        min_filter = np.logical_and(np.invert(np.isnan(min_matrix)), input_data.grouped_data < min_matrix)
         min_count = np.sum(min_filter, axis=1)
 
-        max_matrix = np.zeros(input_data.data.shape, dtype='float')
+        max_matrix = np.zeros(input_data.grouped_data.shape, dtype='float')
         for i in range(len(self.limits)):
             max_matrix[:, :, i] = self.limits[i]['max']
-        max_count = np.sum(np.logical_and(np.invert(np.isnan(max_matrix)), input_data.data > max_matrix), axis=1)
+        max_count = np.sum(np.logical_and(np.invert(np.isnan(max_matrix)), input_data.grouped_data > max_matrix), axis=1)
 
         return AggregatorOutput(metrics=min_count + max_count)

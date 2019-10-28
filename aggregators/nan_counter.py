@@ -6,5 +6,5 @@ from aggregators.aggregator_output import AggregatorOutput
 
 class NanCounter(AbstractAggregator):
     def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
-        nan_values = np.isnan(input_data.data)
+        nan_values = np.isnan(input_data.grouped_data)
         return AggregatorOutput(metrics=np.add.reduce(nan_values, axis=1))

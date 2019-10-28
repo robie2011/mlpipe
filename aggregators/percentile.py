@@ -15,4 +15,4 @@ class Percentile(AbstractAggregator):
 
     def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
         return AggregatorOutput(
-            metrics=np.percentile(input_data.data, q=self.percentile, axis=1, interpolation=self.interpolation))
+            metrics=np.percentile(input_data.grouped_data, q=self.percentile, axis=1, interpolation=self.interpolation))
