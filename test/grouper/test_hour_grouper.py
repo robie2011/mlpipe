@@ -44,27 +44,27 @@ class TestHourGrouper(unittest.TestCase):
             0,  # :00
             0,  # :15
             0,  # :30
-            1,  # :45
+            0,  # :45
 
             1,
             1,
-            2,
-            2,
+            1,
+            1,
 
             2,
             2,
             2,
-            3,
+            2,
 
             3,
             3,
-            4,
-            4,
+            3,
+            3,
 
             4,
             4,
             4,
-            5
+            4
         ])
 
         assert_array_equal(result_expected, result)
