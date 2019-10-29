@@ -31,7 +31,7 @@ class TestSequence(unittest.TestCase):
         ])
 
         # split each sequences in two groups
-        # see https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=747666109
+        # see https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=35345003
         result_expected = np.zeros((11, 10, 2))
         result_expected[:, :, 0] = np.array([
             [23, 23, 23.3, 23.1, 23, 23, 23, 23, 23, 24],
