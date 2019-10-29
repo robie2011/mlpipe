@@ -1,0 +1,58 @@
+import unittest
+import numpy as np
+from aggregators import FreezedValueCounter
+from numpy.testing import assert_array_equal
+import helpers.data as helper_data
+from aggregators.aggregator_input import AggregatorInput
+from aggregators.aggregator_output import AggregatorOutput
+from helpers.data import print_3d_array
+
+
+class TestFreezedValues(unittest.TestCase):
+    def test_freezed_values(self):
+        sequences = np.array([
+            [23.0,    10],
+            [23.0,    10],
+            [23.3,  11],
+            [23.1,  10],
+            [23.0,    11],
+            [23.0,    12],
+            [23.0,    13],
+            [23.0,    14],
+            [23.0,    14],
+            [24.0,    14],
+            [25.0,    14],
+            [25.0,    14],
+            [24.0,    14],
+            [25.0,    14],
+            [26.0,    14],
+            [26.0,    14],
+            [27.0,    14],
+            [27.0,    14],
+            [27.0,    14],
+            [28.0,    14]
+        ])
+
+        # split each sequences in two groups
+        # see https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=747666109
+        group_matrix = np.full((2, 10, 2), np.nan)
+
+        # first sensor in two parts
+        group_matrix[0, :, 0] = sequences[:10, 0]
+        group_matrix[1, :, 0] = sequences[10:, 0]
+
+        # second sensor in two parts
+        group_matrix[0, :, 1] = sequences[:10, 1]
+        group_matrix[1, :, 1] = sequences[10:, 1]
+
+        print_3d_array(group_matrix)
+
+        result_expected = np.array([
+            [2, 0],
+            [0, 7]
+        ])
+
+        result = FreezedValueCounter(max_freezed_values=3).aggregate(
+            AggregatorInput(grouped_data=group_matrix))
+
+        assert_array_equal(result_expected, result)

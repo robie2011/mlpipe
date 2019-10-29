@@ -13,10 +13,22 @@ def print_3d_array(xxs: np.ndarray):
     for sensor in range(sensors):
         print("sensor ", sensor)
         for row in range(rows):
-            print(f"t={row} ", data[row, :, sensor])
+            print(f"group={row} ", xxs[row, :, sensor])
         print("")
 
 
 def generated_3d_data(size=(3, 5, 4)):
     np.random.seed(1)
     return np.round(np.random.random(size) * 1000)
+
+
+# class DataBuilder3D:
+#     axis0: int = 0
+#     axis1: int = 0
+#     axis2: int = 0
+#
+#     def __init__(self, axis0, axis1, axis2):
+#         self.data = np.nan((axis0, axis1, axis2))
+#
+#     def set_z_axis(self, axis0: int):
+#         self.axis0 = axis0
