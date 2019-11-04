@@ -37,7 +37,7 @@ class TestSimpleAggregators(unittest.TestCase):
         data[0, 0, 0] = np.nan  # first sensor has 1 nan in measurement nr. 0
         data[1, 0:2, 1] = np.nan  # second sensor has 2 nans measurement nr. 1
         data[0:2, 0:2, 2] = np.nan  # third sensor has 2 nans in measurement nr. 0 and in measurement nr.1
-        input_data = AggregatorInput(grouped_data=data)
+        input_data = AggregatorInput(grouped_data=data, raw_data=None)
 
         result_expected = np.zeros((3, 4))
         result_expected[0, 0] = 1
@@ -48,7 +48,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_max(self):
-        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data())
+        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data(), raw_data=None)
         result_expected = np.array([
             [417, 878, 419, 685],
             [958, 968, 692, 750],
@@ -59,7 +59,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_min(self):
-        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data())
+        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data(), raw_data=None)
         result_expected = np.array([
             147, 92, 0, 198,
             170, 533, 18, 39,
@@ -69,7 +69,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_mean(self):
-        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data())
+        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data(), raw_data=None)
         result_expected = np.zeros((3, 4))
         for sensor in range(input_data.grouped_data.shape[2]):
             for row in range(input_data.grouped_data.shape[0]):
@@ -79,7 +79,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_percentile(self):
-        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data())
+        input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data(), raw_data=None)
         #  https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=0
         result_expected = np.array([
             [204, 539, 27, 302],
@@ -90,7 +90,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_outliers(self):
-        input_data = AggregatorInput(helper_data.generated_3d_data())
+        input_data = AggregatorInput(helper_data.generated_3d_data(), raw_data=None)
         limits = [
             {'min': 200, 'max': 500},
             {'min': 200, 'max': 600},

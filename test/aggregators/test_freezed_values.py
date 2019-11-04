@@ -1,10 +1,8 @@
 import unittest
 import numpy as np
-from aggregators import FreezedValueCounter
 from numpy.testing import assert_array_equal
-import helpers.data as helper_data
+from aggregators import FreezedValueCounter
 from aggregators.aggregator_input import AggregatorInput
-from aggregators.aggregator_output import AggregatorOutput
 from helpers.data import print_3d_array
 
 
@@ -27,8 +25,8 @@ class TestFreezedValues(unittest.TestCase):
             [25.0,    14],
             [26.0,    14],
             [26.0,    14],
-            [27.0,    14],
-            [27.0,    14],
+            [26.0,    14],
+            [26.0,    14],
             [27.0,    14],
             [28.0,    14]
         ])
@@ -45,14 +43,14 @@ class TestFreezedValues(unittest.TestCase):
         group_matrix[0, :, 1] = sequences[:10, 1]
         group_matrix[1, :, 1] = sequences[10:, 1]
 
-        print_3d_array(group_matrix)
+        #print_3d_array(group_matrix)
 
         result_expected = np.array([
             [2, 0],
-            [0, 7]
+            [1, 7]
         ])
 
         result = FreezedValueCounter(max_freezed_values=3).aggregate(
-            AggregatorInput(grouped_data=group_matrix))
+            AggregatorInput(grouped_data=group_matrix, raw_data=None))
 
-        assert_array_equal(result_expected, result)
+        assert_array_equal(result_expected, result.metrics)
