@@ -7,6 +7,7 @@ import helpers.test_data as tdata
 
 tdata.DEBUG = True
 
+
 class AnalyticsChain(unittest.TestCase):
     def test_chain(self):
         raw_data = tdata.load_empa_data().values
