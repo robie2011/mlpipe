@@ -42,6 +42,7 @@ sequences.flags.writeable = False
 def run_grouper(clazz: AbstractGrouper, data: GroupInput):
     return clazz().group(data)
 
+
 class TestSimpleGroupers(unittest.TestCase):
     def test_hour_grouper(self):
         raw_data = np.zeros((20, 3), dtype='object')
@@ -125,7 +126,7 @@ class TestSimpleGroupers(unittest.TestCase):
         groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         print("start")
         ts = time.time()
-        results = np.array([run_grouper(row, group_input) for row in groupers]).T
+        results = np.array([run_grouper(grouper, group_input) for grouper in groupers]).T
         print("serial execution time: ", (time.time() - ts) * 1000)
 
     def test_group_spliting_DEV(self):

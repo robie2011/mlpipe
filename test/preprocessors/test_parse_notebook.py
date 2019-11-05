@@ -3,17 +3,21 @@ from preprocessors.chain_processor import init_processors, ProcessInitialization
 from preprocessors import NanRemover
 from test.preprocessors.dummy_processors_args import ProcessorWithArgs
 from helpers.data import load_yaml
+import os
+from pathlib import Path
 
+
+parent_dir = Path(os.path.abspath(__file__)).parent
 
 class ChainProcessorTests(unittest.TestCase):
     def test_invalid_processor_argument(self):
-        config = load_yaml('sample_notebook_invalid_arg.yml')
+        config = load_yaml(os.path.join(parent_dir, 'sample_notebook_invalid_arg.yml'))
         config_processors = config['preprocessors']
         self.assertRaises(ProcessInitializationFailedException,
                           lambda: init_processors(config_processors))
 
     def test_valid_processor(self):
-        config = load_yaml('sample_notebook.yml')
+        config = load_yaml(os.path.join(parent_dir, 'sample_notebook.yml'))
         config_processors = config['preprocessors'][:2]
         processors = init_processors(config_processors)
         self.assertEqual(len(processors), 2)

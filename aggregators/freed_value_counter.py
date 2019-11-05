@@ -60,6 +60,4 @@ class FreezedValueCounter(AbstractAggregator):
             freed_indexes_by_sensor))
 
         result = np.array(result).T
-        # step 1: filter indexes which has same value at position i and on position i+max_freezed_values
-        # step 2: all indexes which has 3 o
         return AggregatorOutput(metrics=result)

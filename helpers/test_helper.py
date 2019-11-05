@@ -1,16 +1,17 @@
 import time
-from collections import namedtuple
-from typing import Any
+from typing import Any, Optional
+import numpy as np
 
 
-class TimerResult(namedtuple):
-    timeMs: float
-    result: Any
+class Timer:
+    def __init__(self):
+        self._start = time.time()
+        self._last = time.time()
 
+    def tock(self, action_name: Optional[str] = None):
+        out = (time.time() - np.array([self._last, self._start])) / 1000
+        self._last = time.time()
 
-def measure_time(f):
-    ts = time.time()
-    return TimerResult(
-        result=f(),
-        timeMs=(time.time() - ts) * 1000
-    )
+        if action_name:
+            print(f"🕓 Action [{action_name}] took {out[0]:.5f} ms. Total time till now {out[1]:.5f} ms")
+        return out
