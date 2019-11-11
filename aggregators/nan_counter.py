@@ -16,4 +16,6 @@ class NanCounter(AbstractAggregator):
         # use raw input and calculate where nan is found (index)
         # use intersection with indexes in group
         nan_values = np.isnan(input_data.grouped_data)
+
+        # todo: this code is probably correct because we are using masked array. VERIFY.
         return AggregatorOutput(metrics=np.add.reduce(nan_values, axis=1))

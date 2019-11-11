@@ -1,13 +1,18 @@
 from abc import ABC, abstractmethod
 from .datasource import Datasource
 import numpy as np
+from typing import NamedTuple
 
 
-class DataResult:
-    def __init__(self, values: np.ndarray, timestamps: np.ndarray, columns: [str]):
-        self.values = values
-        self.timestamps = timestamps
-        self.columns = columns
+class AggregatorInput(NamedTuple):
+    grouped_data: np.ndarray
+    raw_data: np.ndarray
+
+
+class DataResult(NamedTuple):
+    values: np.ndarray
+    timestamps: np.ndarray
+    columns: [str]
 
 
 class AbstractDatasourceAdapter(ABC):

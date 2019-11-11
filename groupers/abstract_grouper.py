@@ -14,3 +14,6 @@ class AbstractGrouper(ABC):
     @abstractmethod
     def group(self, data_input: GroupInput) -> np.ndarray:
         pass
+
+    def get_pretty_group_names(self) -> [str]:
+        return []

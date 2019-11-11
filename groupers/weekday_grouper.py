@@ -8,3 +8,14 @@ class WeekdayGrouper(AbstractGrouper):
     def group(self, data_input: GroupInput) -> np.ndarray:
         # note weekday start from monday. 0 = monday
         return pd.Series(data_input.timestamps).dt.weekday.values
+
+    def get_pretty_group_names(self) -> [str]:
+        return [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ]

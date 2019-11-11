@@ -13,5 +13,5 @@ class Timer:
         self._last = time.time()
 
         if action_name:
-            print(f"🕓 Action [{action_name}] took {out[0]:.5f} ms. Total time till now {out[1]:.5f} ms")
+            print(f"🕓 {out[0]:.5f} ms (Total time: {out[1]:.5f} ms) - Executed action [{action_name}]")
         return out

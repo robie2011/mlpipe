@@ -8,7 +8,7 @@ import multiprocessing as mp
 import time
 from groupers.group_by_multi_columns import CombinedGroup, group_by_multi_columns
 from helpers.test_data import load_empa_data
-#from test_helper import measure_time, TimerResult
+
 
 sequences = np.array([
             [23.0, 10],
