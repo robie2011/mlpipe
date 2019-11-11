@@ -10,6 +10,38 @@ import json
 DISABLE_EXPORT = True
 
 
+def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer):
+    # note: numpy currently do not support NaN for integer type array
+    # instead of nan we will get a very big negative value
+    # therefore we need to drop negative integers later
+    # see also: https://stackoverflow.com/questions/12708807/numpy-integer-nan
+
+    # note: true values for masked array means block that value
+    grouped_indexes = np.ma.zeros((n_groups, n_max_group_members), dtype='int')
+    grouped_indexes.mask = np.ones((n_groups, n_max_group_members), dtype='int')
+    for i in range(len(groups)):
+        g: CombinedGroup = groups[i]
+        n_current_group_size = g.indexes.shape[0]
+        grouped_indexes[i, :n_current_group_size] = g.indexes
+        grouped_indexes.mask[i, :n_current_group_size] = False
+    timer.tock("create grouped indexes")
+
+    n_sensors = raw_data_only.shape[1]
+    grouped_data = np.ma.zeros(
+        (n_groups, n_max_group_members, n_sensors),
+        fill_value=np.nan,
+        dtype='float64')
+    grouped_data.mask = grouped_indexes.mask
+
+    for group_id in range(n_groups):
+        _mask = np.invert(grouped_indexes.mask[group_id, :])
+        indexes = grouped_indexes[group_id][_mask]
+        n_samples = len(indexes)
+        grouped_data[group_id, :n_samples] = raw_data_only[indexes, :]
+    timer.tock("grouping indexes/data")
+    return grouped_data
+
+
 class AnalyticsChain(unittest.TestCase):
     def test_data(self):
         raw_data_df = tdata.load_empa_data()
@@ -38,7 +70,8 @@ class AnalyticsChain(unittest.TestCase):
         n_max_group_members = np.max(np.fromiter(map(lambda x: x.indexes.shape[0], groups), dtype='int'))
         timer.tock("calc max group size")
 
-        grouped_data, n_sensors = self.create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer)
+        n_sensors = raw_data_only.shape[1]
+        grouped_data = create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer)
 
         analyzers = [Min(), Max(), Mean(), NanCounter(),
                      Percentile(percentile=.25),
@@ -78,39 +111,6 @@ class AnalyticsChain(unittest.TestCase):
             f.write(json.dumps(export_data))
 
         timer.tock("write file")
-
-    def create_np_group_data(self, groups, n_groups, n_max_group_members, raw_data_only, timer):
-        # note: numpy currently do not support NaN for integer type array
-        # instead of nan we will get a very big negative value
-        # therefore we need to drop negative integers later
-        # see also: https://stackoverflow.com/questions/12708807/numpy-integer-nan
-        # note: true values for masked array means block that value
-        grouped_indexes = np.ma.zeros((n_groups, n_max_group_members), dtype='int')
-        grouped_indexes.mask = np.ones((n_groups, n_max_group_members), dtype='int')
-        for i in range(len(groups)):
-            g: CombinedGroup = groups[i]
-            n_current_group_size = g.indexes.shape[0]
-            grouped_indexes[i, :n_current_group_size] = g.indexes
-            grouped_indexes.mask[i, :n_current_group_size] = False
-        timer.tock("create grouped indexes")
-
-        n_sensors = raw_data_only.shape[1]
-        grouped_data = np.ma.zeros(
-            (n_groups, n_max_group_members, n_sensors),
-            fill_value=np.nan,
-            dtype='float64')
-        grouped_data.mask = grouped_indexes.mask
-
-        # todo: can this 2 for-loops reduced to one?. sensors iteration may be unnecessary
-        for sensor_id in range(n_sensors):
-            raw_sensor = raw_data_only[:, sensor_id]
-            for group_id in range(n_groups):
-                _mask = np.invert(grouped_indexes.mask[group_id, :])
-                indexes = grouped_indexes[group_id][_mask]
-                n_samples = len(indexes)
-                grouped_data[group_id, :n_samples, sensor_id] = raw_sensor[indexes]
-        timer.tock("grouping indexes/data")
-        return grouped_data, n_sensors
 
 
 if __name__ == '__main__':
