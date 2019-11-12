@@ -71,12 +71,15 @@ class TestSimpleAggregators(unittest.TestCase):
 
     def test_mean(self):
         input_data = AggregatorInput(grouped_data=helper_data.generated_3d_data(), raw_data=None)
+        helper_data.print_3d_array(input_data.grouped_data)
+
         result_expected = np.zeros((3, 4))
         for sensor in range(input_data.grouped_data.shape[2]):
             for row in range(input_data.grouped_data.shape[0]):
                 result_expected[row, sensor] = np.mean(input_data.grouped_data[row, :, sensor])
 
         result = Mean().aggregate(input_data)
+        self.assertEqual(result_expected[0, 0], (417+147+397+204+417)/5)
         assert_array_equal(result_expected, result.metrics)
 
     def test_percentile(self):
