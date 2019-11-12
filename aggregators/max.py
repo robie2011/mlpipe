@@ -1,9 +1,8 @@
 import numpy as np
-from aggregators.abstract_aggregator import AbstractAggregator
-from aggregators.aggregator_input import AggregatorInput
-from aggregators.aggregator_output import AggregatorOutput
+from aggregators.AbstractNumpyReduction import AbstractNumpyReduction
 
 
-class Max(AbstractAggregator):
-    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
-        return AggregatorOutput(metrics=np.max(input_data.grouped_data, axis=1))
+class Max(AbstractNumpyReduction):
+    def __init__(self):
+        super().__init__(reduce_func=np.max)
+

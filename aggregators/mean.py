@@ -1,9 +1,7 @@
 import numpy as np
-from aggregators.abstract_aggregator import AbstractAggregator
-from aggregators.aggregator_input import AggregatorInput
-from aggregators.aggregator_output import AggregatorOutput
+from aggregators.AbstractNumpyReduction import AbstractNumpyReduction
 
 
-class Mean(AbstractAggregator):
-    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
-        return AggregatorOutput(metrics=np.mean(input_data.grouped_data, axis=1))
+class Mean(AbstractNumpyReduction):
+    def __init__(self):
+        super().__init__(reduce_func=np.mean)
