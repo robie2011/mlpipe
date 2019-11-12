@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 from aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
+import aggregators as agg
 from numpy.testing import assert_array_equal
 import helpers.data as helper_data
 from aggregators.aggregator_input import AggregatorInput
@@ -105,4 +106,40 @@ class TestSimpleAggregators(unittest.TestCase):
         ])
 
         result = Outlier(limits=limits).aggregate(input_data)
+        assert_array_equal(result_expected, result.metrics)
+
+    def test_trend(self):
+        data = np.zeros((2, 3, 2))
+        data[:, :, 0] = np.array([
+            [1, 2, 3],
+            [2, 3, 7]
+        ])
+        data[:, :, 1] = np.array([
+            [11, 12, 13],
+            [12, 13, 3],
+        ])
+
+        result_expected = np.array([
+            [2, 2],
+            [5, -9]
+        ])
+        result = agg.Trend().aggregate(input_data=AggregatorInput(grouped_data=data, raw_data=None))
+        assert_array_equal(result_expected, result.metrics)
+
+    def test_sum(self):
+        data = np.zeros((2, 3, 2), dtype='int')
+        data[:, :, 0] = np.array([
+            [1, 2, 3],
+            [2, 3, 7]
+        ])
+        data[:, :, 1] = np.array([
+            [11, 12, 13],
+            [12, 13, 3],
+        ])
+
+        result_expected = np.array([
+            [6, 36],
+            [12, 28]
+        ])
+        result = agg.Sum().aggregate(input_data=AggregatorInput(grouped_data=data, raw_data=None))
         assert_array_equal(result_expected, result.metrics)

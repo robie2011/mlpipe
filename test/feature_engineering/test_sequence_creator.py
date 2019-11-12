@@ -6,7 +6,6 @@ from numpy.testing import assert_array_equal
 
 class SequenceCreatorTestCase(unittest.TestCase):
     def create_sequence(self):
-
         # test data: https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=589074770
 
         data = np.array([np.arange(5), np.arange(50, 55)])
