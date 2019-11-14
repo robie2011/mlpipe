@@ -1,6 +1,7 @@
 import numpy as np
 from .interfaces import AbstractProcessor, ProcessorData
 
+
 class ColumnDropper(AbstractProcessor):
     def __init__(self, columns: [str]):
         self._columns = columns
