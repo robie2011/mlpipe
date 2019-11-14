@@ -19,7 +19,8 @@ def print_3d_array(xxs: np.ndarray):
 
 def generated_3d_data(size=(3, 5, 4)):
     np.random.seed(1)
-    return np.round(np.random.random(size) * 1000)
+    data = np.round(np.random.random(size) * 1000)
+    return data, indexes
 
 
 # class DataBuilder3D:
