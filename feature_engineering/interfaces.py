@@ -22,4 +22,3 @@ class WindowedFeatureExtractor:
     @abstractmethod
     def extract(self, data: WindowedFeatureExtractorInput) -> np.ndarray:
         pass
-

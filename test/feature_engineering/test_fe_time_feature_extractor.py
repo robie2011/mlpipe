@@ -5,10 +5,11 @@ from numpy.testing import assert_array_equal
 import datetime
 import numpy as np
 
+
 test_data = RawFeatureExtractorInput(
     timestamps=np.array([
-        datetime.datetime(2019, 7, 2, 12, 13),  # tuesday
-        datetime.datetime(2019, 8, 3, 20, 10),  # wednesday
+        datetime.datetime(2019, 7, 2, 12, 25),  # tuesday
+        datetime.datetime(2019, 8, 3, 20, 45),  # wednesday
     ]), features=np.arange(2))
 test_data.timestamps.flags.writeable = False
 test_data.features.flags.writeable = False
@@ -16,7 +17,7 @@ test_data.features.flags.writeable = False
 
 class TestTimeFeatureExtractor(unittest.TestCase):
     def test_extract_hours(self):
-        result_expected = np.array([12, 20])
+        result_expected = np.array([12, 21])
         result = TimeFeatureExtractor(extract="hour").extract(test_data)
         assert_array_equal(result_expected, result)
 

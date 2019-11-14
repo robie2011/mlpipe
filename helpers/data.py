@@ -32,3 +32,10 @@ def generated_3d_data(size=(3, 5, 4)):
 #
 #     def set_z_axis(self, axis0: int):
 #         self.axis0 = axis0
+
+
+def transform_to_2d_matrix(data: np.ndarray):
+    if len(data.shape) > 1:
+        print("NOTE: Data already in 2D shape")
+
+    return data if len(data.shape) > 1 else data.reshape(-1, 1)
