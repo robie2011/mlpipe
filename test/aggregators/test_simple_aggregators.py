@@ -112,7 +112,7 @@ class TestSimpleAggregators(unittest.TestCase):
         assert_array_equal(result_expected, result.metrics)
 
     def test_trend(self):
-        data = np.zeros((2, 3, 2))
+        data = np.ma.zeros((2, 3, 2))
         data[:, :, 0] = np.array([
             [1, 2, 3],
             [2, 3, 7]
@@ -121,6 +121,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [11, 12, 13],
             [12, 13, 3],
         ])
+        data.mask = np.ma.zeros((2, 3, 2))
 
         result_expected = np.array([
             [2, 2],

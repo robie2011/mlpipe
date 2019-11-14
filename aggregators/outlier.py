@@ -20,13 +20,17 @@ class Outlier(AbstractAggregator):
         # e.g. minimums[0] define minimum for sensor = xxs[:, :, 0]
         min_matrix = np.zeros(input_data.grouped_data.shape, dtype='float')
         for i in range(len(self.limits)):
-            min_matrix[:, :, i] = self.limits[i]['min']
-        min_filter = np.logical_and(np.invert(np.isnan(min_matrix)), input_data.grouped_data < min_matrix)
+            min_matrix[:, :, i] = self.limits[i]['min'] if 'min' in self.limits[i] else np.nan
+        min_filter = np.logical_and(
+            np.invert(input_data.grouped_data.mask), input_data.grouped_data < min_matrix)
         min_count = np.sum(min_filter, axis=1)
 
         max_matrix = np.zeros(input_data.grouped_data.shape, dtype='float')
         for i in range(len(self.limits)):
-            max_matrix[:, :, i] = self.limits[i]['max']
-        max_count = np.sum(np.logical_and(np.invert(np.isnan(max_matrix)), input_data.grouped_data > max_matrix), axis=1)
+            max_matrix[:, :, i] = self.limits[i]['max'] if 'max' in self.limits[i] else np.nan
+        max_filter = np.logical_and(
+            np.invert(input_data.grouped_data.mask), input_data.grouped_data > max_matrix)
+        max_count = np.sum(max_filter, axis=1)
 
-        return AggregatorOutput(metrics=min_count + max_count)
+        affected_index = np.logical_or(min_filter, max_filter)
+        return AggregatorOutput(metrics=np.sum(affected_index, axis=1), affected_index=affected_index)
