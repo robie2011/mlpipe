@@ -24,6 +24,10 @@ def generate_timestamps(delta_minutes=2, samples=5):
     return np.arange(start_date, end_date, delta).astype(datetime)
 
 
+def get_labels(count: int):
+    return [chr(i) for i in range(ord('a'), ord('a')+count)]
+
+
 def generated_3d_data(size=(3, 5, 4)):
     np.random.seed(1)
     data = np.ma.array(np.round(np.random.random(size) * 1000))
