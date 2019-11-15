@@ -1,6 +1,6 @@
 import yaml
 import numpy as np
-
+from datetime import datetime, timedelta
 
 def load_yaml(file_path: str):
     with open(file_path) as f:
@@ -15,6 +15,13 @@ def print_3d_array(xxs: np.ndarray):
         for row in range(rows):
             print(f"group={row} ", xxs[row, :, sensor])
         print("")
+
+
+def generate_timestamps(delta_minutes=2, samples=5):
+    delta = timedelta(minutes=delta_minutes)
+    start_date = datetime(2019, 7, 1, 12, 1)
+    end_date = start_date + delta
+    return np.arange(start_date, end_date, delta).astype(datetime)
 
 
 def generated_3d_data(size=(3, 5, 4)):

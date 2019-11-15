@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from .datasource import Datasource
 import numpy as np
-from typing import NamedTuple
+from typing import NamedTuple, List
 
 
 class AggregatorInput(NamedTuple):
@@ -12,7 +12,7 @@ class AggregatorInput(NamedTuple):
 class DataResult(NamedTuple):
     values: np.ndarray
     timestamps: np.ndarray
-    columns: [str]
+    columns: List[str]
 
 
 class AbstractDatasourceAdapter(ABC):
