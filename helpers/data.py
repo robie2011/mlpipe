@@ -20,7 +20,7 @@ def print_3d_array(xxs: np.ndarray):
 def generate_timestamps(delta_minutes=2, samples=5):
     delta = timedelta(minutes=delta_minutes)
     start_date = datetime(2019, 7, 1, 12, 1)
-    end_date = start_date + delta
+    end_date = start_date + samples * delta
     return np.arange(start_date, end_date, delta).astype(datetime)
 
 

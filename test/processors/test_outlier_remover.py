@@ -1,11 +1,8 @@
 import unittest
-
-from aggregators import AggregatorInput
-from processors import *
 import numpy as np
-from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
 import helpers.data as helper_data
+from processors import *
 from processors.outlier_remover import OutlierRemover
 
 

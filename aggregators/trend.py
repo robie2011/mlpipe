@@ -8,4 +8,6 @@ class Trend(AbstractAggregator):
     def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
         last_values = input_data.grouped_data[:, -1]
         first_values = input_data.grouped_data[:, 0]
-        return AggregatorOutput(metrics=last_values - first_values)
+        return AggregatorOutput(
+            metrics=last_values - first_values,
+            affected_index=np.zeros(input_data.grouped_data.shape))

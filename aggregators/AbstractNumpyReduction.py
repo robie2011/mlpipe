@@ -10,4 +10,4 @@ class AbstractNumpyReduction(AbstractAggregator):
         self.kwargs = {'axis': 1}
 
     def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
-        return AggregatorOutput(metrics=self.reduce_func(input_data.grouped_data, **self.kwargs))
+        return AggregatorOutput(metrics=self.reduce_func(input_data.grouped_data, **self.kwargs), affected_index=None)
