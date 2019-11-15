@@ -3,7 +3,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 import helpers.data as helper_data
 from processors import *
-from processors.NanRemover import NanRemover
+from processors.nan_remover import NanRemover
 
 
 class TestNanRemover(unittest.TestCase):
