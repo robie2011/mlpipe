@@ -3,6 +3,9 @@ from aggregators.abstract_aggregator import AbstractAggregator
 from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput
 
+# todo: Check interesting post
+#  https://stackoverflow.com/questions/57712650/numpy-array-first-occurence-of-n-consecutive-values-smaller-than-threshold
+
 
 class FreezedValueCounter(AbstractAggregator):
     def __init__(self, max_freezed_values: int):
@@ -26,7 +29,8 @@ class FreezedValueCounter(AbstractAggregator):
             #   We create sub-matrix with different time offset (axis1 offset). E.g. for t-1, t-2, ...
             #   We compare sub-matrix with original whether they have same value `
             #   and write these booleans to matrix called `snapshot_comparision_result3d`.
-            #   snapshot_comparision_result3d is composition of comparision result of 2d matrices (original with different timesteps).
+            #   snapshot_comparision_result3d is composition of comparision result
+            #   of 2d matrices (original with different time steps).
             #   We sum up all booleans in snapshot_comparision_result3d along axis=3.
             #   Freezed value is found if sum >= max_freezed_values.
             sensor: np.ndarray = input_data.grouped_data[:, :, sensor_id]
