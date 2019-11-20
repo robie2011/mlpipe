@@ -1,10 +1,14 @@
 import numpy as np
 from typing import NamedTuple
-from importlib import import_module
+import pickle
 
+
+# difference between pickle and joblib
+# https://stackoverflow.com/questions/12615525/what-are-the-different-use-cases-of-joblib-versus-pickle
 class FitTransformResult(NamedTuple):
-    transformer:object
+    transformer_serialized: str
     data: np.ndarray
+    format_version: str
 
 
 def fit_transform(data: np.ndarray, full_scaler_name: str, kwargs={}) -> FitTransformResult:
@@ -18,4 +22,7 @@ def fit_transform(data: np.ndarray, full_scaler_name: str, kwargs={}) -> FitTran
     class_name = n
     transformer = class_name(**kwargs)
     data_transformed = transformer.fit_transform(data)
-    return FitTransformResult(transformer=transformer, data=data_transformed)
+    return FitTransformResult(
+        transformer_serialized=pickle.dumps(transformer),
+        format_version=pickle.format_version,
+        data=data_transformed)
