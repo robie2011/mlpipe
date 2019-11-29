@@ -1,0 +1,44 @@
+source:
+  name: EmpaCsvAdapter
+  pathToFile: test/sdflk/df
+
+sourceFields:
+  - df as tsdf
+
+pipe:
+  - name: processor.ColumnDropper
+    fields:
+      - abc
+  - kind: aggregate
+    minutes: 10
+    aggregations:
+      - name: aggregators.Max
+      - name: aggregators.Min
+      - name: feature_engineering.TimeFeatureExtractor
+        config: 
+          extract: hour
+  - name: processor.ColumnDropper
+    kind: process
+    config:
+        fields:
+          - tste
+          - skdlf
+  - name: processor.ColumnDropper
+    kind: process
+    config:
+      fields:
+        - sdf
+  - name: processor.OutlierRemover
+    kind: process
+    config:
+      - field: Temperatur
+        max: 23
+        min: 2
+
+analyzer:
+  groupBy:
+    - month
+    - year
+  metrics:
+    - name: aggregators.Max
+    - name: aggregators.Min

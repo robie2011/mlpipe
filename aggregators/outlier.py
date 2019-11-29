@@ -3,8 +3,10 @@ from aggregators.abstract_aggregator import AbstractAggregator
 from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput
 from typing import Optional, Dict
+from dataclasses import dataclass
 
 
+@dataclass
 class ColumnLimit(Dict):
     min: Optional[float]
     max: Optional[float]

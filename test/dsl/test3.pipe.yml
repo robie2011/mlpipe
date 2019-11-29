@@ -1,0 +1,53 @@
+source:
+  name: datasources.empa.EmpaCsvReader
+  pathToFile: c:/tmp/test.csv
+
+sourceFields:
+  - feld1 as temp1
+  - feld2 as temp2
+  - temp1max
+
+
+pipeline:
+  - name: processors.ColumnDropper
+    columns:
+    - abc
+  - name: aggregators.Max
+    minutes: 10
+    generate:
+    - input: temp1
+      output: tempMax
+    - input: temp2
+      output: temp2Max
+  - name: aggregators.Trend
+    minutes: 10
+    generate:
+    - input: temp1
+      output: tempMax
+    - input: temp2
+      output: temp2Max
+  - name: aggregators.Min
+    minutes: 10
+    generate:
+    - inputField: temp
+      outputField: tempMax
+  - name: feature_engineering.TimeFeatureExtractor
+    extract: hour
+  - name: processors.ColumnDropper
+    columns:
+    - abc
+  - name: aggregators.Trend
+    minutes: 10
+    generate:
+    - input: temp1
+      output: tempMax
+    - input: temp2
+      output: temp2Max
+
+analyzer:
+  groupBy:
+    - month
+    - year
+  metrics:
+    - name: aggregators.Max
+    - name: aggregators.Min

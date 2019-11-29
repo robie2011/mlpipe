@@ -5,3 +5,4 @@ class Datasource(object):
         self.query = query
         self.cachable = cachable
 
+

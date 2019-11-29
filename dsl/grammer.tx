@@ -1,0 +1,40 @@
+INIT:
+  chain=CHAIN
+;
+
+CHAIN:
+  'chain' '{'
+    pipes*=PIPE
+  '}'
+;
+
+PIPE:
+  name=ID annotation=INLINE_PROPERTIES? '{'
+      elements*=PIPE_ELEMENT
+  '}'
+;
+
+INLINE_PROPERTIES:
+  '(' properties*=KEY_VALUE[','] ')'
+;
+
+PIPE_ELEMENT:
+  name=/[a-zA-Z][a-zA-Z0-9\._]+/ config=PIPE_ELEMENT_CONFIG?
+;
+
+PIPE_ELEMENT_CONFIG:
+  PIPE_ELEMENT_CONFIG_VALUE_LIST|PIPE_ELEMENT_CONFIG_KEYVALUE_LIST
+;
+
+PIPE_ELEMENT_CONFIG_VALUE_LIST:
+  ':' args*=DEFAULT_VALUE_TYPE[', ']
+;
+
+PIPE_ELEMENT_CONFIG_KEYVALUE_LIST:
+'{'
+  keyvalues*=KEY_VALUE[',']
+'}'
+;
+
+KEY_VALUE: key=ID ':' value=DEFAULT_VALUE_TYPE;
+DEFAULT_VALUE_TYPE: STRING|NUMBER|FLOAT;

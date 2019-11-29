@@ -1,0 +1,51 @@
+source:
+  name: EmpaCsvReader
+  config:
+    pathToFile: c:/tmp/test.csv
+
+sourceFields:
+  - feld1 as temp1
+  - feld2 as temp2
+  - temp1max
+
+
+pipe:
+  - kind: process
+    name: processor.ColumnDropper
+    config:
+        fields:
+          - abc
+  - kind: aggregate
+    _minutes: 10
+    fields: temp1, temp2
+    aggregations:
+      - name: aggregators.Max
+      - name: aggregators.Min
+  - name: feature_engineering.TimeFeatureExtractor
+    config:
+      extract: hour
+  - name: processor.ColumnDropper
+    kind: process
+    config:
+        fields:
+          - tste
+          - skdlf
+  - name: processor.ColumnDropper
+    kind: process
+    config:
+      fields:
+        - sdf
+  - name: processor.OutlierRemover
+    kind: process
+    config:
+      - field: Temperatur
+        max: 23
+        min: 2
+
+analyzer:
+  groupBy:
+    - month
+    - year
+  metrics:
+    - name: aggregators.Max
+    - name: aggregators.Min

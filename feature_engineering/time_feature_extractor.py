@@ -1,4 +1,6 @@
 import numpy as np
+
+from processors import AbstractProcessor, ProcessorData
 from .interfaces import RawFeatureExtractor, RawFeatureExtractorInput
 import pandas as pd
 from typing import Callable
@@ -13,7 +15,7 @@ allowed_extractions: [(str, _ITimeExtractor)] = [
 ]
 
 
-class TimeFeatureExtractor(RawFeatureExtractor):
+class TimeFeatureExtractor(AbstractProcessor):
     def __init__(self, extract: str):
         search = [func for name, func in allowed_extractions if name == extract]
         if len(search) == 0:
@@ -21,5 +23,5 @@ class TimeFeatureExtractor(RawFeatureExtractor):
 
         self._extractor: _ITimeExtractor = search[0]
 
-    def extract(self, data: RawFeatureExtractorInput) -> np.ndarray:
-        return self._extractor(pd.Series(data.timestamps))
+    def process(self, processor_input: ProcessorData) -> ProcessorData:
+        return self._extractor(pd.Series(processor_input.timestamps))

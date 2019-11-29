@@ -20,6 +20,7 @@ class EmpaCsvSourceAdapter(CsvSourceAdapter):
     def __init__(self, *args):
         super(CsvSourceAdapter, self).__init__(*args)
 
+    # todo: rewrite - use adapter specific config by passing it through constructor (kwargs)
     def fetch(self, source: Datasource) -> DataResult:
         data = pd.read_csv(
             source.connection_string, 
