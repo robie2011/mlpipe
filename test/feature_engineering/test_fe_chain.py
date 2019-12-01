@@ -1,9 +1,8 @@
 import unittest
-from features.sequence_creator import create_sequence_3d
+from api.sequence_creator import create_sequence_3d
 import numpy as np
-from numpy.testing import assert_array_equal
 import aggregators as agg
-from aggregators import AggregatorInput, AggregatorOutput
+from aggregators import AggregatorInput
 from helpers import print_3d_array
 
 

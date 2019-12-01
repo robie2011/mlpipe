@@ -1,8 +1,7 @@
 import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
-from features.sequence_creator import create_sequence_3d
-from helpers.data import print_3d_array
+from api.sequence_creator import create_sequence_3d
 
 
 class TestSequence(unittest.TestCase):
