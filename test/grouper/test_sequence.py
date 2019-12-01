@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
+from features.sequence_creator import create_sequence_3d
 from helpers.data import print_3d_array
-from groupers import create_sequence_offset_matrix
 
 
 class TestSequence(unittest.TestCase):
@@ -61,5 +61,5 @@ class TestSequence(unittest.TestCase):
             [14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
         ])
 
-        result = create_sequence_offset_matrix(sequences, n_sequence=10)
+        result = create_sequence_3d(sequences, n_sequence=10)
         assert_array_equal(result_expected, result)
