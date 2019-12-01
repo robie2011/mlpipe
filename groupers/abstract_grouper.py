@@ -5,14 +5,9 @@ import numpy as np
 from typing import NamedTuple
 
 
-class GroupInput(NamedTuple):
-    raw_data: np.ndarray
-    timestamps: np.ndarray
-
-
 class AbstractGrouper(ABC):
     @abstractmethod
-    def group(self, data_input: GroupInput) -> np.ndarray:
+    def group(self, timestamps: np.ndarray, raw_data: np.ndarray) -> np.ndarray:
         pass
 
     def get_pretty_group_names(self) -> [str]:

@@ -3,7 +3,7 @@ from typing import Sequence
 import numpy as np
 from numpy.testing import assert_array_equal
 from datetime import datetime, timedelta
-from groupers import GroupInput, HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
+from groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
 import multiprocessing as mp
 import time
 from groupers.group_by_multi_columns import CombinedGroup, group_by_multi_columns
@@ -39,8 +39,11 @@ sequences = np.array([
 
 sequences.flags.writeable = False
 
-def run_grouper(clazz: AbstractGrouper, data: GroupInput):
-    return clazz().group(data)
+empty_array = np.array([])
+empty_array.flags.writeable = False
+
+def run_grouper(clazz: AbstractGrouper, timestamps: np.ndarray, raw_data: np.ndarray):
+    return clazz().group(timestamps, raw_data)
 
 
 class TestSimpleGroupers(unittest.TestCase):
@@ -50,7 +53,7 @@ class TestSimpleGroupers(unittest.TestCase):
 
         _stamps = np.arange(datetime(2019, 7, 1), datetime(2019, 7, 2), timedelta(minutes=15)).astype(datetime)
         raw_data[:, 0] = _stamps[:raw_data.shape[0]]
-        result = HourGrouper().group(GroupInput(raw_data=raw_data, timestamps=raw_data[:, 0]))
+        result = HourGrouper().group(raw_data=empty_array, timestamps=raw_data[:, 0])
         result_expected = np.array([
             0, 0, 0, 0,
             1, 1, 1, 1,
@@ -62,71 +65,68 @@ class TestSimpleGroupers(unittest.TestCase):
         assert_array_equal(result_expected, result)
 
     def test_day_grouper(self):
-        result = DayGrouper().group(GroupInput(raw_data=None, timestamps=np.arange(
+        result = DayGrouper().group(timestamps=np.arange(
             datetime(2019, 7, 1),
             datetime(2019, 7, 5),
-            timedelta(days=1)
-        )))
+            timedelta(days=1)), raw_data=empty_array)
 
         result_expected = np.arange(1, 5)
         assert_array_equal(result_expected, result)
 
     def test_month_grouper(self):
-        result = MonthGrouper().group(GroupInput(raw_data=None, timestamps=np.array([
+        result = MonthGrouper().group(raw_data=empty_array, timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2019, 8, 1, 12, 0),
             datetime(2019, 9, 1, 12, 0),
             datetime(2019, 10, 1, 12, 0),
             datetime(2019, 11, 1, 12, 0),
-        ])))
+        ]))
 
         result_expected = np.arange(7, 12)
         assert_array_equal(result_expected, result)
 
     def test_year_grouper(self):
-        result = YearGrouper().group(GroupInput(raw_data=None, timestamps=np.array([
+        result = YearGrouper().group(raw_data=empty_array, timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2020, 8, 1, 12, 0),
             datetime(2021, 9, 1, 12, 0),
             datetime(2022, 10, 1, 12, 0),
             datetime(2023, 11, 1, 12, 0),
-        ])))
+        ]))
 
         result_expected = np.arange(2019, 2024)
         assert_array_equal(result_expected, result)
 
     def test_weekday_grouper(self):
-        result = WeekdayGrouper().group(GroupInput(raw_data=None, timestamps=np.array([
+        result = WeekdayGrouper().group(raw_data=empty_array, timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2019, 7, 2, 12, 0),
             datetime(2019, 7, 3, 12, 0),
             datetime(2019, 7, 8, 12, 0),
             datetime(2019, 7, 9, 12, 0),
-        ])))
+        ]))
 
         result_expected = np.array([0, 1, 2, 0, 1])
         assert_array_equal(result_expected, result)
 
     def test_parallel_grouping(self):
         timestamps = load_empa_data()['TIMESTAMP'].values
-        group_input = GroupInput(raw_data=None, timestamps=timestamps)
 
         groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         pool = mp.Pool(mp.cpu_count())
         print("start")
         ts = time.time()
-        results = np.array([pool.apply(run_grouper, args=(row, group_input)) for row in groupers]).T
+        results = np.array([pool.apply(run_grouper, args=(row, timestamps, None)) for row in groupers]).T
         print("parallel execution time: ", (time.time() - ts) * 1000)
         pool.close()
 
     def test_grouping_serial(self):
         timestamps = load_empa_data()['TIMESTAMP'].values
-        group_input = GroupInput(raw_data=None, timestamps=timestamps)
 
         groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         print("start")
         ts = time.time()
-        results = np.array([run_grouper(grouper, group_input) for grouper in groupers]).T
+        results = np.array([run_grouper(grouper, timestamps=timestamps, raw_data=empty_array) for grouper in groupers]).T
         print("serial execution time: ", (time.time() - ts) * 1000)
 
     def test_group_spliting_DEV(self):

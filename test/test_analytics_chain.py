@@ -54,13 +54,12 @@ class AnalyticsChain(unittest.TestCase):
         raw_data_only = raw_data[:, 1:]
 
         timestamps = raw_data[:, 0]
-        group_input = GroupInput(raw_data=None, timestamps=timestamps)
         # groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         groupers = [YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper]
         #groupers = [MonthGrouper, DayGrouper, HourGrouper]
 
         timer = Timer()
-        data_partitions = np.array([grouper().group(group_input) for grouper in groupers]).T
+        data_partitions = np.array([grouper().group(timestamps=timestamps, raw_data=np.array([])) for grouper in groupers]).T
         timer.tock("partitioning")
 
         groups = group_by_multi_columns(data_partitions)
