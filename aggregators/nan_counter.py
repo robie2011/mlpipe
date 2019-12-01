@@ -1,6 +1,5 @@
 import numpy as np
 from aggregators.abstract_aggregator import AbstractAggregator
-from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput
 
 
@@ -11,11 +10,11 @@ from aggregators.aggregator_output import AggregatorOutput
 # Problem arises if we want to count nans.
 #
 class NanCounter(AbstractAggregator):
-    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
+    def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         # todo:
         # use raw input and calculate where nan is found (index)
         # use intersection with indexes in group
-        nan_values = np.isnan(input_data.grouped_data)
+        nan_values = np.isnan(grouped_data)
 
         # todo: this code is probably correct because we are using masked array. VERIFY.
         return AggregatorOutput(

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import NamedTuple
 import numpy as np
 
 
@@ -9,11 +8,14 @@ class FeatureExtractor:
         pass
 
 
-class WindowedFeatureExtractorInput(NamedTuple):
-    grouped_features: np.ndarray
-
-
 class WindowedFeatureExtractor:
     @abstractmethod
-    def extract(self, data: WindowedFeatureExtractorInput) -> np.ndarray:
+    def extract(self, grouped_features: np.ndarray) -> np.ndarray:
         pass
+
+
+"""
+multiple matrices
+each row contains a sequence data or group data
+"""
+GroupedData = np.ndarray

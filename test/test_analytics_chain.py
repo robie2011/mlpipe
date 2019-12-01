@@ -77,7 +77,6 @@ class AnalyticsChain(unittest.TestCase):
                      Percentile(percentile=.75),
                      FreezedValueCounter(max_freezed_values=10)]
 
-        aggregator_input_data = AggregatorInput(grouped_data=grouped_data)
         aggregator_output_data = np.full(
             (n_groups, len(analyzers), n_sensors),
             fill_value=np.nan,
@@ -85,7 +84,7 @@ class AnalyticsChain(unittest.TestCase):
         )
 
         for i in range(len(analyzers)):
-            aggregator_output_data[:, i, :] = analyzers[i].aggregate(aggregator_input_data).metrics
+            aggregator_output_data[:, i, :] = analyzers[i].aggregate(grouped_data=grouped_data).metrics
         timer.tock("run analyzers")
 
         if DISABLE_EXPORT:

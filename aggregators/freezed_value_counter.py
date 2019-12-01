@@ -1,6 +1,5 @@
 import numpy as np
 from aggregators.abstract_aggregator import AbstractAggregator
-from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput
 
 # todo: Check interesting post
@@ -13,12 +12,12 @@ class FreezedValueCounter(AbstractAggregator):
             raise ValueError(f"max_freezed_values must be greather or equal 0")
         self.max_freezed_values = max_freezed_values
 
-    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
+    def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         freed_indexes_by_sensor = []
-        is_index_freezed3d = np.full(shape=input_data.grouped_data.shape, fill_value=False)
+        is_index_freezed3d = np.full(shape=grouped_data.shape, fill_value=False)
 
         # calculate for each sensor ...
-        for sensor_id in range(input_data.grouped_data.shape[2]):
+        for sensor_id in range(grouped_data.shape[2]):
             # data structure:
             # 2D data: axis0 contains different groups,
             # axis1 contains samples of specific group.
@@ -33,7 +32,7 @@ class FreezedValueCounter(AbstractAggregator):
             #   of 2d matrices (original with different time steps).
             #   We sum up all booleans in snapshot_comparision_result3d along axis=3.
             #   Freezed value is found if sum >= max_freezed_values.
-            sensor: np.ndarray = input_data.grouped_data[:, :, sensor_id]
+            sensor: np.ndarray = grouped_data[:, :, sensor_id]
             n_comparison = self.max_freezed_values
 
             rows, cols = sensor.shape

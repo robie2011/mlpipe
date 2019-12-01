@@ -2,7 +2,6 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 from aggregators import FreezedValueCounter
-from aggregators.aggregator_input import AggregatorInput
 from helpers.data import print_3d_array
 
 sequences = np.array([
@@ -53,8 +52,7 @@ class TestFreezedValues(unittest.TestCase):
             [1, 7]
         ])
 
-        result = FreezedValueCounter(max_freezed_values=3).aggregate(
-            AggregatorInput(grouped_data=group_matrix))
+        result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
 
         assert_array_equal(result_expected, result.metrics)
 
@@ -91,7 +89,6 @@ class TestFreezedValues(unittest.TestCase):
             [1, 7]
         ])
 
-        result = FreezedValueCounter(max_freezed_values=3).aggregate(
-            AggregatorInput(grouped_data=group_matrix))
+        result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
 
         assert_array_equal(result_expected, result.metrics)

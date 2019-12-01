@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from aggregators.aggregator_input import AggregatorInput
+import numpy as np
 from aggregators.aggregator_output import AggregatorOutput
 
 
 class AbstractAggregator(ABC):
     @abstractmethod
-    def aggregate(self, input_data: AggregatorInput) -> AggregatorOutput:
+    def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
 
         """
         input: 3D-Numpy Array

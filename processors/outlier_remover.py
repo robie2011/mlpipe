@@ -2,7 +2,7 @@ import numpy as np
 
 from aggregators.outlier import ColumnLimit
 from processors import AbstractProcessor, ProcessorData
-from aggregators import Outlier, AggregatorInput
+from aggregators import Outlier
 
 
 class OutlierRemover(AbstractProcessor):
@@ -10,9 +10,8 @@ class OutlierRemover(AbstractProcessor):
         self.limits = limits
 
     def process(self, processor_input: ProcessorData) -> ProcessorData:
-        aggregator_input = AggregatorInput(grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0)))
-        #affected_index = Outlier(self.limits).aggregate(aggregator_input).affected_index.sum(axis=2)
-        affected_index = Outlier(self.limits).aggregate(aggregator_input).affected_index
+        affected_index = Outlier(self.limits).aggregate(
+            grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0))).affected_index
         affected_index = np.squeeze(affected_index, axis=0)
         data = processor_input.data.copy()
         data[affected_index == True] = np.nan
