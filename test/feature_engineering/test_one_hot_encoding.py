@@ -1,5 +1,5 @@
 import unittest
-from feature_engineering.one_hot_encoder import OneHotEncoder, RawFeatureExtractorInput, RawFeatureExtractor
+from features.one_hot_encoder import OneHotEncoder, RawFeatureExtractorInput, RawFeatureExtractor
 import numpy as np
 from numpy.testing import assert_array_equal
 

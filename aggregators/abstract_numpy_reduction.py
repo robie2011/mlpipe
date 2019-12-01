@@ -1,4 +1,3 @@
-import numpy as np
 from aggregators.abstract_aggregator import AbstractAggregator
 from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput

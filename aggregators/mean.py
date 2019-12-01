@@ -1,5 +1,5 @@
 import numpy as np
-from aggregators.AbstractNumpyReduction import AbstractNumpyReduction
+from aggregators.abstract_numpy_reduction import AbstractNumpyReduction
 
 
 class Mean(AbstractNumpyReduction):

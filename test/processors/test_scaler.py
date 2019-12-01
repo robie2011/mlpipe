@@ -1,3 +1,5 @@
+import pickle
+
 import numpy as np
 import unittest
 import modelling.scaler as scaler
@@ -13,7 +15,8 @@ class TestScaler(unittest.TestCase):
             full_scaler_name="sklearn.preprocessing.MinMaxScaler")
 
         # need rounding because of float values
-        result_inverse = np.round(result.transformer.inverse_transform(result.data))
+        transformer = pickle.loads(result.transformer_serialized)
+        result_inverse = np.round(transformer.inverse_transform(result.data))
 
         assert_array_equal(test_data, result_inverse)
         print(result.data)

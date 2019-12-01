@@ -1,3 +1,3 @@
 from .datasource import Datasource
 from .abstract_datasource_adapter import AbstractDatasourceAdapter, DataResult
-from .csv_source_adapter import CsvSourceAdapter, EmpaCsvSourceAdapter
+from .empa import EmpaCsvSourceAdapter

@@ -9,6 +9,7 @@ from processors import AbstractProcessor
 
 metaConfig = ["name", "minutes", "generate"]
 
+
 class InputOutputField(TypedDict):
     inputField: str
     outputField: str
@@ -47,7 +48,7 @@ def build(request: AnalyzeRequest):
 
     pipeline = _reduce_pipeline(_extract_pipeline(request))
 
-    return pipeline
+    return source, pipeline
 
 
 def _reduce_pipeline(pipeline: List[Union[AbstractProcessor, SingleAggregation]]) -> Pipeline:

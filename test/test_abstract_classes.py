@@ -12,12 +12,10 @@ class TestAbstractClass(unittest.TestCase):
         self.assertRaises(Exception, Bird)
 
     def test_empa_csv(self):
-        test_csv = str(os.path.dirname(__file__)) + "/sample_empa.csv"
-
-        source = Datasource(name="test", connection_string=test_csv, query=None, cachable=True)
-        adapter = EmpaCsvSourceAdapter()
-        self.assertTrue(adapter.test(source))
-        result = adapter.fetch(source)
+        path_to_file = str(os.path.dirname(__file__)) + "/sample_empa.csv"
+        adapter = EmpaCsvSourceAdapter(pathToFile=path_to_file)
+        self.assertTrue(adapter.test())
+        result = adapter.fetch()
 
         self.assertIsInstance(result, DataResult)
         self.assertEqual(len(result.columns), 11)

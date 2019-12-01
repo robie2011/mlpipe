@@ -1,6 +1,6 @@
 import unittest
-from feature_engineering.interfaces import RawFeatureExtractorInput, RawFeatureExtractor
-from feature_engineering.time_feature_extractor import TimeFeatureExtractor
+from features.interfaces import RawFeatureExtractorInput, RawFeatureExtractor
+from features.time_feature_extractor import TimeFeatureExtractor
 from numpy.testing import assert_array_equal
 import datetime
 import numpy as np

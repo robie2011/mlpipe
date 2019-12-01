@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from .datasource import Datasource
 import numpy as np
 from typing import NamedTuple, List
 
@@ -16,14 +15,11 @@ class DataResult(NamedTuple):
 
 
 class AbstractDatasourceAdapter(ABC):
-    def __init__(self, *args):
-        super(AbstractDatasourceAdapter, self).__init__(*args)
-
     @abstractmethod
-    def test(self, source: Datasource):
+    def test(self):
         pass
 
     @abstractmethod
-    def fetch(self, source: Datasource) -> DataResult:
+    def fetch(self) -> DataResult:
         pass
 

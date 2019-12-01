@@ -1,5 +1,5 @@
 import unittest
-from feature_engineering.sequence_creator import create_sequence_3d
+from features.sequence_creator import create_sequence_3d
 import numpy as np
 from numpy.testing import assert_array_equal
 import aggregators as agg

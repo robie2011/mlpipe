@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-#from aggregators import AggregatorOutput
 from aggregators.aggregator_input import AggregatorInput
 from aggregators.aggregator_output import AggregatorOutput
 
