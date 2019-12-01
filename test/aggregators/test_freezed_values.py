@@ -54,7 +54,7 @@ class TestFreezedValues(unittest.TestCase):
         ])
 
         result = FreezedValueCounter(max_freezed_values=3).aggregate(
-            AggregatorInput(grouped_data=group_matrix, raw_data=None))
+            AggregatorInput(grouped_data=group_matrix))
 
         assert_array_equal(result_expected, result.metrics)
 
@@ -92,6 +92,6 @@ class TestFreezedValues(unittest.TestCase):
         ])
 
         result = FreezedValueCounter(max_freezed_values=3).aggregate(
-            AggregatorInput(grouped_data=group_matrix, raw_data=None))
+            AggregatorInput(grouped_data=group_matrix))
 
         assert_array_equal(result_expected, result.metrics)

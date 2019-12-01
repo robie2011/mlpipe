@@ -1,12 +1,12 @@
 import unittest
-from features.interfaces import RawFeatureExtractorInput, RawFeatureExtractor
+from features.interfaces import FeatureExtractorInput, FeatureExtractor
 from features.time_feature_extractor import TimeFeatureExtractor
 from numpy.testing import assert_array_equal
 import datetime
 import numpy as np
 
 
-test_data = RawFeatureExtractorInput(
+test_data = FeatureExtractorInput(
     timestamps=np.array([
         datetime.datetime(2019, 7, 2, 12, 25),  # tuesday
         datetime.datetime(2019, 8, 3, 20, 45),  # wednesday

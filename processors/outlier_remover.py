@@ -10,7 +10,7 @@ class OutlierRemover(AbstractProcessor):
         self.limits = limits
 
     def process(self, processor_input: ProcessorData) -> ProcessorData:
-        aggregator_input = AggregatorInput(grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0)), raw_data=None)
+        aggregator_input = AggregatorInput(grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0)))
         #affected_index = Outlier(self.limits).aggregate(aggregator_input).affected_index.sum(axis=2)
         affected_index = Outlier(self.limits).aggregate(aggregator_input).affected_index
         affected_index = np.squeeze(affected_index, axis=0)

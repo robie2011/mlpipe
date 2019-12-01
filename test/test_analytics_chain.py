@@ -6,7 +6,7 @@ import helpers.test_data as tdata
 import json
 
 
-# tdata.DEBUG = True
+tdata.DEBUG = True
 DISABLE_EXPORT = True
 
 
@@ -78,7 +78,7 @@ class AnalyticsChain(unittest.TestCase):
                      Percentile(percentile=.75),
                      FreezedValueCounter(max_freezed_values=10)]
 
-        aggregator_input_data = AggregatorInput(grouped_data=grouped_data, raw_data=raw_data)
+        aggregator_input_data = AggregatorInput(grouped_data=grouped_data)
         aggregator_output_data = np.full(
             (n_groups, len(analyzers), n_sensors),
             fill_value=np.nan,

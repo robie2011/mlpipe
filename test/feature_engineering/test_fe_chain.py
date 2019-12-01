@@ -14,7 +14,7 @@ class TestFeatureEngineeringChain(unittest.TestCase):
         print_3d_array(sequence_data)
 
         feature_generators = [agg.Sum(), agg.Mean(), agg.Trend()]
-        data_input = AggregatorInput(grouped_data=sequence_data, raw_data=None)
+        data_input = AggregatorInput(grouped_data=sequence_data)
         features = [g.aggregate(data_input).metrics for g in feature_generators]
         f_out = features[0]
         for f in features[1:]:

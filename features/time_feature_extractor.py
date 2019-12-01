@@ -1,7 +1,7 @@
 import numpy as np
 
 from processors import AbstractProcessor, ProcessorData
-from .interfaces import RawFeatureExtractor, RawFeatureExtractorInput
+from .interfaces import FeatureExtractor
 import pandas as pd
 from typing import Callable
 _ITimeExtractor = Callable[[pd.Series], np.ndarray]

@@ -3,14 +3,9 @@ from typing import NamedTuple
 import numpy as np
 
 
-class RawFeatureExtractorInput(NamedTuple):
-    timestamps: np.ndarray
-    features: np.ndarray
-
-
-class RawFeatureExtractor:
+class FeatureExtractor:
     @abstractmethod
-    def extract(self, data: RawFeatureExtractorInput) -> np.ndarray:
+    def extract(self, timestamps: np.ndarray, features: np.ndarray) -> np.ndarray:
         pass
 
 
