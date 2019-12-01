@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from processors import Resampler, ProcessorData
+from processors import Resampler, StandardDataFormat
 
 
 class TestResampler(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestResampler(unittest.TestCase):
         data = np.random.random((rows, 3)) * 100
         data.flags.writeable = False
 
-        processor_data = ProcessorData(
+        processor_data = StandardDataFormat(
             labels=["temperatur", "feuchtigkeit", "preis"],
             data=data,
             timestamps=timestamps

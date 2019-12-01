@@ -14,7 +14,7 @@ class TestOutlierRemover(unittest.TestCase):
         ], dtype="float64")
         data.flags.writeable = False
 
-        input_data = ProcessorData(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
+        input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
         limits = [{}, {}]
         result = OutlierRemover(limits=limits).process(input_data)
         assert_array_equal(data, result.data)
@@ -26,7 +26,7 @@ class TestOutlierRemover(unittest.TestCase):
         ], dtype="float64")
         data.flags.writeable = False
 
-        input_data = ProcessorData(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
+        input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
         limits = [
             {},
             {'min': 28}
@@ -45,7 +45,7 @@ class TestOutlierRemover(unittest.TestCase):
         ], dtype="float64")
         data.flags.writeable = False
 
-        input_data = ProcessorData(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
+        input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
         limits = [
             {'max': 9},
             {}
@@ -64,7 +64,7 @@ class TestOutlierRemover(unittest.TestCase):
         ], dtype="float64")
         data.flags.writeable = False
 
-        input_data = ProcessorData(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
+        input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
         limits = [
             {'min': 11},
             {'max': 30}

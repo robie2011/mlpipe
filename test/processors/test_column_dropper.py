@@ -13,13 +13,13 @@ class TestColumnDropper(unittest.TestCase):
         data = np.random.random((5, 3))
         data.flags.writeable = False
 
-        processor_data = ProcessorData(
+        processor_data = StandardDataFormat(
             labels=["preis", "temperatur", "feuchtigkeit"],
             timestamps=timestamps[:5],
             data=data
         )
 
-        result_expected = ProcessorData(
+        result_expected = StandardDataFormat(
             labels=["preis", "feuchtigkeit"],
             timestamps=timestamps[:5],
             data=processor_data.data[:, [0, 2]]

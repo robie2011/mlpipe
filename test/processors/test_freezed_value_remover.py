@@ -31,7 +31,7 @@ class TestFreezedValueRemover(unittest.TestCase):
             [17, np.nan],
             [18, np.nan]
         ], dtype='float')
-        processor_data = ProcessorData(
+        processor_data = StandardDataFormat(
             timestamps=helper_data.generate_timestamps(samples=data.shape[0]),
             labels=helper_data.get_labels(2),
             data=data

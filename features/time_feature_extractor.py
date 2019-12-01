@@ -1,6 +1,6 @@
 import numpy as np
 
-from processors import AbstractProcessor, ProcessorData
+from processors import AbstractProcessor, StandardDataFormat
 from .interfaces import FeatureExtractor
 import pandas as pd
 from typing import Callable
@@ -23,5 +23,5 @@ class TimeFeatureExtractor(AbstractProcessor):
 
         self._extractor: _ITimeExtractor = search[0]
 
-    def process(self, processor_input: ProcessorData) -> ProcessorData:
+    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         return self._extractor(pd.Series(processor_input.timestamps))

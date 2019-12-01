@@ -1,6 +1,6 @@
 import unittest
 import os
-from datasources import AbstractDatasourceAdapter, EmpaCsvSourceAdapter, Datasource, DataResult
+from datasources import AbstractDatasourceAdapter, EmpaCsvSourceAdapter, DataResult
 import numpy as np
 
 
