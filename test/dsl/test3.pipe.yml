@@ -13,21 +13,21 @@ pipeline:
     columns:
     - abc
   - name: aggregators.Max
-    minutes: 10
+    sequence: 10
     generate:
     - input: temp1
       output: tempMax
     - input: temp2
       output: temp2Max
   - name: aggregators.Trend
-    minutes: 10
+    sequence: 10
     generate:
     - input: temp1
       output: tempTrend
     - input: temp2
       output: temp2Trend
   - name: aggregators.Min
-    minutes: 10
+    sequence: 10
     generate:
     - inputField: temp
       outputField: tempMin
@@ -37,7 +37,7 @@ pipeline:
     columns:
     - abc
   - name: aggregators.Trend
-    minutes: 10
+    sequence: 10
     generate:
     - input: temp1
       output: tempMax

@@ -1,6 +1,5 @@
 from importlib import import_module
 from inspect import getmro
-from typing import Type
 
 
 class NotImplementedBaseClass(Exception):

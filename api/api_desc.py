@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, TypedDict, Optional
+from typing import List, Dict, TypedDict, Optional
 
 
 # class ClassConfig(TypedDict, Dict):
@@ -40,4 +40,4 @@ class CreatePipeRequest(TypedDict):
 # TOOD: not finished
 class ModelTrainRequest:
     pipelineName: str
-    model: object #todo: include generic modell
+    model: object  # todo: include generic modell

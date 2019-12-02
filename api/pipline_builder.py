@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Tuple, TypedDict, Union, Optional
-
+from typing import List, TypedDict, Union
 from aggregators import AbstractAggregator
 from api.api_desc import AnalyzeRequest
-from api.class_loader import load, create_instance
-from datasources.empa import EmpaCsvReader
+from api.class_loader import create_instance
 from processors import AbstractProcessor
 
 metaConfig = ["name", "minutes", "generate"]
@@ -17,18 +15,18 @@ class InputOutputField(TypedDict):
 
 @dataclass
 class SingleAggregation:
-    minutes: int
+    sequence: int
     instance: AbstractAggregator
     generate: List[InputOutputField]
 
 
 @dataclass
-class MultiAggregation:
-    minutes: int
+class MultiAggregationConfig:
+    sequence: int
     instances: List[SingleAggregation]
 
 
-Pipeline = List[Union[AbstractProcessor, MultiAggregation]]
+Pipeline = List[Union[AbstractProcessor, MultiAggregationConfig]]
 
 
 def _get_config(key_values: dict):
@@ -55,8 +53,8 @@ def _reduce_pipeline(pipeline: List[Union[AbstractProcessor, SingleAggregation]]
     reduced_pipeline = []
 
     if isinstance(pipeline[0], SingleAggregation):
-        reduced_pipeline.append(MultiAggregation(
-            minutes=pipeline[0].minutes,
+        reduced_pipeline.append(MultiAggregationConfig(
+            minutes=pipeline[0].sequence,
             instances=[pipeline[0]]
         ))
     else:
@@ -66,12 +64,12 @@ def _reduce_pipeline(pipeline: List[Union[AbstractProcessor, SingleAggregation]]
         current_pipe = pipeline[i]
         is_aggregation = isinstance(current_pipe, SingleAggregation)
         if (is_aggregation
-                and isinstance(reduced_pipeline[-1], MultiAggregation)
-                and reduced_pipeline[-1].minutes == current_pipe.minutes):
+                and isinstance(reduced_pipeline[-1], MultiAggregationConfig)
+                and reduced_pipeline[-1].n_sequence == current_pipe.sequence):
             reduced_pipeline[-1].instances.append(current_pipe)
         elif is_aggregation:
             reduced_pipeline.append(
-                MultiAggregation(minutes=current_pipe.minutes, instances=[current_pipe])
+                MultiAggregationConfig(minutes=current_pipe.sequence, instances=[current_pipe])
             )
         else:
             reduced_pipeline.append(current_pipe)
