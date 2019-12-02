@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Union
+
+from processors import StandardDataFormat
 
 
 class AggregatorInput(NamedTuple):
@@ -16,10 +18,10 @@ class DataResult(NamedTuple):
 
 class AbstractDatasourceAdapter(ABC):
     @abstractmethod
-    def test(self):
+    def test(self) -> Union[bool, str]:
         pass
 
     @abstractmethod
-    def fetch(self) -> DataResult:
+    def fetch(self) -> StandardDataFormat:
         pass
 

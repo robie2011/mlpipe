@@ -1,5 +1,5 @@
 from aggregators import Max, Min
-from api.pipe_executor import run_multi_aggregation
+from api.pipeline_executor import run_multi_aggregation
 import numpy as np
 import unittest
 from datetime import datetime, timedelta
@@ -45,7 +45,7 @@ class TestMultiAggregation(unittest.TestCase):
             ]
         )
 
-        result = run_multi_aggregation(data2d=data, definition=multi)
+        result = run_multi_aggregation(data2d=data, config=multi)
         self.assertEqual(data.labels + ["temp1Max", "temp1Min"], result.labels)
         assert_array_equal(data.timestamps, result.timestamps)
         assert_array_equal(np.full((4, 2), fill_value=np.nan), result.data[:4, [2, 3]])

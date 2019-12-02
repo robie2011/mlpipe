@@ -1,3 +1,4 @@
+from processors import StandardDataFormat
 from .abstract_datasource_adapter import AbstractDatasourceAdapter, DataResult
 import pandas as pd
 from datetime import datetime
@@ -13,9 +14,9 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
         if os.path.isfile(self.pathToFile):
             return True
         else:
-            raise Exception("File not found")
+            return "File not found " + self.pathToFile
 
-    def fetch(self) -> DataResult:
+    def fetch(self) -> StandardDataFormat:
         data = pd.read_csv(
             self.pathToFile,
             sep=',',
@@ -24,5 +25,8 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
         timestamps = data['_TIMESTAMP'].values
         data = data.drop(labels='_TIMESTAMP', axis=1)
         values = data.values
-        return DataResult(values=values, timestamps=timestamps, columns=data.columns)
+        return StandardDataFormat(
+            labels=list(map(lambda x: x.strip(), data.columns.values.tolist())),
+            data=values,
+            timestamps=timestamps)
 

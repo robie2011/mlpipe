@@ -1,48 +1,37 @@
 source:
-  name: datasources.empa.EmpaCsvReader
-  pathToFile: c:/tmp/test.csv
+  name: datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: /Users/robert.rajakone/repos/2019_p9/code/test/dsl/testinput.csv
 
 sourceFields:
-  - feld1 as temp1
-  - feld2 as temp2
-  - temp1max
-
+  - abc1 as temp1
+  - abc2 as temp2
 
 pipeline:
-  - name: processors.ColumnDropper
-    columns:
-    - abc
   - name: aggregators.Max
-    sequence: 10
+    sequence: 5
     generate:
-    - input: temp1
-      output: tempMax
-    - input: temp2
-      output: temp2Max
+    - inputField: temp1
+      outputField: tempMax
+    - inputField: temp2
+      outputField: temp2Max
   - name: aggregators.Trend
-    sequence: 10
+    sequence: 5
     generate:
-    - input: temp1
-      output: tempTrend
-    - input: temp2
-      output: temp2Trend
+    - inputField: temp1
+      outputField: tempTrend
+    - inputField: temp2
+      outputField: temp2Trend
   - name: aggregators.Min
-    sequence: 10
+    sequence: 5
     generate:
-    - inputField: temp
+    - inputField: temp1
       outputField: tempMin
   - name: features.TimeFeatureExtractor
     extract: hour
-  - name: processors.ColumnDropper
-    columns:
-    - abc
-  - name: aggregators.Trend
-    sequence: 10
-    generate:
-    - input: temp1
-      output: tempMax
-    - input: temp2
-      output: temp2Max
+    output_field: hourExtracted
+#  - name: processors.ColumnDropper
+#    columns:
+#    - temp1
 
 analyzer:
   groupBy:

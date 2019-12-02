@@ -23,8 +23,10 @@ class TimeFeatureExtractor(AbstractProcessor):
         self._extractor: _ITimeExtractor = search[0]
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+        time_extracted = self._extractor(pd.Series(processor_input.timestamps)).reshape(-1, 1)
+        data = np.hstack((processor_input.data, time_extracted))
         return StandardDataFormat(
             labels=processor_input.labels + [self.output_field],
             timestamps=processor_input.timestamps,
-            data=self._extractor(pd.Series(processor_input.timestamps))
+            data=data
         )
