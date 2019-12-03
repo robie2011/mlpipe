@@ -1,10 +1,10 @@
 from aggregators import Max, Min
-from api.pipeline_executor import run_multi_aggregation
+from api.pipeline_executor import execute_multi_aggregation
 import numpy as np
 import unittest
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from api.pipline_builder import MultiAggregationConfig, SingleAggregation
+from api.pipline_builder import MultiAggregationConfig, SingleAggregationConfig
 from processors import StandardDataFormat
 
 
@@ -28,14 +28,14 @@ class TestMultiAggregation(unittest.TestCase):
         multi = MultiAggregationConfig(
             sequence=5,  # todo: use sequence instead minutes
             instances=[
-                SingleAggregation(
+                SingleAggregationConfig(
                     sequence=5,
                     instance=Max(),
                     generate=[
                         {"inputField": "temp1", "outputField": "temp1Max"}
                     ]
                 ),
-                SingleAggregation(
+                SingleAggregationConfig(
                     sequence=5,
                     instance=Min(),
                     generate=[
@@ -45,7 +45,7 @@ class TestMultiAggregation(unittest.TestCase):
             ]
         )
 
-        result = run_multi_aggregation(data2d=data, config=multi)
+        result = execute_multi_aggregation(data2d=data, config=multi)
         self.assertEqual(data.labels + ["temp1Max", "temp1Min"], result.labels)
         assert_array_equal(data.timestamps, result.timestamps)
         assert_array_equal(np.full((4, 2), fill_value=np.nan), result.data[:4, [2, 3]])

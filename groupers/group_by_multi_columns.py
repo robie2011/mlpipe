@@ -13,7 +13,7 @@ def group_by_multi_columns(xxs: np.ndarray) -> Sequence[CombinedGroup]:
     groups = []
 
     for name, group in df.groupby(by=list(df.columns), axis=0):
-        indexes = np.array(group.index)
+        indexes = np.array(group.index, dtype='int')
         indexes.flags.writeable = False
         groups.append(CombinedGroup(
             group_id=name,

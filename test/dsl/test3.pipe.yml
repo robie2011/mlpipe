@@ -29,14 +29,14 @@ pipeline:
   - name: features.TimeFeatureExtractor
     extract: hour
     output_field: hourExtracted
-#  - name: processors.ColumnDropper
-#    columns:
-#    - temp1
 
-analyzer:
+
+analyze:
   groupBy:
-    - month
-    - year
+    - name: groupers.YearGrouper
+    - name: groupers.MonthGrouper
   metrics:
     - name: aggregators.Max
     - name: aggregators.Min
+    - name: aggregators.Percentile
+      percentile: .75

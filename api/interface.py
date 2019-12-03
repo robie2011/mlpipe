@@ -15,26 +15,27 @@ from typing import List, Dict, TypedDict, Optional
 #   input/output fields:
 #       - aggregator will get only releveant fields
 #       - after aggregation we should name these fields correctly
-ClassConfig = Dict
-PipelineConfig = List[ClassConfig]
+ClassDescription = Dict
+PipelineDescription = List[ClassDescription]
 
 
-class AnalyzerConfig(TypedDict):
+class AnalyzeDescription(TypedDict):
     groupBy: List[str]
-    metrics: List[ClassConfig]
+    metrics: List[ClassDescription]
 
 
 class AnalyzeRequest(TypedDict):
-    source: ClassConfig
+    source: ClassDescription
     sourceFields: List[str]
-    pipeline: Optional[PipelineConfig]
-    analyze: AnalyzerConfig
+    pipeline: Optional[PipelineDescription]
+    analyze: AnalyzeDescription
 
 
 class CreatePipeRequest(TypedDict):
-    source: ClassConfig
+    source: ClassDescription
+    sourceFields: List[str]
     name: str
-    pipeline: PipelineConfig
+    pipeline: PipelineDescription
 
 
 # TOOD: not finished
