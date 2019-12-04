@@ -43,7 +43,10 @@ class MyTestCase(unittest.TestCase):
         print(data.labels)
         print(data.timestamps)
         print(data.data)
-        print(metrics)
+        for k,v in metrics.meta.__dict__.items():
+            print("")
+            print(k + ":")
+            print(v)
 
 
 

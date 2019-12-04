@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import List
-
 import numpy as np
 from api.pipeline_builder_interface import AnalyzerConfig
-from groupers import group_by_multi_columns, CombinedGroup
+from groupers import group_by_multi_columns, CombinedGroup, AbstractGrouper
 from processors import StandardDataFormat
 import logging
+from utils import get_qualified_name
 
 logger = logging.getLogger("pipeline.executor.analytics")
 
@@ -15,6 +15,7 @@ class AnalyticsResultMeta:
     sensors: List[str]
     metrics: List[str]
     groupers: List[str]
+    groups: List[List[int]]
     prettyGroupnames: List[str]
 
 
@@ -26,7 +27,7 @@ class AnalyticsResult:
 
 def execute_analytics(input_data: StandardDataFormat, config: AnalyzerConfig):
     logger.info("start analysis")
-    logger.debug("grouping: {0}".format(", ".join(map(lambda x: x.__class__.__name__, config.group_by))))
+    logger.debug("grouping: {0}".format(", ".join(map(get_qualified_name, config.group_by))))
     data_partitions = np.array([
         g.group(timestamps=input_data.timestamps, raw_data=input_data.data)
         for g in config.group_by
@@ -45,17 +46,19 @@ def execute_analytics(input_data: StandardDataFormat, config: AnalyzerConfig):
 
     for i in range(len(config.aggregators)):
         aggreagtor = config.aggregators[i]
-        logger.debug("aggregate using: {0}".format(aggreagtor.__class__.__name__))
+        logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
         output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data).metrics
 
     group_ids = np.array(list(map(lambda x: list(x.group_id), groups))).tolist()
-    # AnalyticsResultMeta(
-    #     groups=group_ids,
-    #     sensors=input_data.labels,
-    #     metrics=
-    # )
+    meta = AnalyticsResultMeta(
+        sensors=input_data.labels,
+        metrics=list(map(get_qualified_name, config.aggregators)),
+        groupers=list(map(get_qualified_name, config.group_by)),
+        groups=group_ids,
+        prettyGroupnames=list(map(lambda x: x.get_pretty_group_names() , config.group_by))
+    )
 
-    return output
+    return AnalyticsResult(meta=meta, metrics=output)
 
 
 def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):

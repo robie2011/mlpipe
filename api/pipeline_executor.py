@@ -8,6 +8,7 @@ from groupers import CombinedGroup
 from processors import StandardDataFormat, AbstractProcessor
 import logging
 import numpy as np
+from utils import get_qualified_name
 
 logger = logging.getLogger("pipeline.executor")
 
@@ -52,7 +53,7 @@ def execute_pipeline(build_config: BuildConfig):
 
 def execute_multi_aggregation(data2d: StandardDataFormat, config: MultiAggregationConfig) -> StandardDataFormat:
     logger.debug("execute multi aggregation with instances of={0}".format(
-        list(map(lambda x: x.instance.__class__.__name__, config.instances)))
+        list(map(get_qualified_name, config.instances)))
     )
     aggregation_data = MultiAggregationDataFormat(data=data2d, sequence=config.sequence)
     collector = MultiAggregationResultCollector(data2d.data)

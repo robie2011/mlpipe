@@ -1,6 +1,7 @@
 from importlib import import_module
 from inspect import getmro
 from typing import List
+from utils import get_qualified_name
 
 
 class NotImplementedBaseClass(Exception):
@@ -10,7 +11,7 @@ class NotImplementedBaseClass(Exception):
         Exception.__init__(self)
 
     def __str__(self):
-        return "try to load: " + self.class_to_load + ". Missing bases: " + ", ".join(map(lambda x: x.__name__, self.missing_base_classes))
+        return "try to load: " + self.class_to_load + ". Missing bases: " + ", ".join(map(get_qualified_name, self.missing_base_classes))
 
 
 def load(qualified_name: str, assert_base_classes=[]):
