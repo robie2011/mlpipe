@@ -1,5 +1,8 @@
 import unittest
 from os.path import join,  dirname
+from typing import List
+import jsonpickle.ext.numpy as jsonpickle_numpy
+import jsonpickle
 import yaml
 import pprint
 from api import execute_pipeline
@@ -9,6 +12,7 @@ import numpy as np
 import sys
 from api.pipline_builder import logger as builder_logger
 from api.pipeline_executor import logger as executor_logger
+import json
 
 
 stream_handler = logging.StreamHandler(sys.stdout)
@@ -48,7 +52,41 @@ class MyTestCase(unittest.TestCase):
             print(k + ":")
             print(v)
 
+    def test_json_encoding(self):
+        a = np.array([2.3, 34.123, np.nan, 23])
+        a = a.tolist()
+        a = [
+            [23, 41, 2, np.nan],
+            [123, 4, np.nan, 23]
+        ]
 
+        def recursive_nan_mapping(o):
+            if isinstance(o, list):
+                return list(map(recursive_nan_mapping, o))
+
+            return None if isinstance(o, float) and np.isnan(o) else o
+
+
+        print(list(map(recursive_nan_mapping, a)))
+
+        #print(jsonpickle.dumps(a.tolist(), unpicklable=False))
+
+
+    def test_json_encoding_jsonpickle(self):
+        jsonpickle.set_preferred_backend('simplejson')
+        jsonpickle.set_encoder_options('simplejson', ignore_nan=True)
+        jsonpickle_numpy.register_handlers()
+        a = np.array([2.3, 34.123, np.nan, 23])
+        a = a.tolist()
+        a = [
+            [23, 41, 2, np.nan],
+            [123, 4, np.nan, 23]
+        ]
+        b = np.array(a)
+
+        print(jsonpickle.encode({'float': float('NaN')}))
+
+        print(jsonpickle.encode(b, unpicklable=False))
 
 if __name__ == '__main__':
     unittest.main()

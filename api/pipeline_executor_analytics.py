@@ -6,6 +6,7 @@ from groupers import group_by_multi_columns, CombinedGroup, AbstractGrouper
 from processors import StandardDataFormat
 import logging
 from utils import get_qualified_name
+import json
 
 logger = logging.getLogger("pipeline.executor.analytics")
 
@@ -18,11 +19,10 @@ class AnalyticsResultMeta:
     groups: List[List[int]]
     prettyGroupnames: List[str]
 
-
 @dataclass
 class AnalyticsResult:
     meta: AnalyticsResultMeta
-    metrics: np.ndarray
+    metrics: List[List[float]]
 
 
 def execute_analytics(input_data: StandardDataFormat, config: AnalyzerConfig):
@@ -58,7 +58,10 @@ def execute_analytics(input_data: StandardDataFormat, config: AnalyzerConfig):
         prettyGroupnames=list(map(lambda x: x.get_pretty_group_names() , config.group_by))
     )
 
-    return AnalyticsResult(meta=meta, metrics=output)
+    return AnalyticsResult(
+        meta=meta,
+        metrics=output.tolist()
+    )
 
 
 def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):
