@@ -1,7 +1,6 @@
 import uuid
 import json
 from os.path import basename
-
 import pandas as pd
 from api.interface import CreatePipelineRequest
 from processors import StandardDataFormat
@@ -9,6 +8,8 @@ import os.path
 from storage import meta_info
 import io
 import zipfile
+
+# Possible Improvement for file handling: https://docs.pyfilesystem.org/en/latest/index.html
 
 PATH_PACKAGE = "/tmp/mlpipe/packages"
 NAME_DATA_FILE = "data.pickle"

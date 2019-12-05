@@ -1,6 +1,5 @@
 import random
 import sqlite3
-
 import flask
 import jsonpickle
 import jsonpickle.ext.numpy as jsonpickle_numpy
@@ -20,7 +19,7 @@ jsonpickle.set_encoder_options('simplejson', ignore_nan=True)
 jsonpickle_numpy.register_handlers()
 
 
-def get_or_default(o: object, key: str, default):
+def get_or_default(o: dict, key: str, default):
     if key in o:
         return o[key]
     else:
@@ -48,7 +47,7 @@ def exclude_property(key_values: dict, exclude=[], rename=[]):
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Server Online'
 
 
 @app.route('/api/data', methods=['POST'])
@@ -72,7 +71,7 @@ def data_pack():
         e: sqlite3.IntegrityError = e
         if e.args[0] == "UNIQUE constraint failed: meta.category, meta.name":
             return response_json(
-                response="choose namen is already taken: {0}".format(name),
+                response="choose name is already taken: {0}".format(name),
                 status=500)
         return response_json(response=e, status=500)
 

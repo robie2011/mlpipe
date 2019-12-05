@@ -1,3 +1,6 @@
+import os
+
+
 def get_qualified_name(o: object):
     # https://stackoverflow.com/questions/2020014/get-fully-qualified-class-name-of-an-object-in-python
     # o.__module__ + "." + o.__class__.__qualname__ is an example in
@@ -12,3 +15,8 @@ def get_qualified_name(o: object):
         return o.__class__.__name__  # Avoid reporting __builtin__
     else:
         return module + '.' + o.__class__.__name__
+
+
+def get_dir(join_to_root_path=[]):
+    root = os.path.dirname(__file__)
+    return str(os.path.join(root, *join_to_root_path))

@@ -4,6 +4,8 @@ datapackage: customDataPackage
 
 # validation: get sourceField information from pipeline
 
+predictionField: temperatur2
+
 preprocessing:
   # or select fields
   dropFields:
