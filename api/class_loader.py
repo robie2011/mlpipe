@@ -17,7 +17,12 @@ class NotImplementedBaseClass(Exception):
 def load(qualified_name: str, assert_base_classes=[]):
     module_name = '.'.join(qualified_name.split('.')[:-1])
     class_name = qualified_name.split('.')[-1]
-    mod = import_module(module_name)
+    try:
+        mod = import_module(module_name)
+    except Exception as e:
+        print("can not load: " + qualified_name)
+        raise e
+
     clazz = getattr(mod, class_name)
     if assert_base_classes:
         base_classes = getmro(clazz)

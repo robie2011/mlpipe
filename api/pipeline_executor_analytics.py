@@ -19,6 +19,7 @@ class AnalyticsResultMeta:
     groups: List[List[int]]
     prettyGroupnames: List[str]
 
+
 @dataclass
 class AnalyticsResult:
     meta: AnalyticsResultMeta

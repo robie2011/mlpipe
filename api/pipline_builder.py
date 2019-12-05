@@ -1,6 +1,6 @@
 from typing import List, TypedDict, Union, Optional
 from aggregators import AbstractAggregator
-from api.interface import AnalyzeRequest, PipelineDescription, CreatePipeRequest
+from api.interface import AnalyzeRequest, PipelineDescription, CreatePipelineRequest, CreateOrAnalyzePipeline
 from api.class_loader import create_instance
 from groupers import AbstractGrouper
 from processors import AbstractProcessor
@@ -17,7 +17,7 @@ def get_component_config(key_values: dict):
     return {k: v for (k, v) in key_values.items() if k not in meta_config}
 
 
-def build(request: Union[AnalyzeRequest, CreatePipeRequest]):
+def build(request: CreateOrAnalyzePipeline):
     logger.debug("build request received. structure: \n" + yaml.dump(request))
     source_definition = request['source']
 

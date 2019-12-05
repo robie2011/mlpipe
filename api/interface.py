@@ -1,5 +1,4 @@
-from typing import List, Dict, TypedDict, Optional
-
+from typing import List, Dict, TypedDict, Optional, Union
 
 # class ClassConfig(TypedDict, Dict):
 #     qualified_name: str
@@ -24,18 +23,17 @@ class AnalyzeDescription(TypedDict):
     metrics: List[ClassDescription]
 
 
-class AnalyzeRequest(TypedDict):
+class CreatePipelineRequest(TypedDict):
     source: ClassDescription
     sourceFields: List[str]
-    pipeline: Optional[PipelineDescription]
+    pipeline: PipelineDescription
+
+
+class AnalyzeRequest(CreatePipelineRequest):
     analyze: AnalyzeDescription
 
 
-class CreatePipeRequest(TypedDict):
-    source: ClassDescription
-    sourceFields: List[str]
-    name: str
-    pipeline: PipelineDescription
+CreateOrAnalyzePipeline = Union[AnalyzeRequest, CreatePipelineRequest]
 
 
 # TOOD: not finished

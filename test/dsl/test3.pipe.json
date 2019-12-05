@@ -1,0 +1,78 @@
+{
+  "source": {
+    "name": "datasources.empa.EmpaCsvSourceAdapter",
+    "pathToFile": "/Users/robert.rajakone/repos/2019_p9/code/test/dsl/testinput.csv"
+  },
+  "sourceFields": [
+    "abc1 as temp1",
+    "abc2 as temp2"
+  ],
+  "pipelineName": "test",
+  "pipeline": [
+    {
+      "name": "aggregators.Max",
+      "sequence": 5,
+      "generate": [
+        {
+          "inputField": "temp1",
+          "outputField": "tempMax"
+        },
+        {
+          "inputField": "temp2",
+          "outputField": "temp2Max"
+        }
+      ]
+    },
+    {
+      "name": "aggregators.Trend",
+      "sequence": 5,
+      "generate": [
+        {
+          "inputField": "temp1",
+          "outputField": "tempTrend"
+        },
+        {
+          "inputField": "temp2",
+          "outputField": "temp2Trend"
+        }
+      ]
+    },
+    {
+      "name": "aggregators.Min",
+      "sequence": 5,
+      "generate": [
+        {
+          "inputField": "temp1",
+          "outputField": "tempMin"
+        }
+      ]
+    },
+    {
+      "name": "features.TimeFeatureExtractor",
+      "extract": "hour",
+      "output_field": "hourExtracted"
+    }
+  ],
+  "analyze": {
+    "groupBy": [
+      {
+        "name": "groupers.YearGrouper"
+      },
+      {
+        "name": "groupers.MonthGrouper"
+      }
+    ],
+    "metrics": [
+      {
+        "name": "aggregators.Max"
+      },
+      {
+        "name": "aggregators.Min"
+      },
+      {
+        "name": "aggregators.Percentile",
+        "percentile": 0.75
+      }
+    ]
+  }
+}

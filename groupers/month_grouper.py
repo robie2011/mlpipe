@@ -9,6 +9,7 @@ class MonthGrouper(AbstractGrouper):
 
     def get_pretty_group_names(self) -> [str]:
         return [
+            "N/A Zero Month do not exists",
             "January",
             "February",
             "March",

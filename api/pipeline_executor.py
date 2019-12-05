@@ -1,4 +1,7 @@
-from api.pipeline_executor_analytics import execute_analytics
+from dataclasses import dataclass
+from typing import Optional
+
+from api.pipeline_executor_analytics import execute_analytics, AnalyticsResult
 from api.pipeline_executor_interface import \
     MultiAggregationDataFormat, \
     MultiAggregationResultCollector, \
@@ -11,6 +14,12 @@ import numpy as np
 from utils import get_qualified_name
 
 logger = logging.getLogger("pipeline.executor")
+
+
+@dataclass
+class ExecutionResult:
+    pipeline_data: StandardDataFormat
+    analytics: Optional[AnalyticsResult]
 
 
 def execute_pipeline(build_config: BuildConfig):
@@ -48,7 +57,10 @@ def execute_pipeline(build_config: BuildConfig):
         analytics_data = execute_analytics(input_data=data, config=build_config.analyzer)
         # todo: see test/test_analytics_chain.py, line: 94ff
 
-    return data, analytics_data
+    return ExecutionResult(
+        pipeline_data=data,
+        analytics=analytics_data
+    )
 
 
 def execute_multi_aggregation(data2d: StandardDataFormat, config: MultiAggregationConfig) -> StandardDataFormat:
