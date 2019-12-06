@@ -1,10 +1,12 @@
 from dataclasses import dataclass
-from typing import Optional, List
-from api.interface import ClassDescription
+from typing import Optional, List, TypedDict
+
+from workflows.interface import ClassDescription
 
 
 class PreprocessingDescription(TypedDict):
-    dropFields: Optional[List[str]]
+    predictionSourceFields: List[str]
+    predictionTargetField: str
     scale: Optional[List[ClassDescription]]
     create3dSequence: Optional[int]
     shuffle: Optional[bool]

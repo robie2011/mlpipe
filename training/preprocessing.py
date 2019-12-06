@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 from config import get_config
 from sklearn.model_selection import train_test_split
-from api.class_loader import create_instance
+from workflows.utils import create_instance
 from processors import StandardDataFormat, ColumnDropper
 from training.interface import PreprocessingDescription
 import logging
@@ -30,6 +30,7 @@ class PreprocessedTrainingData:
     X_test: np.ndarray
     y_test: np.ndarray
     request_hash: str
+    scalers: List[object]
 
 
 def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str] = []):
@@ -42,28 +43,11 @@ def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str
     return list(map(lambda x: x[0], result)), list(map(lambda x: x[1], result))
 
 
-def _backup_scaler(training_id: str, sequence_no: int, scaler_name: str, scaler):
-    config = get_config()
-    filename = "{0}_{1}.scaler.pickle".format(str(sequence_no), scaler_name)
-    path_to_file = os.path.join(config.dir_training, training_id, filename)
-    pickle.dump(scaler, path_to_file)
-
-
-def _columns(labels: List[str], prediction_field: str):
-    id_and_name = [(ix, name) for ix, name in enumerate(labels)]
-    signals = filter(lambda ix, name: name != prediction_field, id_and_name)
-
-    ix_prediction = list(filter(lambda ix, name: name == prediction_field, id_and_name))[0][0]
-
-    ix_signals = list(map(lambda ix, name: ix, signals))
-    label_signals = list(map(lambda ix, name: name, signals))
-
-    return _ColumnsMeta(
-        label_prediction=prediction_field,
-        ix_prediction=ix_prediction,
-        label_signals=label_signals,
-        ix_signals=ix_signals
-    )
+# def _backup_scaler(training_id: str, sequence_no: int, scaler_name: str, scaler):
+#     config = get_config()
+#     filename = "{0}_{1}.scaler.pickle".format(str(sequence_no), scaler_name)
+#     path_to_file = os.path.join(config.dir_training, training_id, filename)
+#     pickle.dump(scaler, path_to_file)
 
 
 def create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:
@@ -100,10 +84,16 @@ def _get_request_hash(request: PreprocessingDescription):
 
 
 def run_preprocessing(
-        training_id: str,
         input_data: StandardDataFormat,
         request: PreprocessingDescription,
-        prediction_field: str):
+        pretrained_scalers=[]):
+    """
+    todo: validation: Sind alle felder, welche ausgewählt worden sind bei Source vorhanden ? Inkl. TargetField
+
+    :param input_data:
+    :param request:
+    :return:
+    """
 
     pipeline_hash = _get_request_hash(request)
     cached_file = os.path.join(get_config().dir_tmp, "data_preprocessed_{0}.zip".format(pipeline_hash))
@@ -111,10 +101,17 @@ def run_preprocessing(
         logger.info("Cached file found. Will be returned.")
         return pickle.load(cached_file)
 
+    cols_with_index = list(enumerate(input_data.labels))
+    ix_prediction_target = next(ix for ix, name in cols_with_index if name == request.predictionTargetField)
+    ix_prediction_sources = [ix for ix, name in cols_with_index if name in request.predictionSourceFields]
+    input_data.data = input_data.data[:, ix_prediction_sources + [ix_prediction_target]]
+    input_data.labels = request.predictionSourceFields + [request.predictionTargetField]
+
     if 'dropFields' in request:
         logger.debug("drop fields: {0}".format(", ".join(request.dropFields)))
         input_data = ColumnDropper(columns=request.dropFields).process(input_data)
 
+    scalers_parameterized = []
     if 'scale' in request:
         for i in range(len(request['scale'])):
             scale_request = request['scale'][i]
@@ -129,9 +126,14 @@ def run_preprocessing(
             ix_col_selected, name_col_selected = _map_indexes(source=input_data.labels, selection=fields)
             partial_data = input_data.data[:, ix_col_selected]
 
-            scaler = create_instance(qualified_name=qualified_classname, kwargs=scale_request)
-            input_data.data[:, ix_col_selected] = scaler.fit_transform(partial_data)
-            _backup_scaler(training_id=training_id, sequence_no=i, scaler_name=qualified_classname, scaler=scaler, )
+            if pretrained_scalers:
+                scaler = pretrained_scalers[i]
+                input_data.data[:, ix_col_selected] = scaler.transform(partial_data)
+            else:
+                scaler = create_instance(qualified_name=qualified_classname, kwargs=scale_request)
+                input_data.data[:, ix_col_selected] = scaler.fit_transform(partial_data)
+
+            scalers_parameterized.append(scaler)
 
     if 'shuffle' in request:
         logger.debug("shuffle data")
@@ -148,8 +150,7 @@ def run_preprocessing(
         'ratioTestdata' in request
     ))
 
-    columns_meta = _columns(labels=input_data.labels, prediction_field=prediction_field)
-    X, y = input_data.data[:, columns_meta.ix_signals], input_data.data[:, columns_meta.ix_prediction]
+    X, y = input_data.data[:, ix_prediction_sources], input_data.data[:, ix_prediction_target]
 
     if 'create3dSequence' in request:
         n_sequence = int(request['create3dSequence'])
@@ -174,7 +175,8 @@ def run_preprocessing(
         y_train=y_train,
         X_test=X_test,
         y_test=y_test,
-        request_hash=pipeline_hash)
+        request_hash=pipeline_hash,
+        scalers=scalers_parameterized)
     pickle.dump(obj=export_data, file=cached_file)
     return export_data
 

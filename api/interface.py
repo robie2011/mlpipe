@@ -1,4 +1,4 @@
-from typing import List, Dict, TypedDict, Optional, Union
+from typing import List, TypedDict, Union
 
 # class ClassConfig(TypedDict, Dict):
 #     qualified_name: str
@@ -14,13 +14,10 @@ from typing import List, Dict, TypedDict, Optional, Union
 #   input/output fields:
 #       - aggregator will get only releveant fields
 #       - after aggregation we should name these fields correctly
-ClassDescription = Dict
+from workflows.analyzers.interface import AnalyzeDescription
+from workflows.interface import ClassDescription
+
 PipelineDescription = List[ClassDescription]
-
-
-class AnalyzeDescription(TypedDict):
-    groupBy: List[str]
-    metrics: List[ClassDescription]
 
 
 class CreatePipelineRequest(TypedDict):

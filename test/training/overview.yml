@@ -1,0 +1,16 @@
+name: NameOfModel
+source: tbd
+sourceFields: tbd
+pipe: tbd
+
+modelPreparation:
+  predictionSourceFields: tbd
+  predictionTargetField: temperatur2
+  scale: tbd
+  shuffle: tbd
+  ratioTestdata: tbd
+  create3dSequence: tbd
+
+sequentialModel: tbd
+training: tbd
+

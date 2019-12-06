@@ -8,7 +8,6 @@ from flask import request
 from api import execute_pipeline
 from api.interface import CreateOrAnalyzePipeline
 from api.pipline_builder import build
-from server.operations import build_execute_pipeline
 from storage import data_handler
 from storage.meta_info import MetaInfo
 

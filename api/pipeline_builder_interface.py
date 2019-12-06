@@ -1,36 +1,15 @@
 from dataclasses import dataclass
-from typing import List, TypedDict, Union, Optional
-from aggregators import AbstractAggregator
+from typing import List, Union, Optional
+from workflows.analyzers.analyzer_workflow import AnalyzerWorkflow
 from datasources import AbstractDatasourceAdapter
-from groupers import AbstractGrouper
 from processors import AbstractProcessor
+import logging
 
+from workflows.pipeline.interface import MultiAggregation
 
-class InputOutputField(TypedDict):
-    inputField: str
-    outputField: str
+logger = logging.getLogger()
 
-
-@dataclass
-class SingleAggregationConfig:
-    sequence: int
-    instance: AbstractAggregator
-    generate: List[InputOutputField]
-
-
-@dataclass
-class MultiAggregationConfig:
-    sequence: int
-    instances: List[SingleAggregationConfig]
-
-
-Pipeline = List[Union[AbstractProcessor, MultiAggregationConfig]]
-
-
-@dataclass
-class AnalyzerConfig:
-    group_by: List[AbstractGrouper]
-    aggregators: List[AbstractAggregator]
+Pipeline = List[Union[AbstractProcessor, MultiAggregation]]
 
 
 @dataclass
@@ -38,4 +17,4 @@ class BuildConfig:
     source: AbstractDatasourceAdapter
     fields: List[str]
     pipeline: Optional[Pipeline]
-    analyzer: Optional[AnalyzerConfig]
+    analyzer: Optional[AnalyzerWorkflow]

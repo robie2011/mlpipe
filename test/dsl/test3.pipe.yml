@@ -1,10 +1,9 @@
 source:
   name: datasources.empa.EmpaCsvSourceAdapter
   pathToFile: /Users/robert.rajakone/repos/2019_p9/code/test/dsl/testinput.csv
-
-sourceFields:
-  - abc1 as temp1
-  - abc2 as temp2
+  fields:
+    - abc1 as temp1
+    - abc2 as temp2
 
 pipeline:
   - name: aggregators.Max

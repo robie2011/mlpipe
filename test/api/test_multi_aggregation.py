@@ -4,7 +4,7 @@ import numpy as np
 import unittest
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from api.pipline_builder import MultiAggregationConfig, SingleAggregationConfig
+from workflows.pipeline.interface import SingleAggregationConfig, MultiAggregation
 from processors import StandardDataFormat
 
 
@@ -25,7 +25,7 @@ class TestMultiAggregation(unittest.TestCase):
         data.timestamps.flags.writeable = False
         data.data.flags.writeable = False
 
-        multi = MultiAggregationConfig(
+        multi = MultiAggregation(
             sequence=5,  # todo: use sequence instead minutes
             instances=[
                 SingleAggregationConfig(
