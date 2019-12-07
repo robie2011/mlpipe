@@ -8,19 +8,11 @@ from config import get_config
 from sklearn.model_selection import train_test_split
 from workflows.utils import create_instance
 from processors import StandardDataFormat, ColumnDropper
-from training.interface import PreprocessingDescription
+from workflows.model_input.interface import PreprocessingDescription
 import logging
 import hashlib
 
-logger = logging.getLogger("training.preprocessing")
-
-
-@dataclass
-class _ColumnsMeta:
-    label_prediction: str
-    ix_prediction: int
-    label_signals: List[str]
-    ix_signals: List[int]
+logger = logging.getLogger()
 
 
 @dataclass()
@@ -41,13 +33,6 @@ def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str
         selection = [*source]
     result = [(ix, name) for ix, name in enumerate(source) if name in selection]
     return list(map(lambda x: x[0], result)), list(map(lambda x: x[1], result))
-
-
-# def _backup_scaler(training_id: str, sequence_no: int, scaler_name: str, scaler):
-#     config = get_config()
-#     filename = "{0}_{1}.scaler.pickle".format(str(sequence_no), scaler_name)
-#     path_to_file = os.path.join(config.dir_training, training_id, filename)
-#     pickle.dump(scaler, path_to_file)
 
 
 def create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:
@@ -83,7 +68,7 @@ def _get_request_hash(request: PreprocessingDescription):
     return hashlib.sha256(json.dumps(request).encode("utf-8")).hexdigest()
 
 
-def run_preprocessing(
+def create_model_input_workflow(
         input_data: StandardDataFormat,
         request: PreprocessingDescription,
         pretrained_scalers=[]):
