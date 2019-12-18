@@ -1,4 +1,4 @@
-from typing import List, TypedDict, Union
+from typing import List, Union, Dict
 
 # class ClassConfig(TypedDict, Dict):
 #     qualified_name: str
@@ -19,11 +19,12 @@ from workflows.interface import ClassDescription
 
 PipelineDescription = List[ClassDescription]
 
-
-class CreatePipelineRequest(TypedDict):
-    source: ClassDescription
-    sourceFields: List[str]
-    pipeline: PipelineDescription
+# python 3.8+
+# class CreatePipelineRequest(TypedDict):
+#     source: ClassDescription
+#     sourceFields: List[str]
+#     pipeline: PipelineDescription
+CreatePipelineRequest = Dict
 
 
 class AnalyzeRequest(CreatePipelineRequest):

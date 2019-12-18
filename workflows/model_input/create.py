@@ -137,7 +137,7 @@ class CreateModelInputWorkflow:
                 input_data.data[:, ix_col_selected] = func_transform(partial_data)
                 scalers_trained.append(scaler)
 
-        if 'shuffle' in self.description:
+        if 'shuffle' in self.description and self.description['shuffle'] is True:
             logger.debug("shuffle data")
             ix = np.arange(input_data.data.shape[0])
             np.random.shuffle(ix)

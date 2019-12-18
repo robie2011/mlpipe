@@ -29,6 +29,7 @@ pipeline:
   - name: features.TimeFeatureExtractor
     extract: hour
     output_field: hourExtracted
+  - name: processors.NanRemover
 
 
 # validation: get sourceField information from pipeline
@@ -62,8 +63,8 @@ modelInput:
         - temp2Trend
 
   #create3dSequence: 10
-  shuffle: false
-  ratioTestdata: .40
+  shuffle: False
+  ratioTestdata: .20
 
 
 sequentialModel:

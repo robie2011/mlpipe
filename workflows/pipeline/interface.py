@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, TypedDict, Union
+from typing import List, Union, Dict
 import logging
 import numpy as np
 from aggregators import AbstractAggregator
@@ -10,9 +10,11 @@ from workflows.utils import get_qualified_name
 logger = logging.getLogger()
 
 
-class InputOutputField(TypedDict):
-    inputField: str
-    outputField: str
+# python 3.8+
+# class InputOutputField(TypedDict):
+#     inputField: str
+#     outputField: str
+InputOutputField = Dict
 
 
 @dataclass

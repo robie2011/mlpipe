@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import TypedDict, List
+from typing import List, Dict
 from workflows.interface import ClassDescription
 
 
-class AnalyzeDescription(TypedDict):
-    groupBy: List[str]
-    metrics: List[ClassDescription]
+# python 3.8+
+# class AnalyzeDescription(TypedDict):
+#     groupBy: List[str]
+#     metrics: List[ClassDescription]
+AnalyzeDescription = Dict
 
 
 @dataclass
