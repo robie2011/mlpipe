@@ -1,15 +1,15 @@
-from typing import List
+from typing import List, Union
 from aggregators import AbstractAggregator
 from api.interface import PipelineDescription
-from api.pipeline_builder_interface import Pipeline
-from workflows.pipeline.interface import SingleAggregationConfig, MultiAggregation, ProcessorOrAggregation, \
+from workflows.pipeline.interface import SingleAggregationConfig, MultiAggregation, \
     ProcessorOrMultiAggregation, PipelineWorkflow
 from processors import AbstractProcessor
 from workflows.utils import get_component_config, create_instance
 import logging
 
-
 logger = logging.getLogger()
+
+ProcessorOrAggregation = Union[AbstractProcessor, SingleAggregationConfig]
 
 
 def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
@@ -40,7 +40,7 @@ def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
     return pipeline
 
 
-def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> Pipeline:
+def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> List[ProcessorOrMultiAggregation]:
     reduced_pipeline: List[ProcessorOrMultiAggregation] = []
 
     if isinstance(pipeline[0], SingleAggregationConfig):
@@ -80,5 +80,3 @@ def create_pipeline_workflow(descriptions: PipelineDescription) -> PipelineWorkf
     flatten_pipeline = _initialize_processors_and_aggregators(descriptions)
     reduced_piplines = _reduce_pipeline(flatten_pipeline)
     return PipelineWorkflow(pipelines=reduced_piplines)
-
-

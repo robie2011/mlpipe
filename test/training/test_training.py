@@ -4,6 +4,7 @@ import yaml
 from utils import get_dir
 from workflows.analyzers.create_analyzers import create_analyzer_workflow
 from workflows.load_data.create_loader import create_loader_workflow
+from workflows.model_input.create import CreateModelInputWorkflow
 from workflows.pipeline.create_pipeline import create_pipeline_workflow
 
 
@@ -41,6 +42,7 @@ class TestTraning(unittest.TestCase):
         composed = [
             create_loader_workflow(desc_src).load,
             create_pipeline_workflow(desc_pipeline).execute,
+            CreateModelInputWorkflow(desc_model_input).execute
         ]
 
         data = sequential_execution(composed)

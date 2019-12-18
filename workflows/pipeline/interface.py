@@ -96,7 +96,6 @@ class MultiAggregation(AbstractProcessor):
         )
 
 
-ProcessorOrAggregation = Union[AbstractProcessor, SingleAggregationConfig]
 ProcessorOrMultiAggregation = Union[MultiAggregation, AbstractProcessor]
 
 

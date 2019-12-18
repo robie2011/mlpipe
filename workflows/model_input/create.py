@@ -1,16 +1,17 @@
-import json
-import os
-import pickle
-from dataclasses import dataclass
-from typing import List
-import numpy as np
-from config import get_config
-from sklearn.model_selection import train_test_split
-from workflows.utils import create_instance
-from processors import StandardDataFormat, ColumnDropper
-from workflows.model_input.interface import PreprocessingDescription
-import logging
 import hashlib
+import json
+import logging
+import copy
+from dataclasses import dataclass
+from typing import List, Tuple
+import numpy as np
+from sklearn.base import TransformerMixin
+from sklearn.model_selection import train_test_split
+from processors import StandardDataFormat, ColumnDropper
+from workflows.interface import ClassDescription
+from workflows.model_input.interface import PreprocessingDescription
+from workflows.utils import create_instance
+from typing import cast
 
 logger = logging.getLogger()
 
@@ -21,17 +22,23 @@ class PreprocessedTrainingData:
     y_train: np.ndarray
     X_test: np.ndarray
     y_test: np.ndarray
-    request_hash: str
     scalers: List[object]
 
 
-def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str] = []):
+def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str] = []) -> Tuple[List[int], List[str]]:
     if len(exclude) > 0 and len(selection) > 0:
         raise Exception("invalid!")
 
     if len(exclude) > 0:
         selection = [*source]
     result = [(ix, name) for ix, name in enumerate(source) if name in selection]
+
+    if selection and len(selection) > len(result):
+        raise ValueError("More or more selected field can not be found.\r\n\tSelected: {0}\r\n\tAvailable: {1}".format(
+            selection,
+            source
+        ))
+
     return list(map(lambda x: x[0], result)), list(map(lambda x: x[1], result))
 
 
@@ -68,100 +75,109 @@ def _get_request_hash(request: PreprocessingDescription):
     return hashlib.sha256(json.dumps(request).encode("utf-8")).hexdigest()
 
 
-def create_model_input_workflow(
-        input_data: StandardDataFormat,
-        request: PreprocessingDescription,
-        pretrained_scalers=[]):
-    """
-    todo: validation: Sind alle felder, welche ausgewählt worden sind bei Source vorhanden ? Inkl. TargetField
-
-    :param input_data:
-    :param request:
-    :return:
-    """
-
-    pipeline_hash = _get_request_hash(request)
-    cached_file = os.path.join(get_config().dir_tmp, "data_preprocessed_{0}.zip".format(pipeline_hash))
-    if os.path.exists(cached_file):
-        logger.info("Cached file found. Will be returned.")
-        return pickle.load(cached_file)
-
-    cols_with_index = list(enumerate(input_data.labels))
-    ix_prediction_target = next(ix for ix, name in cols_with_index if name == request.predictionTargetField)
-    ix_prediction_sources = [ix for ix, name in cols_with_index if name in request.predictionSourceFields]
-    input_data.data = input_data.data[:, ix_prediction_sources + [ix_prediction_target]]
-    input_data.labels = request.predictionSourceFields + [request.predictionTargetField]
-
-    if 'dropFields' in request:
-        logger.debug("drop fields: {0}".format(", ".join(request.dropFields)))
-        input_data = ColumnDropper(columns=request.dropFields).process(input_data)
-
-    scalers_parameterized = []
-    if 'scale' in request:
-        for i in range(len(request['scale'])):
-            scale_request = request['scale'][i]
-            fields = scale_request['fields']
-            qualified_classname = scale_request['name']
-            logger.debug("run scaling for fields={0} with scaler={1}".format(
-                ", ".join(fields), qualified_classname))
-
-            del scale_request['fields']
-            del scale_request['name']
-
-            ix_col_selected, name_col_selected = _map_indexes(source=input_data.labels, selection=fields)
-            partial_data = input_data.data[:, ix_col_selected]
-
-            if pretrained_scalers:
-                scaler = pretrained_scalers[i]
-                input_data.data[:, ix_col_selected] = scaler.transform(partial_data)
-            else:
+@dataclass
+class CreateModelInputWorkflow:
+    def __init__(self, description: PreprocessingDescription, pretrained_scalers=[]):
+        self.description = copy.deepcopy(description)
+        self.has_pretrained_scalers = False
+        self.scalers: List[TransformerMixin] = []
+        if pretrained_scalers:
+            self.scalers = pretrained_scalers
+            self.has_pretrained_scalers = True
+        elif 'scale' in self.description:
+            desc_scalers = cast(List[ClassDescription], self.description['scale'])
+            for i in range(len(desc_scalers)):
+                scale_request = copy.deepcopy(desc_scalers[i])
+                qualified_classname = scale_request['name']
+                del scale_request['fields']
+                del scale_request['name']
                 scaler = create_instance(qualified_name=qualified_classname, kwargs=scale_request)
-                input_data.data[:, ix_col_selected] = scaler.fit_transform(partial_data)
+                self.scalers.append(scaler)
 
-            scalers_parameterized.append(scaler)
+    def execute(self, input_data: StandardDataFormat) -> PreprocessedTrainingData:
+        if 'dropFields' in self.description:
+            logger.debug("drop fields: {0}".format(", ".join(self.description['dropFields'])))
+            input_data = ColumnDropper(columns=self.description['dropFields']).process(input_data)
 
-    if 'shuffle' in request:
-        logger.debug("shuffle data")
-        ix = np.arange(input_data.data.shape[0])
-        np.random.shuffle(ix)
-        input_data.data = input_data.data[ix]
+        cols_with_index = list(enumerate(input_data.labels))
+        try:
+            ix_prediction_target = next(ix for ix, name in cols_with_index
+                                        if name == self.description['predictionTargetField'])
+        except StopIteration as e:
+            raise Exception("predictionTargetField '{0}' can not be found. \r\n Labels found in input source: {1}".format(
+                self.description['predictionTargetField'],
+                input_data.labels
+            ))
 
-    ratio_test = request['ratioTestdata'] if 'ratioTestdata' in request else .9
-    shuffle = request['shuffle'] if 'shuffle' in request else True
+        ix_prediction_sources = [ix for ix, name in cols_with_index
+                                 if name in self.description['predictionSourceFields']]
 
-    logger.debug("ratio for testdata={0}. Shuffle={1}".format(ratio_test, shuffle))
-    logging.debug("use shuffle default={0}, use ratio_test default={1}".format(
-        'shuffle' in request,
-        'ratioTestdata' in request
-    ))
+        if len(ix_prediction_sources) != len(self.description['predictionSourceFields']):
+            raise Exception("Required source fields are: {0}. \r\nBut source only contains: {1}".format(
+                self.description['predictionSourceFields'],
+                input_data.labels
+            ))
 
-    X, y = input_data.data[:, ix_prediction_sources], input_data.data[:, ix_prediction_target]
+        input_data.data = input_data.data[:, ix_prediction_sources + [ix_prediction_target]]
+        input_data.labels = self.description['predictionSourceFields'] + [self.description['predictionTargetField']]
 
-    if 'create3dSequence' in request:
-        n_sequence = int(request['create3dSequence'])
-        logger.debug("create 3d sequence with sequence length={0}".format(n_sequence))
-        ix_valid_endpoints = create_sequence_endpoints(timestamps=input_data.timestamps, n_sequence=n_sequence)
-        output_size = (ix_valid_endpoints.shape[0], n_sequence, X.shape[1])
-        output = np.full(output_size, np.nan)
-        for i in range(len(ix_valid_endpoints)):
-            ix_endpoint = ix_valid_endpoints[i]
-            ix_end = ix_endpoint+1
-            ix_start = ix_end - n_sequence
-            output[i] = X[ix_start:ix_end]
+        scalers_trained = []
+        if 'scale' in self.description:
+            for i in range(len(self.description['scale'])):
+                scale_request = self.description['scale'][i]
+                fields = scale_request['fields']
+                qualified_classname = scale_request['name']
+                logger.debug("run scaling for fields={0} with scaler={1}".format(
+                    ", ".join(fields), qualified_classname))
 
-        y = y[ix_valid_endpoints]
-        X = output
+                ix_col_selected, name_col_selected = _map_indexes(source=input_data.labels, selection=fields)
+                partial_data = input_data.data[:, ix_col_selected]
+                scaler = self.scalers[i]
+                func_transform = scaler.transform if self.has_pretrained_scalers else scaler.fit_transform
+                input_data.data[:, ix_col_selected] = func_transform(partial_data)
+                scalers_trained.append(scaler)
 
-    # X can be 2D or 3D
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=ratio_test, shuffle=shuffle)
+        if 'shuffle' in self.description:
+            logger.debug("shuffle data")
+            ix = np.arange(input_data.data.shape[0])
+            np.random.shuffle(ix)
+            input_data.data = input_data.data[ix]
 
-    export_data = PreprocessedTrainingData(
-        X_train=X_train,
-        y_train=y_train,
-        X_test=X_test,
-        y_test=y_test,
-        request_hash=pipeline_hash,
-        scalers=scalers_parameterized)
-    pickle.dump(obj=export_data, file=cached_file)
-    return export_data
+        ratio_test = self.description['ratioTestdata'] if 'ratioTestdata' in self.description else .9
+        shuffle = self.description['shuffle'] if 'shuffle' in self.description else True
+
+        logger.debug("ratio for testdata={0}. Shuffle={1}".format(ratio_test, shuffle))
+        logging.debug("use shuffle default={0}, use ratio_test default={1}".format(
+            'shuffle' in self.description,
+            'ratioTestdata' in self.description
+        ))
+
+        X, y = input_data.data[:, :-1], input_data.data[:, -1]
+
+        if 'create3dSequence' in self.description:
+            n_sequence = int(self.description['create3dSequence'])
+            logger.debug("create 3d sequence with sequence length={0}".format(n_sequence))
+            ix_valid_endpoints = create_sequence_endpoints(timestamps=input_data.timestamps, n_sequence=n_sequence)
+            output_size = (ix_valid_endpoints.shape[0], n_sequence, X.shape[1])
+            output = np.full(output_size, np.nan)
+            for i in range(len(ix_valid_endpoints)):
+                ix_endpoint = ix_valid_endpoints[i]
+                ix_end = ix_endpoint + 1
+                ix_start = ix_end - n_sequence
+                output[i] = X[ix_start:ix_end]
+
+            y = y[ix_valid_endpoints]
+            X = output
+
+        # X can be 2D or 3D
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=ratio_test, shuffle=shuffle)
+
+        export_data = PreprocessedTrainingData(
+            X_train=X_train,
+            y_train=y_train,
+            X_test=X_test,
+            y_test=y_test,
+            scalers=scalers_trained)
+
+        return export_data
 

@@ -1,4 +1,4 @@
-from typing import TypedDict, List, Optional
+from typing import TypedDict, List, Optional, Collection
 from workflows.interface import ClassDescription
 
 
@@ -9,4 +9,5 @@ class PreprocessingDescription(TypedDict):
     create3dSequence: Optional[int]
     shuffle: Optional[bool]
     ratioTestdata: Optional[float]
+    dropFields: Optional[List[str]]
 

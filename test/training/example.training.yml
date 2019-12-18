@@ -34,20 +34,20 @@ pipeline:
 # validation: get sourceField information from pipeline
 modelInput:
   predictionSourceFields:
-    - temperatur1
-    - temperatur2
-    - temperatur2
+    - temp2
+    - tempMax
+    - temp2Trend
 
-  predictionTargetField: temperatur2
+  predictionTargetField: temp1
 
   # binary, class, regression
   predictionType: binary
 
   scale:
-    - name: scalers.MinMaxRangeScaler
-      range_start: 0
-      range_end: 7
-      fields: hourExtracted
+#    - name: scalers.MinMaxRangeScaler
+#      range_start: 0
+#      range_end: 7
+#      fields: hourExtracted
 
     # note: sometimes scaler return a copy and sometimes inplace operation
     # ensure returned data is replaced in origin space
@@ -57,41 +57,46 @@ modelInput:
     #- name: sklearn.preprocessing.MinMaxScaler
     - name: sklearn.preprocessing.RobustScaler
       fields:
-        - temperatur1
-        - temperatur2
-        - feuchtigkeit2
-        - feuchtigkeit1
-        - feuchtigkeit14
+        - temp2
+        - tempMax
+        - temp2Trend
 
-  create3dSequence: 10
-  shuffle: true
-  ratioTestdata: .10
+  #create3dSequence: 10
+  shuffle: false
+  ratioTestdata: .40
 
 
 sequentialModel:
-  - name: keras.layers.LSTM
-    units: 100
+#  - name: keras.layers.LSTM
+#    units: 100
+#    activation: tanh
+#    return_sequences: true
+#  - name: keras.layers.LSTM
+#    units: 50
+#    activation: tanh
+#    return_sequences: true
+#  - name: keras.layers.LSTM
+#    units: 20
+#    activation: tanh
+#    return_sequences: false
+#  - name: keras.layers.Dense
+#    units: 1
+#    activation: sigmoid
+  - name: keras.layers.Dense
+    units: 30
     activation: tanh
-    return_sequences: true
-  - name: keras.layers.LSTM
-    units: 50
+  - name: keras.layers.Dense
+    units: 10
     activation: tanh
-    return_sequences: true
-  - name: keras.layers.LSTM
-    units: 20
-    activation: tanh
-    return_sequences: false
   - name: keras.layers.Dense
     units: 1
     activation: sigmoid
-
 
 modelCompile:
   loss: binary_crossentropy
   optimizer: Adam
   metrics:
     - accuracy
-
 
 modelTraining:
   epochs: 100
