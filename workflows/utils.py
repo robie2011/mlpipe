@@ -1,3 +1,4 @@
+import copy
 from importlib import import_module
 from inspect import getmro
 from typing import List
@@ -60,3 +61,14 @@ def get_qualified_name(o: object):
         return o.__class__.__name__  # Avoid reporting __builtin__
     else:
         return module + '.' + o.__class__.__name__
+
+
+def pick_from_object(obj, *keys):
+    obj = copy.deepcopy(obj)
+    result = [obj[k] for k in keys]
+
+    for k in keys:
+        del obj[k]
+
+    result.append(obj)
+    return result

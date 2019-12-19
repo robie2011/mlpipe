@@ -1,9 +1,12 @@
+import os
 import copy
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from keras import Sequential
+from keras.callbacks import ModelCheckpoint
 from workflows.interface import ClassDescription
+from workflows.model_input.create import PreprocessedTrainingDataSplit
 from workflows.sequential_model.interface import ModelCompileDescription
-from workflows.utils import create_instance
+from workflows.utils import create_instance, pick_from_object
 import logging
 
 
@@ -17,17 +20,61 @@ def create_sequential_model_workflow(
     model = Sequential()
 
     for ix, layer_desc in enumerate(sequential_model_desc):
-        class_name = layer_desc['name']
-        kwargs = copy.deepcopy(layer_desc)
-        del kwargs['name']
+        name, kwargs = pick_from_object(layer_desc, "name")
         if ix == 0:
             kwargs['input_dim'] = input_dim if len(input_dim) > 1 else input_dim[0]
         logging.debug("creating layer of '{0}' with config={1}".format(
-            class_name,
+            name,
             kwargs
         ))
-        layer_instance = create_instance(qualified_name=class_name, kwargs=kwargs)
+        layer_instance = create_instance(qualified_name=name, kwargs=kwargs)
         model.add(layer_instance)
 
     model.compile(**model_compile)
+    return model
+
+
+def create_model_fit_params(
+        data: PreprocessedTrainingDataSplit,
+        model_training_desc: Dict,
+        path_best_model: str,
+        monitor='val_loss'):
+
+    checkpoint = ModelCheckpoint(
+        path_best_model,
+        verbose=0,
+        monitor=monitor,
+        save_best_only=True,
+        mode='auto')
+
+    return {
+        "x": data.X_train,
+        "y": data.y_train,
+        "epochs": model_training_desc["epochs"],
+        "batch_size": model_training_desc["batch_size"],
+        "validation_data": (data.X_test, data.y_test),
+        "callbacks": [checkpoint],
+        "verbose": 1
+    }
+
+
+# def evaluate_model(
+#         path_to_model: str,
+#         model: Sequential,
+#         predictionType: PredictionTypes,
+#         ):
+#     if os.path.exists(path_to_model):
+#         model = model.load_weights(path_to_model)
+#
+#     func_prediction = {
+#         PredictionTypes.BINARY: model.predict_classes,
+#         PredictionTypes.REGRESSION: model.predict
+#     }
+#
+#     y_prediction = func_prediction.get(predictionType)()
+#
+
+def get_best_model(path_to_model: str, model: Sequential, fit_history: object) -> Sequential:
+    if os.path.exists(path_to_model):
+        model.load_weights(path_to_model)
     return model

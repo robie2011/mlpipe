@@ -3,8 +3,7 @@ from typing import List
 import logging
 from datasources import AbstractDatasourceAdapter
 from workflows.interface import ClassDescription
-from workflows.utils import get_component_config, create_instance
-
+from workflows.utils import get_component_config, create_instance, pick_from_object
 
 logger = logging.getLogger()
 
@@ -31,13 +30,7 @@ class LoadDataWorkflow:
 
 
 def create_loader_workflow(description: ClassDescription) -> LoadDataWorkflow:
-    description = description.copy()
-    fields = description['fields']
-    del description['fields']
-
-    instance = create_instance(
-        description['name'],
-        get_component_config(description))
-
+    name, fields, kwargs = pick_from_object(description, "name", "fields")
+    instance = create_instance(qualified_name=name, kwargs=kwargs)
     return LoadDataWorkflow(field_and_alias=fields, instance=instance)
 

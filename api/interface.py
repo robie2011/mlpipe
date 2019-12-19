@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Union, Dict
 
 # class ClassConfig(TypedDict, Dict):
@@ -38,3 +39,8 @@ CreateOrAnalyzePipeline = Union[AnalyzeRequest, CreatePipelineRequest]
 class ModelTrainRequest:
     pipelineName: str
     model: object  # todo: include generic modell
+
+
+class PredictionTypes(Enum):
+    BINARY = "BINARY"
+    REGRESSION = "REGRESSION"

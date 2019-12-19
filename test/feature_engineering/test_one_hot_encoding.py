@@ -1,5 +1,5 @@
 import unittest
-from features.one_hot_encoder import OneHotEncoder, FeatureExtractorInput, FeatureExtractor
+from encoders.one_hot_encoder import OneHotEncoder
 import numpy as np
 from numpy.testing import assert_array_equal
 
@@ -8,7 +8,7 @@ from helpers import transform_to_2d_matrix
 
 class TestOneHotEncoding(unittest.TestCase):
     def test_one_hot_encoding_number(self):
-        encoding = transform_to_2d_matrix(np.array([0, 7, 23]))
+        encoding = transform_to_2d_matrix(np.array([0, 7, 23, 7, 23]))
         encoder = OneHotEncoder(encoding)
 
         data = transform_to_2d_matrix(np.array([0, 23, 7, 7]))
@@ -18,7 +18,7 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[2, 1] = 1
         result_expected[3, 1] = 1
 
-        result = encoder.extract(FeatureExtractorInput(features=data, timestamps=None))
+        result = encoder.encode(data_1d=data)
         assert_array_equal(result_expected, result)
 
     def test_one_hot_encoding_string(self):
@@ -32,7 +32,7 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[2, 1] = 1
         result_expected[3, 1] = 1
 
-        result = encoder.extract(FeatureExtractorInput(features=data, timestamps=None))
+        result = encoder.encode(data_1d=data)
         assert_array_equal(result_expected, result)
 
 

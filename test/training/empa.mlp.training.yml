@@ -1,0 +1,104 @@
+name: myExampleModel
+source:
+  name: datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: /Users/robert.rajakone/repos/2019_p8/code/trainframework/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipeline:
+  - name: features.TimeFeatureExtractor
+    extract: hour
+    output_field: Stunden
+  - name: features.TimeFeatureExtractor
+    extract: weekday
+    output_field: Wochentag
+  - name: processors.NanRemover
+
+
+# validation: get sourceField information from pipeline
+modelInput:
+  predictionSourceFields:
+    - TempAussen
+    - TempInnen
+    - Zuluft
+    - Abluft
+    - CO2
+    - Stunden
+    - Wochentag
+
+  predictionTargetField: Präsenz
+
+  # binary, class, regression
+  predictionType: binary
+
+  scale:
+#    - name: sklearn.preprocessing.MinMaxScaler
+#      fields:
+#        - Stunden
+#        - Wochentag
+
+    # note: sometimes scaler return a copy and sometimes inplace operation
+    # ensure returned data is replaced in origin space
+
+    # here configuration will be saved into database
+    # and can be exported later
+    #- name: sklearn.preprocessing.MinMaxScaler
+    - name: sklearn.preprocessing.RobustScaler
+      fields:
+        - TempAussen
+        - TempInnen
+        - Zuluft
+        - Abluft
+        - CO2
+
+  encode:
+    - name: encoders.RangeEncoder
+      value_from: 0
+      value_to: 24
+      fields:
+        - Stunden
+    - name: encoders.RangeEncoder
+      value_from: 0
+      value_to: 7
+      fields:
+        - Wochentag
+
+  shuffle: False
+  ratioTestdata: .50
+
+sequentialModel:
+  - name: keras.layers.Dense
+    units: 30
+    activation: tanh
+  - name: keras.layers.Dense
+    units: 10
+    activation: tanh
+  - name: keras.layers.Dense
+    units: 1
+    activation: sigmoid
+
+modelCompile:
+  loss: binary_crossentropy
+  optimizer: Adam
+  metrics:
+    - accuracy
+
+modelTraining:
+  epochs: 10
+  batch_size: 4320
+  repeat: 3
+
+analyze:
+  groupBy:
+    - name: groupers.YearGrouper
+    - name: groupers.MonthGrouper
+  metrics:
+    - name: aggregators.Max
+    - name: aggregators.Min
+    - name: aggregators.Percentile
+      percentile: .75

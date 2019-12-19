@@ -3,26 +3,36 @@ import json
 import logging
 import copy
 from dataclasses import dataclass
+from random import random
 from typing import List, Tuple
 import numpy as np
 from sklearn.base import TransformerMixin
 from sklearn.model_selection import train_test_split
+from encoders.interface import AbstractEncoder
 from processors import StandardDataFormat, ColumnDropper
-from workflows.interface import ClassDescription
 from workflows.model_input.interface import PreprocessingDescription
-from workflows.utils import create_instance
+from workflows.utils import create_instance, pick_from_object
 from typing import cast
 
 logger = logging.getLogger()
 
 
 @dataclass()
-class PreprocessedTrainingData:
+class PreprocessedTrainingDataSplit:
     X_train: np.ndarray
     y_train: np.ndarray
     X_test: np.ndarray
     y_test: np.ndarray
     scalers: List[object]
+
+
+def _get_column_id(columns: List[str], selection: str):
+    ix_selections = [ix for ix, name in enumerate(columns) if name == selection]
+    if not ix_selections:
+        raise ValueError("selected field '{0}' not found in source list ({0})".format(
+            selection, columns
+        ))
+    return ix_selections[0]
 
 
 def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str] = []) -> Tuple[List[int], List[str]]:
@@ -76,8 +86,16 @@ def _get_request_hash(request: PreprocessingDescription):
 
 
 @dataclass
+class PreprocessedModelInput:
+    X: np.ndarray
+    y: np.ndarray
+    scalers: List[object]
+
+
+@dataclass
 class CreateModelInputWorkflow:
-    def __init__(self, description: PreprocessingDescription, pretrained_scalers=[]):
+    def __init__(self, description: PreprocessingDescription,
+                 pretrained_scalers=[]):
         self.description = copy.deepcopy(description)
         self.has_pretrained_scalers = False
         self.scalers: List[TransformerMixin] = []
@@ -85,16 +103,19 @@ class CreateModelInputWorkflow:
             self.scalers = pretrained_scalers
             self.has_pretrained_scalers = True
         elif 'scale' in self.description:
-            desc_scalers = cast(List[ClassDescription], self.description['scale'])
-            for i in range(len(desc_scalers)):
-                scale_request = copy.deepcopy(desc_scalers[i])
-                qualified_classname = scale_request['name']
-                del scale_request['fields']
-                del scale_request['name']
-                scaler = create_instance(qualified_name=qualified_classname, kwargs=scale_request)
+            for scale_desc in self.description['scale']:
+                name, fields, kwargs = pick_from_object(scale_desc, "name", "fields")
+                scaler = create_instance(qualified_name=name, kwargs=kwargs)
                 self.scalers.append(scaler)
 
-    def execute(self, input_data: StandardDataFormat) -> PreprocessedTrainingData:
+        self.encoders = []
+        if 'encode' in self.description:
+            for encode_desc in self.description['encode']:
+                name, fields, kwargs = pick_from_object(encode_desc, "name", "fields")
+                encoder = create_instance(qualified_name=name, kwargs=kwargs)
+                self.encoders.append(encoder)
+
+    def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
         if 'dropFields' in self.description:
             logger.debug("drop fields: {0}".format(", ".join(self.description['dropFields'])))
             input_data = ColumnDropper(columns=self.description['dropFields']).process(input_data)
@@ -123,35 +144,62 @@ class CreateModelInputWorkflow:
 
         scalers_trained = []
         if 'scale' in self.description:
-            for i in range(len(self.description['scale'])):
-                scale_request = self.description['scale'][i]
-                fields = scale_request['fields']
-                qualified_classname = scale_request['name']
+            fields_scalers = zip(
+                map(lambda x: x['fields'], self.description['scale']),
+                self.scalers
+            )
+
+            for fields, scaler in fields_scalers:
+                qualified_classname = type(scaler).__name__
                 logger.debug("run scaling for fields={0} with scaler={1}".format(
                     ", ".join(fields), qualified_classname))
 
                 ix_col_selected, name_col_selected = _map_indexes(source=input_data.labels, selection=fields)
                 partial_data = input_data.data[:, ix_col_selected]
-                scaler = self.scalers[i]
+
                 func_transform = scaler.transform if self.has_pretrained_scalers else scaler.fit_transform
                 input_data.data[:, ix_col_selected] = func_transform(partial_data)
+
+                # todo: backup
                 scalers_trained.append(scaler)
 
-        if 'shuffle' in self.description and self.description['shuffle'] is True:
+        if 'encode' in self.description:
+            fields_encoders = zip(
+                map(lambda x: x['fields'], self.description['encode']),
+                self.encoders
+            )
+
+            for fields, encoder in fields_encoders:
+                qualified_classname = type(encoder).__name__
+                for field in fields:
+                    logger.debug("run encoding for field={0} with scaler={1}".format(field, qualified_classname))
+                    ix_field = _get_column_id(columns=input_data.labels, selection=field)
+                    column_data = input_data.data[:, ix_field]
+
+                    # removing old data
+                    input_data.labels.remove(field)
+                    input_data.data = np.delete(input_data.data, ix_field, axis=1)
+
+                    # adding new data
+                    encoded_data = cast(AbstractEncoder, encoder).encode(column_data)
+                    input_data.data = np.hstack((input_data.data, encoded_data))
+
+                    # add new labels
+                    encoding_id = "{0}_encoded_{1}".format(field, int(random() * 1000))
+                    new_labels = ["{0}_{1}".format(encoding_id, i) for i in range(encoded_data.shape[1])]
+                    input_data.labels += new_labels
+
+        if 'shuffle' in self.description and self.description['shuffle']:
             logger.debug("shuffle data")
             ix = np.arange(input_data.data.shape[0])
             np.random.shuffle(ix)
             input_data.data = input_data.data[ix]
 
-        ratio_test = self.description['ratioTestdata'] if 'ratioTestdata' in self.description else .9
-        shuffle = self.description['shuffle'] if 'shuffle' in self.description else True
-
-        logger.debug("ratio for testdata={0}. Shuffle={1}".format(ratio_test, shuffle))
-        logging.debug("use shuffle default={0}, use ratio_test default={1}".format(
-            'shuffle' in self.description,
-            'ratioTestdata' in self.description
+        logging.debug("use shuffle default={0}".format(
+            'shuffle' in self.description and self.description['shuffle'] is True
         ))
 
+        # we already have ordered columns. Last column is y
         X, y = input_data.data[:, :-1], input_data.data[:, -1]
 
         if 'create3dSequence' in self.description:
@@ -169,15 +217,20 @@ class CreateModelInputWorkflow:
             y = y[ix_valid_endpoints]
             X = output
 
-        # X can be 2D or 3D
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=ratio_test, shuffle=shuffle)
+        return PreprocessedModelInput(X=X, y=y, scalers=scalers_trained)
 
-        export_data = PreprocessedTrainingData(
-            X_train=X_train,
-            y_train=y_train,
-            X_test=X_test,
-            y_test=y_test,
-            scalers=scalers_trained)
 
-        return export_data
+def train_test_split_model_input(description: PreprocessingDescription, model_input: PreprocessedModelInput):
+    ratio_test = description['ratioTestdata'] if 'ratioTestdata' in description else .9
+    logger.debug("ratio for testdata={0}".format(ratio_test))
 
+    # note: X can be 2D or 3D
+    shuffle = 'shuffle' in description and description['shuffle']
+    X_train, X_test, y_train, y_test = train_test_split(model_input.X, model_input.y, test_size=ratio_test, shuffle=shuffle)
+
+    return PreprocessedTrainingDataSplit(
+        X_train=X_train,
+        y_train=y_train,
+        X_test=X_test,
+        y_test=y_test,
+        scalers=model_input.scalers)
