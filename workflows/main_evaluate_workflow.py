@@ -1,14 +1,10 @@
+import copy
 import json
-import os
-import pickle
 from typing import Dict, cast
-from keras import Sequential
-from sklearn.metrics import confusion_matrix
-
-import config
-from keras.models import load_model
 import numpy as np
+from sklearn.metrics import confusion_matrix
 from api.interface import PredictionTypes
+from config import TrainingProject
 from workflows.main_training_workflow import run_pipeline_create_model_input
 
 
@@ -18,31 +14,18 @@ def _read_json(path: str) -> Dict:
 
 
 def evaluate(description: Dict):
-    model_name, session_id = description['name'], description['session']
-    path_training_dir = os.path.join(
-        config.get_config().dir_training,
-        model_name,
-        session_id)
+    name, session_id = description['name'], description['session']
+    with TrainingProject(name=name, session_id=session_id) as project:
+        project = cast(TrainingProject, project)
+        evaluation_project = copy.deepcopy(project.description)
+        evaluation_project['source'] = description['testSource']
+        data = run_pipeline_create_model_input(evaluation_project, pretrained_scalers=project.scalers)
 
-    # todo: handle in separate logic
-    path_model = os.path.join(path_training_dir, "model.h5")
-    path_original_description = os.path.join(path_training_dir, "description.json")
-    path_scalers = os.path.join(path_training_dir, "scalers.pickle")
-    project_desc = _read_json(path_original_description)
-    model: Sequential = load_model(path_model)
-    project_desc['source'] = description['testSource']
+        if evaluation_project['modelInput']['predictionType'] == PredictionTypes.BINARY.value:
+            y_ = cast(np.ndarray, project.model.predict_classes(data.X)).reshape(-1, )
+            result = confusion_matrix(y_true=data.y, y_pred=y_)
+        else:
+            raise Exception("Not implemented")
 
-    scalers = []
-    if os.path.isfile(path_scalers):
-        with open(path_scalers, "rb") as f:
-            scalers = pickle.load(f)
+        return result.ravel()
 
-    data = run_pipeline_create_model_input(project_desc, pretrained_scalers=scalers)
-
-    if project_desc['modelInput']['predictionType'] == PredictionTypes.BINARY.value:
-        y_ = cast(np.ndarray, model.predict_classes(data.X)).reshape(-1, )
-        result = confusion_matrix(y_true=data.y, y_pred=y_)
-    else:
-        raise Exception("Not implemented")
-
-    return result.ravel()

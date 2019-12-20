@@ -1,15 +1,12 @@
-import json
-import os
-import pickle
 from datetime import datetime
+from typing import cast
 from keras.callbacks import History
-import config
-from workflows.utils import sequential_execution
+from config import TrainingProject
 from workflows.load_data.create_loader import create_loader_workflow
-from workflows.model_input.create import CreateModelInputWorkflow, PreprocessedTrainingDataSplit, \
-    train_test_split_model_input, PreprocessedModelInput
+from workflows.model_input.create import CreateModelInputWorkflow, train_test_split_model_input, PreprocessedModelInput
 from workflows.pipeline.create_pipeline import create_pipeline_workflow
 from workflows.sequential_model.create import create_sequential_model_workflow, create_model_fit_params, get_best_model
+from workflows.utils import sequential_execution
 
 
 def train(description):
@@ -19,48 +16,33 @@ def train(description):
     if 'repeat' in description['modelTraining']:
         print("NOTE: repeating training not implemented yet!")
 
-    # create session folder
-    current_training_path = os.path.join(
-        config.get_config().dir_training,
-        model_name,
-        session_id)
-    os.makedirs(current_training_path)
+    with TrainingProject(name=model_name, session_id=session_id) as project:
+        path_best_model_weights = project.create_path_tmp_file()
 
-    preprocessed_data = run_pipeline_create_model_input(description)
-    data = train_test_split_model_input(model_input=preprocessed_data,
-                                        description=description['modelInput'])
+        preprocessed_data = run_pipeline_create_model_input(description)
+        data = train_test_split_model_input(model_input=preprocessed_data,
+                                            description=description['modelInput'])
 
-    model = create_sequential_model_workflow(
-        sequential_model_desc=description['sequentialModel'],
-        model_compile=description['modelCompile'],
-        input_dim=data.X_train.shape[1:])
+        model = create_sequential_model_workflow(
+            sequential_model_desc=description['sequentialModel'],
+            model_compile=description['modelCompile'],
+            input_dim=data.X_train.shape[1:])
 
-    # train
-    path_best_model_weights = os.path.join(current_training_path, "best_model")
-    fit_params = create_model_fit_params(
-        data=data,
-        model_training_desc=description['modelTraining'],
-        path_best_model=path_best_model_weights
-    )
-    fit_history: History = model.fit(**fit_params)
-    # save result
-    path_history = os.path.join(current_training_path, "history.pickle")
-    with open(path_history, "wb") as f:
-        pickle.dump(fit_history, f)
-    with open(os.path.join(current_training_path, "description.json"), "w") as f:
-        json.dump(description, f, indent=4)
-    best_model = get_best_model(path_to_model=path_best_model_weights, model=model)
-    best_model.save(os.path.join(current_training_path, "model.h5"))
+        fit_params = create_model_fit_params(
+            data=data,
+            model_training_desc=description['modelTraining'],
+            path_best_model=path_best_model_weights
+        )
 
-    if preprocessed_data.scalers:
-        with open(os.path.join(current_training_path, "scalers.pickle"), "wb") as f:
-            pickle.dump(preprocessed_data.scalers, f)
+        fit_history: History = model.fit(**fit_params)
+        best_model = get_best_model(path_to_model=path_best_model_weights, model=model)
 
-    # cleanup
-    if os.path.isfile(path_best_model_weights):
-        os.remove(path_best_model_weights)
+        project.history = fit_history
+        project.description = description
+        project.model = best_model
+        project.scalers = preprocessed_data.scalers
 
-    return current_training_path, best_model
+        return project.path_training_dir, best_model
 
 
 def run_pipeline_create_model_input(description, pretrained_scalers = []):
