@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import cast
 from keras.callbacks import History
-from config import TrainingProject
+from config.training_project import TrainingProject
 from workflows.load_data.create_loader import create_loader_workflow
 from workflows.model_input.create import CreateModelInputWorkflow, train_test_split_model_input, PreprocessedModelInput
 from workflows.pipeline.create_pipeline import create_pipeline_workflow

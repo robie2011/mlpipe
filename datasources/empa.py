@@ -1,8 +1,7 @@
 import pickle
-
-import config
+from config import dirs
 from processors import StandardDataFormat
-from .abstract_datasource_adapter import AbstractDatasourceAdapter, DataResult
+from .abstract_datasource_adapter import AbstractDatasourceAdapter
 import pandas as pd
 from datetime import datetime
 import os
@@ -40,7 +39,7 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
 
     def fetch_cache_or_data(self):
         cache_id = hashlib.sha256(self.pathToFile.encode("utf-8")).hexdigest()
-        path_to_cache = os.path.join(config.get_config().dir_tmp, "cache_{0}".format(cache_id))
+        path_to_cache = os.path.join(dirs.tmp, "cache_{0}".format(cache_id))
         if os.path.isfile(path_to_cache):
             with open(path_to_cache, "rb") as f:
                 return pickle.load(f)

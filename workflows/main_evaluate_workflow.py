@@ -4,7 +4,7 @@ from typing import Dict, cast
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from api.interface import PredictionTypes
-from config import TrainingProject
+from config.training_project import TrainingProject
 from workflows.main_training_workflow import run_pipeline_create_model_input
 
 

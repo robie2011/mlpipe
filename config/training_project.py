@@ -2,36 +2,14 @@ import json
 import os
 import pickle
 import traceback
-from dataclasses import dataclass
 from enum import Enum
 from typing import List, Dict
 from uuid import uuid4
-
 from keras import Sequential
 from keras.callbacks import History
-from keras.models import load_model
+from keras.engine.saving import load_model
 from sklearn.base import TransformerMixin
-
-
-@dataclass
-class AppConfig:
-    dir_training: str
-    dir_data_package: str
-    dir_tmp: str
-
-
-def get_config():
-    config = AppConfig(
-        dir_training="/tmp/mlpipe/training",
-        dir_data_package="/tmp/mlpipe/packages",
-        dir_tmp="/tmp/mlpipe/tmp"
-    )
-
-    for c in [config.dir_data_package, config.dir_training, config.dir_tmp]:
-        if not os.path.isdir(c):
-            os.mkdir(c)
-
-    return config
+from config import dirs
 
 
 class _TrainingProjectFileNames(Enum):
@@ -46,7 +24,7 @@ class TrainingProject(object):
         self.name = name
         self.session_id = session_id
         self.path_training_dir = os.path.join(
-            get_config().dir_training,
+            dirs.training,
             name,
             session_id)
         self._tmp_files = []
