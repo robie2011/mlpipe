@@ -96,7 +96,7 @@ class TrainingProject(object):
     @history.setter
     def history(self, h: History):
         with open(self._get_project_file(_TrainingProjectFileNames.HISTORY), "wb") as f:
-            return pickle.dump(h, f)
+            pickle.dump(h, f)
 
     def create_path_tmp_file(self):
         new_path = os.path.join(self.path_training_dir, uuid4().__str__())
