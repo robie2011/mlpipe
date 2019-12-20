@@ -99,26 +99,29 @@ class CreateModelInputWorkflow:
         self.description = copy.deepcopy(description)
         self.has_pretrained_scalers = False
         self.scalers: List[TransformerMixin] = []
+        scalers_desc = self.description.get("scale", None)
         if pretrained_scalers:
             self.scalers = pretrained_scalers
             self.has_pretrained_scalers = True
-        elif 'scale' in self.description:
-            for scale_desc in self.description['scale']:
+        elif scalers_desc:
+            for scale_desc in scalers_desc:
                 name, fields, kwargs = pick_from_object(scale_desc, "name", "fields")
                 scaler = create_instance(qualified_name=name, kwargs=kwargs)
                 self.scalers.append(scaler)
 
         self.encoders = []
-        if 'encode' in self.description:
-            for encode_desc in self.description['encode']:
+        encoders_desc = self.description.get('encode', None)
+        if encoders_desc:
+            for encode_desc in encoders_desc:
                 name, fields, kwargs = pick_from_object(encode_desc, "name", "fields")
                 encoder = create_instance(qualified_name=name, kwargs=kwargs)
                 self.encoders.append(encoder)
 
     def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
-        if 'dropFields' in self.description:
-            logger.debug("drop fields: {0}".format(", ".join(self.description['dropFields'])))
-            input_data = ColumnDropper(columns=self.description['dropFields']).process(input_data)
+        desc_drop_fields = self.description.get('dropFields', None)
+        if desc_drop_fields:
+            logger.debug("drop fields: {0}".format(", ".join(desc_drop_fields)))
+            input_data = ColumnDropper(columns=desc_drop_fields).process(input_data)
 
         cols_with_index = list(enumerate(input_data.labels))
         try:
@@ -143,9 +146,11 @@ class CreateModelInputWorkflow:
         input_data.labels = self.description['predictionSourceFields'] + [self.description['predictionTargetField']]
 
         scalers_trained = []
-        if 'scale' in self.description:
+
+        scalers_desc = self.description.get("scale", None)
+        if scalers_desc:
             fields_scalers = zip(
-                map(lambda x: x['fields'], self.description['scale']),
+                map(lambda x: x['fields'], scalers_desc),
                 self.scalers
             )
 
@@ -164,9 +169,10 @@ class CreateModelInputWorkflow:
 
         # note: currently trained encoder can be discarded because
         # trained parameters are wellknown (see RangeEncoder)
-        if 'encode' in self.description:
+        encoders_desc = self.description.get('encode', None)
+        if encoders_desc:
             fields_encoders = zip(
-                map(lambda x: x['fields'], self.description['encode']),
+                map(lambda x: x['fields'], encoders_desc),
                 self.encoders
             )
 

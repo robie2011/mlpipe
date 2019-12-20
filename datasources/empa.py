@@ -1,9 +1,14 @@
+import pickle
+
+import config
 from processors import StandardDataFormat
 from .abstract_datasource_adapter import AbstractDatasourceAdapter, DataResult
 import pandas as pd
 from datetime import datetime
 import os
+import hashlib
 
+ENABLE_CACHING = True
 
 class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
     def __init__(self, pathToFile: str):
@@ -17,6 +22,9 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
             return "File not found " + self.pathToFile
 
     def fetch(self) -> StandardDataFormat:
+        return self.fetch_cache_or_data()
+
+    def fetch_data(self) -> StandardDataFormat:
         data = pd.read_csv(
             self.pathToFile,
             sep=',',
@@ -30,3 +38,14 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
             data=values,
             timestamps=timestamps)
 
+    def fetch_cache_or_data(self):
+        cache_id = hashlib.sha256(self.pathToFile.encode("utf-8")).hexdigest()
+        path_to_cache = os.path.join(config.get_config().dir_tmp, "cache_{0}".format(cache_id))
+        if os.path.isfile(path_to_cache):
+            with open(path_to_cache, "rb") as f:
+                return pickle.load(f)
+        else:
+            data = self.fetch_data()
+            with open(path_to_cache, "wb") as f:
+                pickle.dump(data, f)
+                return data

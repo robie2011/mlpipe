@@ -21,11 +21,17 @@ class AppConfig:
 
 
 def get_config():
-    return AppConfig(
+    config = AppConfig(
         dir_training="/tmp/mlpipe/training",
         dir_data_package="/tmp/mlpipe/packages",
         dir_tmp="/tmp/mlpipe/tmp"
     )
+
+    for c in [config.dir_data_package, config.dir_training, config.dir_tmp]:
+        if not os.path.isdir(c):
+            os.mkdir(c)
+
+    return config
 
 
 class _TrainingProjectFileNames(Enum):

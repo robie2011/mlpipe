@@ -28,7 +28,7 @@ modelInput:
     - Zuluft
     - Abluft
     - CO2
-    - Stunden
+#    - Stunden
     - Wochentag
 
   predictionTargetField: Präsenz
@@ -57,11 +57,11 @@ modelInput:
         - CO2
 
   encode:
-    - name: encoders.RangeEncoder
-      value_from: 0
-      value_to: 24
-      fields:
-        - Stunden
+#    - name: encoders.RangeEncoder
+#      value_from: 0
+#      value_to: 24
+#      fields:
+#        - Stunden
     - name: encoders.RangeEncoder
       value_from: 0
       value_to: 7
@@ -73,7 +73,7 @@ modelInput:
 
 sequentialModel:
   - name: keras.layers.Dense
-    units: 30
+    units: 50
     activation: tanh
   - name: keras.layers.Dense
     units: 10
@@ -92,6 +92,8 @@ modelTraining:
   epochs: 10
   batch_size: 4320
   repeat: 3
+
+backupTraining: False
 
 analyze:
   groupBy:

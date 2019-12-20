@@ -58,22 +58,6 @@ def create_model_fit_params(
     }
 
 
-# def evaluate_model(
-#         path_to_model: str,
-#         model: Sequential,
-#         predictionType: PredictionTypes,
-#         ):
-#     if os.path.exists(path_to_model):
-#         model = model.load_weights(path_to_model)
-#
-#     func_prediction = {
-#         PredictionTypes.BINARY: model.predict_classes,
-#         PredictionTypes.REGRESSION: model.predict
-#     }
-#
-#     y_prediction = func_prediction.get(predictionType)()
-#
-
 def get_best_model(path_to_model: str, model: Sequential) -> Sequential:
     if os.path.exists(path_to_model):
         model.load_weights(path_to_model)
