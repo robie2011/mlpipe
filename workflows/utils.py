@@ -72,3 +72,10 @@ def pick_from_object(obj, *keys):
 
     result.append(obj)
     return result
+
+
+def sequential_execution(funcs: List[object]):
+    data = funcs[0]()
+    for f in funcs[1:]:
+        data = f(data)
+    return data

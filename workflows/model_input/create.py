@@ -160,9 +160,10 @@ class CreateModelInputWorkflow:
                 func_transform = scaler.transform if self.has_pretrained_scalers else scaler.fit_transform
                 input_data.data[:, ix_col_selected] = func_transform(partial_data)
 
-                # todo: backup
                 scalers_trained.append(scaler)
 
+        # note: currently trained encoder can be discarded because
+        # trained parameters are wellknown (see RangeEncoder)
         if 'encode' in self.description:
             fields_encoders = zip(
                 map(lambda x: x['fields'], self.description['encode']),

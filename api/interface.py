@@ -42,5 +42,5 @@ class ModelTrainRequest:
 
 
 class PredictionTypes(Enum):
-    BINARY = "BINARY"
-    REGRESSION = "REGRESSION"
+    BINARY = "binary"
+    REGRESSION = "regression"

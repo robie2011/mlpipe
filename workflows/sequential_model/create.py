@@ -54,7 +54,7 @@ def create_model_fit_params(
         "batch_size": model_training_desc["batch_size"],
         "validation_data": (data.X_test, data.y_test),
         "callbacks": [checkpoint],
-        "verbose": 1
+        "verbose": 2
     }
 
 
@@ -74,7 +74,7 @@ def create_model_fit_params(
 #     y_prediction = func_prediction.get(predictionType)()
 #
 
-def get_best_model(path_to_model: str, model: Sequential, fit_history: object) -> Sequential:
+def get_best_model(path_to_model: str, model: Sequential) -> Sequential:
     if os.path.exists(path_to_model):
         model.load_weights(path_to_model)
     return model

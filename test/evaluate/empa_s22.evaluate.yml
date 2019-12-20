@@ -1,0 +1,21 @@
+name: empa_mlp
+session: 2019-12-20_081913
+testSource:
+  name: datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: /Users/robert.rajakone/repos/2019_p8/code/trainframework/meeting_room_sensors_201807_201907.csv
+  fields:
+    # SiZi: Alternative
+#    - 3200000 as TempAussen
+#    - 40210032 as TempInnen
+#    - 40210022 as Zuluft
+#    - 40210025 as Abluft
+#    - 40210033 as CO2
+#    - 40210149 as Präsenz
+
+#    # SiZi: Original
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
