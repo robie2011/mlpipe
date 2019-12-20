@@ -9,7 +9,7 @@ from keras import Sequential
 from keras.callbacks import History
 from keras.engine.saving import load_model
 from sklearn.base import TransformerMixin
-from config import dirs
+from config import app_settings
 
 
 class _TrainingProjectFileNames(Enum):
@@ -24,7 +24,7 @@ class TrainingProject(object):
         self.name = name
         self.session_id = session_id
         self.path_training_dir = os.path.join(
-            dirs.training,
+            app_settings.dir_training,
             name,
             session_id)
         self._tmp_files = []
