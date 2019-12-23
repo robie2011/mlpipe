@@ -1,8 +1,6 @@
 import unittest
 import numpy as np
 import yaml
-from keras import Sequential
-
 from utils import get_dir
 from workflows.analyzers.create_analyzers import create_analyzer_workflow
 from workflows.load_data.create_loader import create_loader_workflow
@@ -44,10 +42,14 @@ class TestTraning(unittest.TestCase):
         path_to_file = get_dir(["test", "evaluate", "empa_s22.evaluate.yml"])
         description = yaml.load(open(path_to_file, "r"))
         tn, fp, fn, tp = evaluate(description)
+        tpr = tp / (tp + fn)
+        tnr = tn / (tn + fp)
+        bac = (tpr + tnr) / 2
         result = np.array([tn, fp, fn, tp])
         print(result)
 
         print("cf-matrix [tn, fp, fn, tp]")
+        print("balanced accuracy: {0}".format(bac))
         print(result / np.sum(result))
 
         print("tn+tp={0}".format((tn+tp)/np.sum(result)))

@@ -36,6 +36,7 @@ def _get_column_id(columns: List[str], selection: str):
 
 
 def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str] = []) -> Tuple[List[int], List[str]]:
+    """returns list of indexes, list of names"""
     if len(exclude) > 0 and len(selection) > 0:
         raise Exception("invalid!")
 
@@ -44,7 +45,7 @@ def _map_indexes(source: List[str], selection: List[str] = [], exclude: List[str
     result = [(ix, name) for ix, name in enumerate(source) if name in selection]
 
     if selection and len(selection) > len(result):
-        raise ValueError("More or more selected field can not be found.\r\n\tSelected: {0}\r\n\tAvailable: {1}".format(
+        raise ValueError("One or more selected field can not be found.\r\n\tSelected: {0}\r\n\tAvailable: {1}".format(
             selection,
             source
         ))
@@ -118,11 +119,6 @@ class CreateModelInputWorkflow:
                 self.encoders.append(encoder)
 
     def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
-        desc_drop_fields = self.description.get('dropFields', None)
-        if desc_drop_fields:
-            logger.debug("drop fields: {0}".format(", ".join(desc_drop_fields)))
-            input_data = ColumnDropper(columns=desc_drop_fields).process(input_data)
-
         cols_with_index = list(enumerate(input_data.labels))
         try:
             ix_prediction_target = next(ix for ix, name in cols_with_index
@@ -133,20 +129,10 @@ class CreateModelInputWorkflow:
                 input_data.labels
             ))
 
-        ix_prediction_sources = [ix for ix, name in cols_with_index
-                                 if name in self.description['predictionSourceFields']]
-
-        if len(ix_prediction_sources) != len(self.description['predictionSourceFields']):
-            raise Exception("Required source fields are: {0}. \r\nBut source only contains: {1}".format(
-                self.description['predictionSourceFields'],
-                input_data.labels
-            ))
-
-        input_data.data = input_data.data[:, ix_prediction_sources + [ix_prediction_target]]
-        input_data.labels = self.description['predictionSourceFields'] + [self.description['predictionTargetField']]
-
+        # note: scaling target field may be required
+        # therefore we scale requested fields first.
+        # Here we don't have to make distinction between source and target field
         scalers_trained = []
-
         scalers_desc = self.description.get("scale", None)
         if scalers_desc:
             fields_scalers = zip(
@@ -167,6 +153,19 @@ class CreateModelInputWorkflow:
 
                 scalers_trained.append(scaler)
 
+        # filtering source data
+        ix_prediction_sources, ix_prediction_names = _map_indexes(
+            source=input_data.labels,
+            selection=self.description['predictionSourceFields'])
+        X, y, timestamps = input_data.data[:, ix_prediction_sources], \
+                           input_data.data[:, ix_prediction_target], \
+                           input_data.timestamps
+        X_labels = ix_prediction_names
+
+        # input_data shouldn't be used after this line
+        # because we split data in different variables
+        del input_data
+
         # note: currently trained encoder can be discarded because
         # trained parameters are wellknown (see RangeEncoder)
         encoders_desc = self.description.get('encode', None)
@@ -180,39 +179,38 @@ class CreateModelInputWorkflow:
                 qualified_classname = type(encoder).__name__
                 for field in fields:
                     logger.debug("run encoding for field={0} with scaler={1}".format(field, qualified_classname))
-                    ix_field = _get_column_id(columns=input_data.labels, selection=field)
-                    column_data = input_data.data[:, ix_field]
+                    ix_field = _get_column_id(columns=X_labels, selection=field)
+                    column_data = X[:, ix_field]
 
                     # removing old data
-                    input_data.labels.remove(field)
-                    input_data.data = np.delete(input_data.data, ix_field, axis=1)
+                    X_labels.remove(field)
+                    X = np.delete(X, ix_field, axis=1)
 
                     # adding new data
                     encoded_data = cast(AbstractEncoder, encoder).encode(column_data)
-                    input_data.data = np.hstack((input_data.data, encoded_data))
+                    X = np.hstack((X, encoded_data))
 
                     # add new labels
-                    encoding_id = "{0}_encoded_{1}".format(field, int(random() * 1000))
+                    encoding_id = "{0}_encoded$".format(field, int(random() * 1000))
                     new_labels = ["{0}_{1}".format(encoding_id, i) for i in range(encoded_data.shape[1])]
-                    input_data.labels += new_labels
+                    X_labels += new_labels
 
         if 'shuffle' in self.description and self.description['shuffle']:
             logger.debug("shuffle data")
-            ix = np.arange(input_data.data.shape[0])
+            ix = np.arange(X.shape[0])
             np.random.shuffle(ix)
-            input_data.data = input_data.data[ix]
+            X = X[ix]
+            y = y[ix]
+            timestamps = timestamps[ix]
 
         logging.debug("use shuffle default={0}".format(
             'shuffle' in self.description and self.description['shuffle'] is True
         ))
 
-        # we already have ordered columns. Last column is y
-        X, y = input_data.data[:, :-1], input_data.data[:, -1]
-
         if 'create3dSequence' in self.description:
             n_sequence = int(self.description['create3dSequence'])
             logger.debug("create 3d sequence with sequence length={0}".format(n_sequence))
-            ix_valid_endpoints = create_sequence_endpoints(timestamps=input_data.timestamps, n_sequence=n_sequence)
+            ix_valid_endpoints = create_sequence_endpoints(timestamps=timestamps, n_sequence=n_sequence)
             output_size = (ix_valid_endpoints.shape[0], n_sequence, X.shape[1])
             output = np.full(output_size, np.nan)
             for i in range(len(ix_valid_endpoints)):
@@ -232,8 +230,9 @@ def train_test_split_model_input(description: PreprocessingDescription, model_in
     logger.debug("ratio for testdata={0}".format(ratio_test))
 
     # note: X can be 2D or 3D
-    shuffle = 'shuffle' in description and description['shuffle']
-    X_train, X_test, y_train, y_test = train_test_split(model_input.X, model_input.y, test_size=ratio_test, shuffle=shuffle)
+    # note: shuffle is already done in previous step (if necessary)
+    X_train, X_test, y_train, y_test = train_test_split(
+        model_input.X, model_input.y, test_size=ratio_test, shuffle=False)
 
     return PreprocessedTrainingDataSplit(
         X_train=X_train,
