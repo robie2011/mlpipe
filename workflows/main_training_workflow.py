@@ -1,8 +1,11 @@
+import tensorflow
 import hashlib
 import json
 import os
 import pickle
 from datetime import datetime
+from typing import Dict
+import numpy
 from keras.callbacks import History
 from config import app_settings
 from config.training_project import TrainingProject
@@ -12,9 +15,10 @@ from workflows.pipeline.create_pipeline import create_pipeline_workflow
 from workflows.sequential_model.create import create_sequential_model_workflow, create_model_fit_params, get_best_model
 from workflows.utils import sequential_execution
 import logging
-
+import random
 
 logger = logging.getLogger()
+
 
 def train(description):
     model_name = description['name']
@@ -40,6 +44,7 @@ def train(description):
             model_training_desc=description['modelTraining'],
             path_best_model=path_best_model_weights
         )
+
 
         fit_history: History = model.fit(**fit_params)
         best_model = get_best_model(path_to_model=path_best_model_weights, model=model)
@@ -70,7 +75,21 @@ def _dataloader_with_cache(source_desc):
                 pickle.dump(data, f)
                 return data
 
-def run_pipeline_create_model_input(description, pretrained_scalers = []):
+
+def setup_seed(seed_desc: Dict):
+    # https://machinelearningmastery.com/reproducible-results-neural-networks-keras/
+    # https://www.tensorflow.org/api_docs/python/tf/random/set_seed?version=stable
+    np_seed = seed_desc.get("numpy", random.randint(0, 1000))
+    tf_seed = seed_desc.get("tensorflow", random.randint(0, 1000))
+    print("using numpy random seed={0}".format(np_seed))
+    print("using tensorflow random seed={0}".format(tf_seed))
+    numpy.random.seed(np_seed)
+    tensorflow.random.set_seed(tf_seed)
+
+
+def run_pipeline_create_model_input(description:Dict, pretrained_scalers=[]) -> PreprocessedModelInput:
+    setup_seed(description.get("seed", {}))
+
     composed = [
         lambda: _dataloader_with_cache(description['source']),
         create_pipeline_workflow(description['pipeline']).execute,
@@ -78,3 +97,4 @@ def run_pipeline_create_model_input(description, pretrained_scalers = []):
     ]
     data: PreprocessedModelInput = sequential_execution(composed)
     return data
+
