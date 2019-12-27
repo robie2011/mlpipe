@@ -3,9 +3,6 @@ from .actions import list_models, describe_model, train_model
 import logging
 
 
-logging.basicConfig(level=logging.DEBUG)
-
-
 def actionNotImplemented(args):
     raise ValueError("Action not implemented", args.action)
 
@@ -19,6 +16,8 @@ def main():
     parser_train.add_argument("file", metavar="FILE")
 
     parser_test = subparsers.add_parser('test')
+    parser_test.add_argument("file", metavar="FILE")
+
     parser_list = subparsers.add_parser('list')
 
     parser_describe = subparsers.add_parser("describe")
@@ -33,5 +32,6 @@ def main():
         "describe": describe_model
     }
 
+    logging.basicConfig(level=logging.DEBUG)
     action_switcher.get(args.action, actionNotImplemented)(args)
 

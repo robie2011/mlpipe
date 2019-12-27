@@ -1,7 +1,7 @@
 name: empa_mlp
 source:
   name: datasources.empa.EmpaCsvSourceAdapter
-  pathToFile: /Users/robert.rajakone/repos/2019_p8/code/trainframework/meeting_room_sensors_201807_201907.csv
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields:
     - 3200000 as TempAussen
     - 40210012 as TempInnen
