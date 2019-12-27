@@ -1,4 +1,5 @@
 import json
+import numbers
 import os
 import pickle
 import time
@@ -22,6 +23,8 @@ def _get_history(name: str, session_id: str) -> HistorySummary:
     """writing new logic instead of using TrainingProject because TrainingProject requires loading tensorflow lib"""
     path_history = os.path.join(
         app_settings.dir_training, name, session_id, TrainingProjectFileNames.HISTORY_SUMMARY.value)
+    if not os.path.isfile(path_history):
+        return None
     with open(path_history, "rb") as f:
         return pickle.load(f, fix_imports=False)
 
@@ -34,6 +37,10 @@ def list_models(args):
         for session_id in os.listdir(os.path.join(app_settings.dir_training, name)):
             model_path = os.path.join(app_settings.dir_training, name, session_id)
             history = _get_history(name=name, session_id=session_id)
+            if history is None:
+                print("history not found in training folder: {0}".format(model_path))
+                continue
+
             ix_best = np.argmin(history.history[app_settings.training_monitor])
 
             result.append(ModelLocation(
@@ -76,7 +83,7 @@ def describe_model(args):
     print(project.model.summary())
 
 
-def load_description_file(path: str):
+def _load_description_file(path: str):
     _, ext = os.path.splitext(path)
     with open(path, "r") as f:
         if ext == ".json":
@@ -89,7 +96,38 @@ def load_description_file(path: str):
 
 def train_model(args):
     path = args.file if os.path.isabs(args.file) else os.path.abspath(args.file)
-    description = load_description_file(path)
+    description = _load_description_file(path)
     from workflows.main_training_workflow import train
     train(description)
 
+
+def test_model(args):
+    from workflows.main_evaluate_workflow import evaluate
+    path = args.file if os.path.isabs(args.file) else os.path.abspath(args.file)
+    description = _load_description_file(path)
+
+    print("")
+    print("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
+    print("data source: ")
+    for k, v in description['testSource'].items():
+        if not isinstance(v, str) and v.__iter__:
+            print("   {0}: ".format(k))
+            for x in v:
+                print("   - {0}".format(x))
+        else:
+            print("   {0}: {1}".format(k, v))
+    print("")
+
+    result = evaluate(description)
+    print("")
+    print("result:")
+    for attr, value in result.__dict__.items():
+        # formatting number output: https://pyformat.info/
+        if attr.startswith("n_"):
+            print("   {0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
+        elif attr.startswith("p_"):
+            print("   {0}: {1:05.3f}%".format(attr, value * 100))
+        elif isinstance(value, numbers.Number):
+            print("   {0}: {1:,}".format(attr, value))
+        else:
+            print("   {0}: ".format(attr), value)
