@@ -105,11 +105,6 @@ modelInput:
 
 sequentialModel:
   - name: keras.layers.Dense
-    units: 200
-  - name: keras.layers.Dense
-    units: 100
-    activation: tanh
-  - name: keras.layers.Dense
     units: 50
     activation: tanh
   - name: keras.layers.Dense
@@ -123,7 +118,7 @@ modelCompile:
     - accuracy
 
 modelTraining:
-  epochs: 50
+  epochs: 10
   batch_size: 4320
   repeat: 3
 

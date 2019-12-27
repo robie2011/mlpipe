@@ -3,6 +3,8 @@ import copy
 from typing import List, Tuple, Dict
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint
+
+from config import app_settings
 from workflows.interface import ClassDescription
 from workflows.model_input.create import PreprocessedTrainingDataSplit
 from workflows.sequential_model.interface import ModelCompileDescription
@@ -37,13 +39,12 @@ def create_sequential_model_workflow(
 def create_model_fit_params(
         data: PreprocessedTrainingDataSplit,
         model_training_desc: Dict,
-        path_best_model: str,
-        monitor='val_loss'):
+        path_best_model: str):
 
     checkpoint = ModelCheckpoint(
         path_best_model,
         verbose=0,
-        monitor=monitor,
+        monitor=app_settings.training_monitor,
         save_best_only=True,
         mode='auto')
 

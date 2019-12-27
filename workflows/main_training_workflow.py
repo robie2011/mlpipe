@@ -27,7 +27,7 @@ def train(description):
     if 'repeat' in description['modelTraining']:
         print("NOTE: repeating training not implemented yet!")
 
-    with TrainingProject(name=model_name, session_id=session_id) as project:
+    with TrainingProject(name=model_name, session_id=session_id, create=True) as project:
         path_best_model_weights = project.create_path_tmp_file()
 
         preprocessed_data = run_pipeline_create_model_input(description)
