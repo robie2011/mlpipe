@@ -14,7 +14,7 @@ from workflows.model_input.interface import PreprocessingDescription
 from workflows.utils import create_instance, pick_from_object
 from typing import cast
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 @dataclass()

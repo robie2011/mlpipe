@@ -9,7 +9,7 @@ from processors import StandardDataFormat
 from workflows.utils import get_qualified_name
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 @dataclass

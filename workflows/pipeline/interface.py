@@ -7,7 +7,7 @@ from api.sequence_creator import create_sequence_3d
 from processors import StandardDataFormat, AbstractProcessor
 from workflows.utils import get_qualified_name
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 # python 3.8+

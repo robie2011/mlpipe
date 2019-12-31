@@ -2,7 +2,7 @@ import logging
 from groupers import CombinedGroup
 import numpy as np
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):

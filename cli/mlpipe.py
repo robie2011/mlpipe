@@ -30,7 +30,6 @@ def main():
 
 
     args = parser.parse_args()
-
     action_switcher = {
         "train": train_model,
         "list": list_models,
@@ -38,6 +37,16 @@ def main():
         "test": test_model
     }
 
-    logging.basicConfig(level=logging.DEBUG)
+
+    # create a logging format
+    logger = logging.getLogger(__name__)
+    print(__name__)
+
+    # add the handlers to the logger
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+
     action_switcher.get(args.action, actionNotImplemented)(args)
 

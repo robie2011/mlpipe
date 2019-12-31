@@ -12,7 +12,7 @@ from workflows.utils import create_instance, pick_from_object
 import logging
 
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def create_sequential_model_workflow(

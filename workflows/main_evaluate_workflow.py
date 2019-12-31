@@ -6,7 +6,10 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from api.interface import PredictionTypes
 from config.training_project import TrainingProject
-from workflows.main_training_workflow import run_pipeline_create_model_input
+from workflows.main_training_workflow import run_pipeline_create_model_input, PipelineAndModelInputExecutionResult
+from workflows.model_input.create import PreprocessedModelInput
+import pandas as pd
+import numpy as np
 
 
 def _read_json(path: str) -> Dict:
@@ -24,6 +27,19 @@ class EvaluationResult:
     p_correct: float
     ix_error: np.ndarray
     size: int
+    stats: Dict
+
+
+def _get_stats(result: PipelineAndModelInputExecutionResult, ix_error: np.ndarray) -> Dict:
+    timestamps_error = result.stats.timestamps_after_pipeline[ix_error]
+
+    return {
+        'rows_removed': result.stats.shape_initial[0] - result.stats.shape_model_input_y[0],
+        'shape_initial': result.stats.shape_initial,
+        'shape_model_input_x': result.stats.shape_model_input_x,
+        'weekdays': np.unique(pd.Series(timestamps_error).dt.week.values, return_counts=True),
+        'hours': np.unique(pd.Series(timestamps_error).dt.hour.values, return_counts=True)
+    }
 
 
 def evaluate(description: Dict):
@@ -32,7 +48,8 @@ def evaluate(description: Dict):
         project = cast(TrainingProject, project)
         evaluation_project = copy.deepcopy(project.description)
         evaluation_project['source'] = description['testSource']
-        data = run_pipeline_create_model_input(evaluation_project, pretrained_scalers=project.scalers)
+        execution_result = run_pipeline_create_model_input(evaluation_project, pretrained_scalers=project.scalers)
+        data = execution_result.package
 
         if evaluation_project['modelInput']['predictionType'] == PredictionTypes.BINARY.value:
             y_ = cast(np.ndarray, project.model.predict_classes(data.X)).reshape(-1, )
@@ -43,11 +60,13 @@ def evaluate(description: Dict):
             tnr = tn / (tn + fp)
             bac = (tpr + tnr) / 2
 
+            _get_stats(result=execution_result, ix_error=ix_error)
             return EvaluationResult(
                 n_tn=tn, n_fp=fp, n_fn=fn, n_tp=tp, p_bac=bac,
                 ix_error=ix_error,
                 p_correct=(tp+tn) / y_.shape[0],
-                size=y_.shape[0]
+                size=y_.shape[0],
+                stats=_get_stats(result=execution_result, ix_error=ix_error)
             )
         else:
             raise Exception("Not implemented")

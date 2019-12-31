@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import tensorflow
 import hashlib
 import json
@@ -9,6 +10,7 @@ import numpy
 from keras.callbacks import History
 from config import app_settings
 from config.training_project import TrainingProject
+from processors import StandardDataFormat
 from workflows.load_data.create_loader import create_loader_workflow
 from workflows.model_input.create import CreateModelInputWorkflow, train_test_split_model_input, PreprocessedModelInput
 from workflows.pipeline.create_pipeline import create_pipeline_workflow
@@ -17,7 +19,7 @@ from workflows.utils import sequential_execution
 import logging
 import random
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def train(description):
@@ -30,7 +32,8 @@ def train(description):
     with TrainingProject(name=model_name, session_id=session_id, create=True) as project:
         path_best_model_weights = project.create_path_tmp_file()
 
-        preprocessed_data = run_pipeline_create_model_input(description)
+        execution_result = run_pipeline_create_model_input(description)
+        preprocessed_data = execution_result.package
         data = train_test_split_model_input(model_input=preprocessed_data,
                                             description=description['modelInput'])
 
@@ -65,7 +68,8 @@ def _dataloader_with_cache(source_desc):
         logger.debug("caching source is enabled. Cache-Id is {0}".format(cache_id))
         path_to_cache = os.path.join(app_settings.dir_tmp, "cache_{0}".format(cache_id))
         if os.path.isfile(path_to_cache):
-            logger.debug("cached version found. loading.")
+            logger.debug("cached version found. loading {0}".format(path_to_cache))
+            logger.debug("    NOTE: CSV-Cache returns parsed CSV if filename match is found")
             with open(path_to_cache, "rb") as f:
                 return pickle.load(f)
         else:
@@ -87,14 +91,41 @@ def setup_seed(seed_desc: Dict):
     tensorflow.random.set_seed(tf_seed)
 
 
-def run_pipeline_create_model_input(description:Dict, pretrained_scalers=[]) -> PreprocessedModelInput:
+class DataFlowStatistics:
+    def _stats_after_initial(self, package: StandardDataFormat) -> StandardDataFormat:
+        self.shape_initial = package.data.shape
+        self.timestamps_initial = package.timestamps.copy()
+        return package
+
+    def _stats_after_pipeline(self, package: StandardDataFormat) -> StandardDataFormat:
+        self.shape_after_pipeline = package.data.shape
+        self.timestamps_after_pipeline = package.timestamps.copy()
+        return package
+
+    def _stats_after_model_input(self, model_input: PreprocessedModelInput) -> PreprocessedModelInput:
+        self.shape_model_input_x = model_input.X.shape
+        self.shape_model_input_y = model_input.y.shape
+        return model_input
+
+
+@dataclass
+class PipelineAndModelInputExecutionResult:
+    package: PreprocessedModelInput
+    stats: DataFlowStatistics
+
+
+def run_pipeline_create_model_input(description:Dict, pretrained_scalers=[]) -> PipelineAndModelInputExecutionResult:
     setup_seed(description.get("seed", {}))
+    stats = DataFlowStatistics()
 
     composed = [
         lambda: _dataloader_with_cache(description['source']),
+        stats._stats_after_initial,
         create_pipeline_workflow(description['pipeline']).execute,
-        CreateModelInputWorkflow(description['modelInput'], pretrained_scalers=pretrained_scalers).model_preprocessing
+        stats._stats_after_pipeline,
+        CreateModelInputWorkflow(description['modelInput'], pretrained_scalers=pretrained_scalers).model_preprocessing,
+        stats._stats_after_model_input
     ]
     data: PreprocessedModelInput = sequential_execution(composed)
-    return data
+    return PipelineAndModelInputExecutionResult(package=data, stats=stats)
 

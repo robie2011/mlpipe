@@ -7,7 +7,7 @@ from processors import AbstractProcessor
 from workflows.utils import get_component_config, create_instance
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 ProcessorOrAggregation = Union[AbstractProcessor, SingleAggregationConfig]
 

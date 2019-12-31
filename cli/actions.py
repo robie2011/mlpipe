@@ -57,6 +57,9 @@ def list_models(args):
                 datetime=time.ctime(os.path.getmtime(model_path))
             ))
 
+    result = sorted(result, key=lambda r: r.accuracy, reverse=True)
+    result = sorted(result, key=lambda r: r.name)
+
     print(tabulate.tabulate(map(
         lambda x: [
             "{0}/{1}".format(x.name, x.session_id),
@@ -108,7 +111,7 @@ def test_model(args):
 
     print("")
     print("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
-    print("data source: ")
+    print("test data source: ")
     for k, v in description['testSource'].items():
         if not isinstance(v, str) and v.__iter__:
             print("   {0}: ".format(k))
@@ -121,13 +124,23 @@ def test_model(args):
     result = evaluate(description)
     print("")
     print("result:")
+    terminal_tab = "   "
     for attr, value in result.__dict__.items():
         # formatting number output: https://pyformat.info/
         if attr.startswith("n_"):
-            print("   {0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
+            print(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
         elif attr.startswith("p_"):
-            print("   {0}: {1:05.3f}%".format(attr, value * 100))
+            print(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
         elif isinstance(value, numbers.Number):
-            print("   {0}: {1:,}".format(attr, value))
+            print(terminal_tab + "{0}: {1:,}".format(attr, value))
+        elif isinstance(value, dict):
+            print(terminal_tab + "{0}:".format(attr))
+            for k, v in value.items():
+                if isinstance(v, tuple):
+                    print(terminal_tab * 2 + "{0}:".format(k))
+                    for ti in v:
+                        print(terminal_tab*3 + "{0}".format(ti))
+                else:
+                    print(terminal_tab*2 + "{0}: {1}".format(k, v))
         else:
             print("   {0}: ".format(attr), value)

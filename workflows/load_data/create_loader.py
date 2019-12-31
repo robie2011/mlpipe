@@ -5,7 +5,7 @@ from datasources import AbstractDatasourceAdapter
 from workflows.interface import ClassDescription
 from workflows.utils import get_component_config, create_instance, pick_from_object
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 @dataclass

@@ -12,10 +12,11 @@ while [[ "$#" -gt 0 ]]; do case $1 in
 esac; shift; done
 
 source ./scripts/get_envars.sh
-if [ $SSH_HOST -eq "" ]; then
+if [ -z "$SSH_HOST" ]; then
   echo "no instance found"
   exit
 fi
+
 
 echo "Host $SSH_HOST:$SSH_PORT ..."
 echo ""
@@ -58,4 +59,5 @@ scp -P $SSH_PORT $PACKAGE_PATH $SSH_HOST_USER@$SSH_HOST:$REMOTE_PATH
 
 echo "ssh connection string:"
 echo "  ssh -p $SSH_PORT $SSH_HOST_USER@$SSH_HOST -L 8080:localhost:8080"
-#ssh -p $SSH_PORT $SSH_HOST_USER "cd  /tmp; mkdir p8; mv p8_package.gz.tar p8; cd p8; tar -xvf p8_package.gz.tar"
+ssh -p $SSH_PORT $SSH_HOST_USER@$SSH_HOST "cd  /tmp; mkdir p8;tar -xvf mlpipe.gz.tar && ./install_environment.sh"
+
