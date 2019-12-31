@@ -113,5 +113,32 @@ class PipelineWorkflow:
     def execute(self, input_data: StandardDataFormat) -> StandardDataFormat:
         for pipe in self.pipelines:
             module_logger.debug("execute pipe: {0}".format(type(pipe).__name__))
-            input_data = pipe.process(input_data)
+            input_data_after = pipe.process(input_data)
+            self._analyze(input_data_before=input_data, input_data_after=input_data_after, processor=pipe)
+            input_data = input_data_after
         return input_data
+
+    def _analyze(
+            self,
+            input_data_before: StandardDataFormat,
+            input_data_after: StandardDataFormat,
+            processor: ProcessorOrMultiAggregation):
+        n_total = input_data_before.data.shape[0]
+        n_total_new = input_data_after.data.shape[0]
+        n_remove = n_total - n_total_new
+        p_removed = n_remove / n_total
+        p_usual_cleaning = .1
+
+        if n_remove != 0:
+            module_logger.debug("Row size updated: change: {0:,} from total {1:,}. Remaining {2:,}. Processed by {3}".format(
+                (-1) * n_remove,
+                n_total,
+                n_total_new,
+                get_qualified_name(processor)
+            ))
+
+            if p_removed > p_usual_cleaning:
+                module_logger.warning("unusual behaviour: {0}% of source rows were removed by {1}".format(
+                    p_removed * 100,
+                    get_qualified_name(processor)
+                ))

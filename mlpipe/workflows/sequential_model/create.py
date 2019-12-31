@@ -22,7 +22,13 @@ def create_sequential_model_workflow(
     for ix, layer_desc in enumerate(sequential_model_desc):
         name, kwargs = pick_from_object(layer_desc, "name")
         if ix == 0:
-            kwargs['input_dim'] = input_dim if len(input_dim) > 1 else input_dim[0]
+            if len(input_dim) == 1:
+                kwargs['input_dim'] = input_dim[0]
+            elif len(input_dim) > 1:
+                kwargs['input_shape'] = input_dim
+            else:
+                raise ValueError(f"Invalid input dimension {input_dim}")
+
         logging.debug("creating layer of '{0}' with config={1}".format(
             name,
             kwargs

@@ -195,18 +195,18 @@ class CreateModelInputWorkflow:
                     new_labels = ["{0}_{1}".format(encoding_id, i) for i in range(encoded_data.shape[1])]
                     X_labels += new_labels
 
-        if 'shuffle' in self.description and self.description['shuffle']:
-            module_logger.info("shuffle data")
-            ix = np.arange(X.shape[0])
-            np.random.shuffle(ix)
-            X = X[ix]
-            y = y[ix]
-            timestamps = timestamps[ix]
-
         if 'create3dSequence' in self.description:
             n_sequence = int(self.description['create3dSequence'])
-            module_logger.info("create 3d sequence with sequence length={0}".format(n_sequence))
+            module_logger.info("create3dSequence: create 3D-Sequence with sequence length={0}".format(n_sequence))
             ix_valid_endpoints = create_sequence_endpoints(timestamps=timestamps, n_sequence=n_sequence)
+            module_logger.info("create3dSequence: found {0:,} valid endpoints (Previous row size was {1:,})".format(
+                ix_valid_endpoints.shape[0],
+                X.shape[0]
+            ))
+            p_dropped_size = 1-ix_valid_endpoints.shape[0]/X.shape[0]
+            if p_dropped_size > .1:
+                module_logger.warning(f"create3dSequence: {p_dropped_size*100}% of rows were removed")
+
             output_size = (ix_valid_endpoints.shape[0], n_sequence, X.shape[1])
             output = np.full(output_size, np.nan)
             for i in range(len(ix_valid_endpoints)):
@@ -218,12 +218,24 @@ class CreateModelInputWorkflow:
             y = y[ix_valid_endpoints]
             X = output
 
+        if 'shuffle' in self.description and self.description['shuffle']:
+            module_logger.info("shuffle data")
+            ix = np.arange(X.shape[0])
+            np.random.shuffle(ix)
+            X = X[ix]
+            y = y[ix]
+            timestamps = timestamps[ix]
+
         return PreprocessedModelInput(X=X, y=y, scalers=scalers_trained)
 
 
 def train_test_split_model_input(description: PreprocessingDescription, model_input: PreprocessedModelInput):
     ratio_test = description['ratioTestdata'] if 'ratioTestdata' in description else .9
-    module_logger.info("train/test data spliting ratio: testdata={0}".format(ratio_test))
+    module_logger.info("splitting: test data size is {0}. Row size of x is {1:,}. Row size of y is {2:,}".format(
+        ratio_test,
+        model_input.X.data.shape[0],
+        model_input.y.data.shape[0]
+    ))
 
     # note: X can be 2D or 3D
     # note: shuffle is already done in previous step (if necessary)
