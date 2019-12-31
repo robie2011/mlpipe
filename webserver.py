@@ -5,9 +5,9 @@ import jsonpickle
 import jsonpickle.ext.numpy as jsonpickle_numpy
 from flask import Flask, send_file
 from flask import request
-from api import execute_pipeline
-from api.interface import CreateOrAnalyzePipeline
-from api.pipline_builder import build
+from mlpipe.api import execute_pipeline
+from mlpipe.api.interface import CreateOrAnalyzePipeline
+from mlpipe.api import build
 from storage import data_handler
 from storage.meta_info import MetaInfo
 

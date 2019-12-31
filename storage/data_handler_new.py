@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from api.interface import CreatePipelineRequest
+from mlpipe.api.interface import CreatePipelineRequest
 
 
 class FilePipeline:

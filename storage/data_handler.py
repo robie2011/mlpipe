@@ -2,8 +2,8 @@ import uuid
 import json
 from os.path import basename
 import pandas as pd
-from api.interface import CreatePipelineRequest
-from processors import StandardDataFormat
+from mlpipe.api.interface import CreatePipelineRequest
+from mlpipe.processors import StandardDataFormat
 import os.path
 from storage import meta_info
 import io
