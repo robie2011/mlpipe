@@ -1,7 +1,7 @@
-name: myExampleModel
+name: unit_test
 source:
   name: datasources.empa.EmpaCsvSourceAdapter
-  pathToFile: /Users/robert.rajakone/repos/2019_p9/code/test/dsl/testinput.csv
+  pathToFile: ./test/dsl/testinput.csv
   fields:
     - abc1 as temp1
     - abc2 as temp2
@@ -74,7 +74,7 @@ modelCompile:
     - accuracy
 
 modelTraining:
-  epochs: 100
+  epochs: 5
   batch_size: 10
   repeat: 3
 

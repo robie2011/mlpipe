@@ -1,10 +1,11 @@
 from aggregators import Max, Min
-from api.pipeline_executor import execute_multi_aggregation
 import numpy as np
 import unittest
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from workflows.pipeline.interface import SingleAggregationConfig, MultiAggregation
+
+from workflows.pipeline.create_pipeline import _reduce_pipeline
+from workflows.pipeline.interface import SingleAggregationConfig, MultiAggregation, PipelineWorkflow
 from processors import StandardDataFormat
 
 
@@ -45,8 +46,8 @@ class TestMultiAggregation(unittest.TestCase):
             ]
         )
 
-        result = execute_multi_aggregation(data2d=data, config=multi)
-        self.assertEqual(data.labels + ["temp1Max", "temp1Min"], result.labels)
+        result = PipelineWorkflow(pipelines=[multi]).execute(input_data=data)
+        self.assertEqual(['temp1', 'temp2', 'temp1Max', 'temp1Min'], result.labels)
         assert_array_equal(data.timestamps, result.timestamps)
         assert_array_equal(np.full((4, 2), fill_value=np.nan), result.data[:4, [2, 3]])
         assert_array_equal(np.arange(4, 10), result.data[4:, 2])

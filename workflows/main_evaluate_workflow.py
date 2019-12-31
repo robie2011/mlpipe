@@ -3,14 +3,14 @@ import json
 from dataclasses import dataclass
 from typing import Dict, cast
 import numpy as np
+import pandas as pd
 from sklearn.metrics import confusion_matrix
 from api.interface import PredictionTypes
 from config.training_project import TrainingProject
 from workflows.main_training_workflow import run_pipeline_create_model_input, PipelineAndModelInputExecutionResult
-from workflows.model_input.create import PreprocessedModelInput
-import pandas as pd
-import numpy as np
 
+
+DISABLE_EVAL_STATS = False
 
 def _read_json(path: str) -> Dict:
     with open(path, "r") as f:
@@ -54,7 +54,12 @@ def evaluate(description: Dict):
         if evaluation_project['modelInput']['predictionType'] == PredictionTypes.BINARY.value:
             y_ = cast(np.ndarray, project.model.predict_classes(data.X)).reshape(-1, )
             result = confusion_matrix(y_true=data.y, y_pred=y_)
+            if DISABLE_EVAL_STATS:
+                print("WARNING: returning cf-matrix for UNIT TEST")
+                return result
+
             ix_error = np.arange(data.y.shape[0])[data.y != y_]
+
             tn, fp, fn, tp = result.ravel()
             tpr = tp / (tp + fn)
             tnr = tn / (tn + fp)

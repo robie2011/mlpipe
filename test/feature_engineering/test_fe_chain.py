@@ -2,7 +2,6 @@ import unittest
 from api.sequence_creator import create_sequence_3d
 import numpy as np
 import aggregators as agg
-from aggregators import AggregatorInput
 from helpers import print_3d_array
 
 

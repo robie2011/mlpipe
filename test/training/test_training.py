@@ -1,8 +1,9 @@
+import io
 import numbers
 import unittest
-import numpy as np
 import yaml
 from utils import get_dir
+from workflows import main_evaluate_workflow
 from workflows.analyzers.create_analyzers import create_analyzer_workflow
 from workflows.load_data.create_loader import create_loader_workflow
 from workflows.main_evaluate_workflow import evaluate
@@ -10,7 +11,21 @@ from workflows.main_training_workflow import train
 from workflows.pipeline.create_pipeline import create_pipeline_workflow
 from workflows.utils import sequential_execution
 import locale
+
 locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
+
+
+def _get_evaluation_config(model_name: str, session_id: str):
+    return f'''
+    name: {model_name}
+    session: {session_id}
+    testSource:
+      name: datasources.empa.EmpaCsvSourceAdapter
+      pathToFile: ./test/dsl/testinput.csv
+      fields:
+        - abc1 as temp1
+        - abc2 as temp2
+    '''
 
 
 class TestTraning(unittest.TestCase):
@@ -33,28 +48,17 @@ class TestTraning(unittest.TestCase):
     def test_training(self):
         path_to_file = get_dir(["test", "training", "example.training.yml"])
         description = yaml.load(open(path_to_file, "r"))
-        train(description)
-
-    def test_empa_traning(self):
-        path_to_file = get_dir(["test", "training", "empa.mlp.training.yml"])
-        description = yaml.load(open(path_to_file, "r"))
-        training_path, model = train(description)
-        print(training_path)
+        result = train(description)
 
     def test_evaluate_saved_model(self):
-        path_to_file = get_dir(["test", "evaluate", "empa_s22.evaluate.yml"])
+        main_evaluate_workflow.DISABLE_EVAL_STATS = True
+        path_to_file = get_dir(["test", "training", "example.training.yml"])
         description = yaml.load(open(path_to_file, "r"))
+        result = train(description)
+        model_path_split = result[0].split("/")
+        model_name, trained_session_id = model_path_split[-2], model_path_split[-1]
+
+        str_io = io.StringIO(_get_evaluation_config(model_name=model_name, session_id=trained_session_id))
+        str_io.seek(0)
+        description = yaml.load(str_io)
         result = evaluate(description)
-        for attr, value in result.__dict__.items():
-            # formatting number output: https://pyformat.info/
-            if attr.startswith("n_"):
-                print("{0}: {1} {2:05.3f}%".format(attr, value, value/result.size*100))
-            elif attr.startswith("p_"):
-                print("{0}: {1:05.3f}%".format(attr, value*100))
-            elif isinstance(value, numbers.Number):
-                print("{0}:{1:n}".format(attr, value))
-            else:
-                print("{0}:".format(attr), value)
-
-
-
