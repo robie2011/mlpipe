@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, cast
 import logging
 from mlpipe.config import app_settings
+# some imports are done withing functions for performance improvements
 
 
 module_logger = logging.getLogger(__name__)
