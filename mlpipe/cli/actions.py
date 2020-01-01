@@ -1,17 +1,11 @@
 import json
 import numbers
 import os
-import pickle
 import time
 from pathlib import Path
 from typing import List, cast
-import numpy as np
-import tabulate
-import yaml
 import logging
-from mlpipe.cli.interface import ModelLocation
 from mlpipe.config import app_settings
-from mlpipe.config.interface import TrainingProjectFileNames, HistorySummary
 
 
 module_logger = logging.getLogger(__name__)
@@ -23,7 +17,9 @@ def _calc_dir_size(path: str):
     return dir_size
 
 
-def _get_history(name: str, session_id: str) -> HistorySummary:
+def _get_history(name: str, session_id: str):
+    from mlpipe.config.interface import TrainingProjectFileNames, HistorySummary
+    import pickle
     """writing new logic instead of using TrainingProject because TrainingProject requires loading tensorflow lib"""
     path_history = os.path.join(
         app_settings.dir_training, name, session_id, TrainingProjectFileNames.HISTORY_SUMMARY.value)
@@ -35,6 +31,9 @@ def _get_history(name: str, session_id: str) -> HistorySummary:
 
 
 def list_models(args):
+    import numpy as np
+    import tabulate
+    from mlpipe.cli.interface import ModelLocation
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     result: List[ModelLocation] = []
     names = os.listdir(app_settings.dir_training)
@@ -92,6 +91,7 @@ def describe_model(args):
 
 
 def _load_description_file(path: str):
+    import yaml
     _, ext = os.path.splitext(path)
     with open(path, "r") as f:
         if ext == ".json":
@@ -163,3 +163,27 @@ def print_evaluation_result(result):
                     module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
         else:
             module_logger.info("   {0}: ".format(attr), value)
+
+
+def analyze_data(args):
+    from mlpipe.config.analytics_data_manager import AnalyticsDataManager
+    if args.create:
+        for f in args.files:
+            path = f if os.path.isabs(f) else os.path.abspath(f)
+            base_path, ext = os.path.splitext(path)
+            name = os.path.basename(base_path)
+
+            description = _load_description_file(path)
+            keys_allowed = ['source', 'analyze']
+            filtered_desc = dict(filter(lambda x: x[0] in keys_allowed, description.items()))
+            #create_analyzer_workflow(filtered_desc).run()
+            AnalyticsDataManager.save(name=name, description=filtered_desc, overwrite=args.force)
+            return
+    if args.list:
+        AnalyticsDataManager.list_files()
+        return
+
+    if args.delete:
+        for name in args.files:
+            AnalyticsDataManager.delete(name)
+        return
