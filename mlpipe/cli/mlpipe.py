@@ -16,12 +16,12 @@ def main():
 
     # train
     parser_train = subparsers.add_parser('train')
-    parser_train.add_argument("file", metavar="FILE")
+    parser_train.add_argument("files", metavar="FILES", default=[], nargs='*')
 
 
     # test
     parser_test = subparsers.add_parser('test')
-    parser_test.add_argument("file", metavar="FILE")
+    parser_test.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # list
     parser_list = subparsers.add_parser('list')

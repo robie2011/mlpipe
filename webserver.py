@@ -8,8 +8,8 @@ from flask import request
 from mlpipe.api import execute_pipeline
 from mlpipe.api.interface import CreateOrAnalyzePipeline
 from mlpipe.api import build
-from storage import data_handler
-from storage.meta_info import MetaInfo
+from _experiments.storage import data_handler
+from _experiments.storage.meta_info import MetaInfo
 
 app = Flask(__name__)
 

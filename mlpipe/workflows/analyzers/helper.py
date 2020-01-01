@@ -2,7 +2,7 @@ import logging
 from mlpipe.groupers import CombinedGroup
 import numpy as np
 
-logger = logging.getLogger(__name__)
+module_logger = logging.getLogger(__name__)
 
 
 def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):
@@ -12,7 +12,7 @@ def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):
     # see also: https://stackoverflow.com/questions/12708807/numpy-integer-nan
 
     # note: true values for masked array means block that value
-    logger.debug("create grouped indexes")
+    module_logger.debug("create grouped indexes")
     grouped_indexes = np.ma.zeros((n_groups, n_max_group_members), dtype='int')
     grouped_indexes.mask = np.ones((n_groups, n_max_group_members), dtype='int')
     for i in range(len(groups)):
@@ -28,7 +28,7 @@ def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):
         dtype='float64')
     grouped_data.mask = grouped_indexes.mask
 
-    logger.debug("grouping indexes/data")
+    module_logger.debug("grouping indexes/data")
     for group_id in range(n_groups):
         _mask = np.invert(grouped_indexes.mask[group_id, :])
         indexes = grouped_indexes[group_id][_mask]

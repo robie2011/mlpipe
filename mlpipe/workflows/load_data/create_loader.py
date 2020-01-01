@@ -5,7 +5,7 @@ from mlpipe.datasources import AbstractDatasourceAdapter
 from mlpipe.workflows.interface import ClassDescription
 from mlpipe.workflows.utils import create_instance, pick_from_object
 
-logger = logging.getLogger(__name__)
+module_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -15,9 +15,9 @@ class LoadDataWorkflow:
 
     def load(self):
         input_data = self.instance.fetch()
-        logger.debug("fields in description: {0}".format(", ".join(self.field_and_alias)))
-        logger.debug("fields from source: {0}".format(", ".join(input_data.labels)))
-        logger.debug("rename field names according to alias")
+        module_logger.debug("fields in description: {0}".format(", ".join(self.field_and_alias)))
+        module_logger.debug("fields from source: {0}".format(", ".join(input_data.labels)))
+        module_logger.debug("rename field names according to alias")
         for xs in [x.split(" as ") for x in self.field_and_alias]:
             # note: if no alias was set with "as"-keyword
             # original and alias name will be equal

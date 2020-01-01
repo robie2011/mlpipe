@@ -5,7 +5,7 @@ import pandas as pd
 from mlpipe.api.interface import CreatePipelineRequest
 from mlpipe.processors import StandardDataFormat
 import os.path
-from storage import meta_info
+from _experiments.storage import meta_info
 import io
 import zipfile
 

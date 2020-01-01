@@ -10,7 +10,7 @@ from mlpipe.workflows.utils import create_instance, pick_from_object
 import logging
 
 
-logger = logging.getLogger(__name__)
+module_logger = logging.getLogger(__name__)
 
 
 def create_sequential_model_workflow(
@@ -29,7 +29,7 @@ def create_sequential_model_workflow(
             else:
                 raise ValueError(f"Invalid input dimension {input_dim}")
 
-        logging.debug("creating layer of '{0}' with config={1}".format(
+        module_logger.debug("creating layer of '{0}' with config={1}".format(
             name,
             kwargs
         ))

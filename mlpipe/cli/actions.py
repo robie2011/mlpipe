@@ -103,50 +103,63 @@ def _load_description_file(path: str):
 
 
 def train_model(args):
-    module_logger.info("start training")
-    path = args.file if os.path.isabs(args.file) else os.path.abspath(args.file)
-    description = _load_description_file(path)
     from mlpipe.workflows.main_training_workflow import train
-    train(description)
+
+    for f in args.files:
+        path = f if os.path.isabs(f) else os.path.abspath(f)
+        description = _load_description_file(path)
+        module_logger.info("")
+        module_logger.info(f"TRAINING MODEL: {description['name']}")
+        module_logger.info(f"file: {path}")
+        train(description)
 
 
 def test_model(args):
     from mlpipe.workflows.main_evaluate_workflow import evaluate
-    path = args.file if os.path.isabs(args.file) else os.path.abspath(args.file)
-    description = _load_description_file(path)
+    for f in args.files:
+        try:
+            path = f if os.path.isabs(f) else os.path.abspath(f)
+            description = _load_description_file(path)
 
-    print("")
-    print("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
-    print("test data source: ")
-    for k, v in description['testSource'].items():
-        if not isinstance(v, str) and v.__iter__:
-            print("   {0}: ".format(k))
-            for x in v:
-                print("   - {0}".format(x))
-        else:
-            print("   {0}: {1}".format(k, v))
-    print("")
+            module_logger.info("")
+            module_logger.info("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
+            module_logger.info(f"file: {path}")
+            module_logger.info("test data source: ")
+            for k, v in description['testSource'].items():
+                if not isinstance(v, str) and v.__iter__:
+                    module_logger.info("   {0}: ".format(k))
+                    for x in v:
+                        module_logger.info("   - {0}".format(x))
+                else:
+                    module_logger.info("   {0}: {1}".format(k, v))
+            module_logger.info("")
 
-    result = evaluate(description)
-    print("")
-    print("result:")
+            result = evaluate(description)
+            print_evaluation_result(result)
+        except Exception as e:
+            module_logger.error(e)
+
+
+def print_evaluation_result(result):
+    module_logger.info("")
+    module_logger.info("result:")
     terminal_tab = "   "
     for attr, value in result.__dict__.items():
         # formatting number output: https://pyformat.info/
         if attr.startswith("n_"):
-            print(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
+            module_logger.info(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
         elif attr.startswith("p_"):
-            print(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
+            module_logger.info(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
         elif isinstance(value, numbers.Number):
-            print(terminal_tab + "{0}: {1:,}".format(attr, value))
+            module_logger.info(terminal_tab + "{0}: {1:,}".format(attr, value))
         elif isinstance(value, dict):
-            print(terminal_tab + "{0}:".format(attr))
+            module_logger.info(terminal_tab + "{0}:".format(attr))
             for k, v in value.items():
                 if isinstance(v, tuple):
-                    print(terminal_tab * 2 + "{0}:".format(k))
+                    module_logger.info(terminal_tab * 2 + "{0}:".format(k))
                     for ti in v:
-                        print(terminal_tab*3 + "{0}".format(ti))
+                        module_logger.info(terminal_tab * 3 + "{0}".format(ti))
                 else:
-                    print(terminal_tab*2 + "{0}: {1}".format(k, v))
+                    module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
         else:
-            print("   {0}: ".format(attr), value)
+            module_logger.info("   {0}: ".format(attr), value)

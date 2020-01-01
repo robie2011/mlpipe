@@ -9,7 +9,7 @@ from mlpipe.processors import StandardDataFormat
 from mlpipe.workflows.utils import get_qualified_name
 import logging
 
-logger = logging.getLogger(__name__)
+module_logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -18,8 +18,8 @@ class AnalyzerWorkflow:
     aggregators: List[AbstractAggregator]
 
     def run(self, input_data: StandardDataFormat):
-        logger.info("start analysis")
-        logger.debug("grouping: {0}".format(", ".join(map(get_qualified_name, self.group_by))))
+        module_logger.info("start analysis")
+        module_logger.debug("grouping: {0}".format(", ".join(map(get_qualified_name, self.group_by))))
         data_partitions = np.array([
             g.group(timestamps=input_data.timestamps, raw_data=input_data.data)
             for g in self.group_by
@@ -38,7 +38,7 @@ class AnalyzerWorkflow:
 
         for i in range(len(self.aggregators)):
             aggreagtor = self.aggregators[i]
-            logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
+            module_logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
             output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data).metrics
 
         group_ids = np.array(list(map(lambda x: list(x.group_id), groups))).tolist()

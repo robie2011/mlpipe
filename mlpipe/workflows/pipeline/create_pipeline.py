@@ -7,7 +7,7 @@ from mlpipe.processors import AbstractProcessor
 from mlpipe.workflows.utils import get_component_config, create_instance
 import logging
 
-logger = logging.getLogger(__name__)
+module_logger = logging.getLogger(__name__)
 
 ProcessorOrAggregation = Union[AbstractProcessor, SingleAggregationConfig]
 
@@ -36,7 +36,7 @@ def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
                 assert_base_classes=[AbstractProcessor])
             pipeline.append(instance)
 
-    logger.debug("extracted pipes: {0}".format(len(pipeline)))
+    module_logger.debug("extracted pipes: {0}".format(len(pipeline)))
     return pipeline
 
 
@@ -72,7 +72,7 @@ def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> List[ProcessorOr
         else:
             raise Exception("Unsupported pipe (nr #{0}): {1}".format(i, current_pipe))
 
-    logger.debug("reduced pipes: {0}".format(len(reduced_pipeline)))
+    module_logger.debug("reduced pipes: {0}".format(len(reduced_pipeline)))
     return reduced_pipeline
 
 
