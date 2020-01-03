@@ -1,107 +1,62 @@
-import random
-import sqlite3
-import flask
-import jsonpickle
-import jsonpickle.ext.numpy as jsonpickle_numpy
-from flask import Flask, send_file
-from flask import request
-from mlpipe.api import execute_pipeline
-from mlpipe.api.interface import CreateOrAnalyzePipeline
-from mlpipe.api import build
-from _experiments.storage import data_handler
-from _experiments.storage.meta_info import MetaInfo
+from flask import Flask, jsonify, request
+from flask_socketio import SocketIO
+from mlpipe.config import app_settings
+from mlpipe.config.analytics_data_manager import AnalyticsDataManager
+import datetime
+import logging
+from mlpipe.workflows.analyzers.create_analyzers import create_analyzer_workflow
+from mlpipe.workflows.load_data.create_loader import create_loader_workflow
+from mlpipe.workflows.pipeline.create_pipeline import create_pipeline_workflow
 
+
+module_logger = logging.getLogger(__name__)
 app = Flask(__name__)
-
-jsonpickle.set_preferred_backend('simplejson')
-jsonpickle.set_encoder_options('simplejson', ignore_nan=True)
-jsonpickle_numpy.register_handlers()
-
-
-def get_or_default(o: dict, key: str, default):
-    if key in o:
-        return o[key]
-    else:
-        return default
-
-
-def response_json(response: object, status=200):
-    return app.response_class(
-        response=jsonpickle.encode(response, unpicklable=True),
-        status=status,
-        mimetype="application/json"
-    )
-
-
-def exclude_property(key_values: dict, exclude=[], rename=[]):
-    lookup_rename = {k: alias for k, alias in rename}
-
-    filtered_properties = filter(lambda k, v: k not in exclude, key_values.__dict__.items())
-    result = map(lambda k, v:
-                 (k, v) if k not in lookup_rename
-                 else (lookup_rename[k], v),
-                 filtered_properties)
-    return dict(result)
+socketio = SocketIO(app, async_mode='eventlet')
+start_time = datetime.datetime.now()
 
 
 @app.route('/')
 def hello_world():
-    return 'Server Online'
+    return 'MLPIPE Webserver online since ' +start_time
 
 
-@app.route('/api/data', methods=['POST'])
-def data_pack():
-    cfg: CreateOrAnalyzePipeline = request.get_json()
-
-    # ignore analyze section if exists
-    if 'analyze' in cfg:
-        del cfg['analyze']
-
-    build_config = build(cfg)
-    result = execute_pipeline(build_config)
-    name = get_or_default(cfg, "pipelineName", "unknown-" + str(random.randint(100, 10000)))
-    try:
-        identifier = data_handler.data_package_write(
-            name=name,
-            data=result.pipeline_data,
-            pipeline=cfg)
-        return response_json(response={"uuid": identifier})
-    except sqlite3.IntegrityError as e:
-        e: sqlite3.IntegrityError = e
-        if e.args[0] == "UNIQUE constraint failed: meta.category, meta.name":
-            return response_json(
-                response="choose name is already taken: {0}".format(name),
-                status=500)
-        return response_json(response=e, status=500)
+@app.route('/api/analytics_descriptions')
+def list_analytics_descriptions():
+    files = AnalyticsDataManager.list_files(suppress_output=True)
+    return jsonify(files)
 
 
-@app.route('/api/data', methods=['GET'])
-def data_list():
-    result = data_handler.data_package_list()
-
-    def formatter(o: MetaInfo):
-        return {
-            "uuid": o.uuid,
-            "name": o.name,
-            "date": o.insert_datetime_local
-        }
-    return response_json(response=list(map(formatter, result)))
+@app.route('/api/analytics_description/<string:name>')
+def view_analytics_description(name: str):
+    return AnalyticsDataManager.get(name)
 
 
-@app.route('/api/analyze/json', methods=['POST'])
-def analyze_json():
-    result = build_execute_pipeline(request.get_json())
-    return response_json(response=result.analytics)
+@app.route('/api/analytics/<string:name>')
+def view_analytics(name: str):
+    module_logger.debug("load description for " + name)
+    desc = AnalyticsDataManager.get(name)
+
+    module_logger.debug("load data")
+    data = create_loader_workflow(description=desc['source']).load()
+
+    if 'pipeline' in desc:
+        module_logger.debug("pipe data")
+        data = create_pipeline_workflow(descriptions=desc['pipeline']).execute(data)
+
+    result = create_analyzer_workflow(desc['analyze']).run(data)
+    return jsonify(result)
 
 
-@app.route('/api/data/<string:identifier>', methods=['GET'])
-def data_get(identifier):
-    r: flask.Request = request
-    stream = data_handler.data_package_get(identifier)
-    stream.seek(0)
+@app.route('/api/signal', methods=['POST'])
+def signal():
+    print("signal received", request.form)
+    # works
 
-    return send_file(
-        filename_or_fp=stream,
-        mimetype="application/zip",
-        as_attachment=True,
-        attachment_filename="mlpipe_data_{0}.zip".format(identifier))
+    #socketio.emit('my response', request.form, broadcast=True, namespace='/ws')
+    socketio.send(request.form, broadcast=True, namespace='/ws')
+    return "OK"
+
+
+if __name__ == '__main__':
+    #app.run(port=app_settings.api_port)
+    socketio.run(app, port=app_settings.api_port, debug=True)

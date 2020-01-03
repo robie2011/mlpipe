@@ -1,0 +1,25 @@
+name: empa_mlp
+source:
+  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipeline:
+  - name: mlpipe.processors.NanRemover
+
+
+analyze:
+  groupBy:
+    - name: mlpipe.groupers.YearGrouper
+    - name: mlpipe.groupers.MonthGrouper
+  metrics:
+    - name: mlpipe.aggregators.Max
+    - name: mlpipe.aggregators.Min
+    - name: mlpipe.aggregators.Percentile
+      percentile: .75

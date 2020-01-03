@@ -4,8 +4,6 @@ import pandas as pd
 from datetime import datetime
 import os
 
-ENABLE_CACHING = True
-
 
 class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
     def __init__(self, pathToFile: str):

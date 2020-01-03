@@ -5,7 +5,6 @@ from mlpipe.aggregators import *
 import mlpipe.helpers.test_data as tdata
 import json
 
-
 tdata.DEBUG = True
 DISABLE_EXPORT = True
 
@@ -50,16 +49,17 @@ class AnalyticsChain(unittest.TestCase):
     def test_chain(self):
         raw_data_df = tdata.load_empa_data()
         raw_data = tdata.load_empa_data().values
-        #raw_data = tdata.load_simulation()
+        # raw_data = tdata.load_simulation()
         raw_data_only = raw_data[:, 1:]
 
         timestamps = raw_data[:, 0]
         # groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         groupers = [YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper]
-        #groupers = [MonthGrouper, DayGrouper, HourGrouper]
+        # groupers = [MonthGrouper, DayGrouper, HourGrouper]
 
         timer = Timer()
-        data_partitions = np.array([grouper().group(timestamps=timestamps, raw_data=np.array([])) for grouper in groupers]).T
+        data_partitions = np.array(
+            [grouper().group(timestamps=timestamps, raw_data=np.array([])) for grouper in groupers]).T
         timer.tock("partitioning")
 
         groups = group_by_multi_columns(data_partitions)
@@ -96,7 +96,8 @@ class AnalyticsChain(unittest.TestCase):
         export_data = {
             "meta": {
                 "sensors": raw_data_df.columns[1:].astype('str').tolist(),  # todo: get dynamically: sensor names
-                "metrics": [str(a.__class__.__name__) for a in analyzers],  # todo: get better naming. E.g. percentile with param
+                "metrics": [str(a.__class__.__name__) for a in analyzers],
+                # todo: get better naming. E.g. percentile with param
                 "groupers": list(map(lambda x: x().__class__.__name__, groupers)),
                 "groups": group_ids,
                 "prettyGroupnames": list(map(lambda x: x.get_pretty_group_names(x), groupers))

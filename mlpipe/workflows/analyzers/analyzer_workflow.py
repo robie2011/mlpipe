@@ -47,7 +47,7 @@ class AnalyzerWorkflow:
             metrics=list(map(get_qualified_name, self.aggregators)),
             groupers=list(map(get_qualified_name, self.group_by)),
             groups=group_ids,
-            prettyGroupnames=list(map(lambda x: x.get_pretty_group_names() , self.group_by))
+            prettyGroupnames=list(map(lambda x: x.get_pretty_group_names(), self.group_by))
         )
 
         return AnalyticsResult(

@@ -5,6 +5,7 @@ dir_training = "/tmp/mlpipe/training"
 dir_data_package = "/tmp/mlpipe/packages"
 dir_tmp = "/tmp/mlpipe/tmp"
 dir_analytics = "/tmp/mlpipe/analytics"
+api_port = 5000
 
 training_monitor = 'val_loss'
 

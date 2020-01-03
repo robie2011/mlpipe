@@ -1,23 +1,18 @@
+import logging
+import random
 from dataclasses import dataclass
-import tensorflow
-import hashlib
-import json
-import os
-import pickle
 from datetime import datetime
 from typing import Dict
 import numpy
+import tensorflow
 from keras.callbacks import History
-from mlpipe.config import app_settings
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.processors import StandardDataFormat
+from mlpipe.workflows.utils import sequential_execution
 from .load_data.create_loader import create_loader_workflow
 from .model_input.create import CreateModelInputWorkflow, train_test_split_model_input, PreprocessedModelInput
 from .pipeline.create_pipeline import create_pipeline_workflow
 from .sequential_model.create import create_sequential_model_workflow, create_model_fit_params, get_best_model
-from mlpipe.workflows.utils import sequential_execution
-import logging
-import random
 
 module_logger = logging.getLogger(__name__)
 
@@ -60,25 +55,6 @@ def train(description):
         return project.path_training_dir, best_model
 
 
-def _dataloader_with_cache(source_desc):
-    if not app_settings.enable_datasource_caching:
-        return create_loader_workflow(source_desc).load()
-    else:
-        cache_id = hashlib.sha256(json.dumps(source_desc, sort_keys=True).encode('utf-8')).hexdigest()
-        module_logger.info("caching source is enabled. Cache-Id is {0}".format(cache_id))
-        path_to_cache = os.path.join(app_settings.dir_tmp, "cache_{0}".format(cache_id))
-        if os.path.isfile(path_to_cache):
-            module_logger.info("cached version found. loading {0}. NOTE: CSV-Cache returns parsed CSV if filename match".format(path_to_cache))
-            with open(path_to_cache, "rb") as f:
-                return pickle.load(f)
-        else:
-            module_logger.info("no cached version found. fetching data from source.")
-            data = create_loader_workflow(source_desc).load()
-            with open(path_to_cache, "wb") as f:
-                pickle.dump(data, f)
-                return data
-
-
 def setup_seed(seed_desc: Dict):
     # https://machinelearningmastery.com/reproducible-results-neural-networks-keras/
     # https://www.tensorflow.org/api_docs/python/tf/random/set_seed?version=stable
@@ -118,7 +94,7 @@ def run_pipeline_create_model_input(description:Dict, pretrained_scalers=[]) -> 
     stats = DataFlowStatistics()
 
     composed = [
-        lambda: _dataloader_with_cache(description['source']),
+        create_loader_workflow(description['source']).load,
         stats._stats_after_initial,
         create_pipeline_workflow(description['pipeline']).execute,
         stats._stats_after_pipeline,

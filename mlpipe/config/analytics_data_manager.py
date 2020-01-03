@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from pathlib import Path
 from typing import Dict
 import tabulate
@@ -12,10 +13,15 @@ module_logger = logging.getLogger(__name__)
 
 class AnalyticsDataManager:
     @staticmethod
-    def list_files():
+    def list_files(suppress_output=False):
         path = Path(app_settings.dir_analytics)
         analytics_files = list(path.glob("*.json"))
-        print(f"Saved analytics descriptions {app_settings.dir_analytics} ({len(analytics_files)} Files):")
+
+        def _print(*args):
+            if not suppress_output:
+                print(*args)
+
+        _print(f"Saved analytics descriptions {app_settings.dir_analytics} ({len(analytics_files)} Files):")
         if len(analytics_files) == 0:
             module_logger.info("Directory is empty.")
         else:
@@ -23,9 +29,15 @@ class AnalyticsDataManager:
             for analytics_file in analytics_files:
                 basename = os.path.basename(analytics_file)
                 name, ext = os.path.splitext(basename)
-                results.append([name, analytics_file])
-            print("")
-            print(tabulate.tabulate(results, headers=['name', 'path']))
+                results.append([
+                    name,
+                    str(analytics_file.absolute()),
+                    time.ctime(analytics_file.stat().st_ctime)
+                ])
+
+            _print("")
+            _print(tabulate.tabulate(results, headers=['name', 'path']))
+            return results
 
     @staticmethod
     def save(name: str, description: Dict, overwrite=False):
@@ -43,7 +55,8 @@ class AnalyticsDataManager:
         if not os.path.isfile(path):
             raise Exception(f"Invalid analytics description name: {name} (path)")
         else:
-            with open(path, "w") as f:
+            with open(path, "r") as f:
+                module_logger.debug(f"loading {path}")
                 return json.load(f)
 
     @staticmethod

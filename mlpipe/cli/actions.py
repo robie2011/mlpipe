@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, cast
 import logging
 from mlpipe.config import app_settings
+
 # some imports are done withing functions for performance improvements
 
 
@@ -68,7 +69,7 @@ def list_models(args):
     print(tabulate.tabulate(map(
         lambda x: [
             "{0}/{1}".format(x.name, x.session_id),
-            x.sizeBytes/1024,
+            x.sizeBytes / 1024,
             x.monitored_value,
             x.accuracy,
             x.epochs,
@@ -76,7 +77,8 @@ def list_models(args):
             x.samples,
             x.datetime
         ], result),
-        headers=["name/session", "size (KB)", app_settings.training_monitor, 'accuracy', "epochs", "batch_size", "samples", "datetime"]))
+        headers=["name/session", "size (KB)", app_settings.training_monitor, 'accuracy', "epochs", "batch_size",
+                 "samples", "datetime"]))
 
 
 def describe_model(args):
@@ -86,7 +88,7 @@ def describe_model(args):
     project = TrainingProject(name=name, session_id=session_id)
     title = "Model Architecture: {0}".format(project.path_training_dir)
     print(title)
-    print("_"*len(title))
+    print("_" * len(title))
     print()
     print(project.model.summary())
 
@@ -168,18 +170,27 @@ def print_evaluation_result(result):
 
 def analyze_data(args):
     from mlpipe.config.analytics_data_manager import AnalyticsDataManager
+
     if args.create:
+        import grequests
+        name_updates = []
         for f in args.files:
             path = f if os.path.isabs(f) else os.path.abspath(f)
             base_path, ext = os.path.splitext(path)
             name = os.path.basename(base_path)
 
             description = _load_description_file(path)
-            keys_allowed = ['source', 'analyze']
+            keys_allowed = ['source', 'analyze', 'pipeline']
             filtered_desc = dict(filter(lambda x: x[0] in keys_allowed, description.items()))
-            #create_analyzer_workflow(filtered_desc).run()
             AnalyticsDataManager.save(name=name, description=filtered_desc, overwrite=args.force)
-            return
+            name_updates.append(name)
+
+        # send signal to webserver
+        rs = [grequests.post(f"http://localhost:{app_settings.api_port}/api/signal",
+                             data={"type": "analytics_description", "name": n})
+              for n in name_updates]
+        grequests.map(rs)
+
     if args.list:
         AnalyticsDataManager.list_files()
         return
