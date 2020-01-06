@@ -21,3 +21,4 @@ class AnalyticsResultMeta:
 class AnalyticsResult:
     meta: AnalyticsResultMeta
     metrics: List[List[float]]
+    metrics_datastructure_help = "shape is (groups, aggregations, sensors)"

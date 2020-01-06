@@ -24,7 +24,8 @@ class NotImplementedBaseClass(Exception):
         Exception.__init__(self)
 
     def __str__(self):
-        return "try to load: " + self.class_to_load + ". Missing bases: " + ", ".join(map(get_qualified_name, self.missing_base_classes))
+        return "try to load: " + self.class_to_load + ". Missing bases: " + \
+               ", ".join(map(lambda x: x.__name__, self.missing_base_classes))
 
 
 def load(qualified_name: str, assert_base_classes=[]):
@@ -61,6 +62,10 @@ def get_qualified_name(o: object):
         return o.__class__.__name__  # Avoid reporting __builtin__
     else:
         return module + '.' + o.__class__.__name__
+
+
+def get_class_name(o: object):
+    return o.__class__.__name__
 
 
 def pick_from_object(obj, *keys):

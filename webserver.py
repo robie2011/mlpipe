@@ -1,5 +1,7 @@
+import time
 from flask import Flask, jsonify, request
-from flask_socketio import SocketIO
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 from mlpipe.config import app_settings
 from mlpipe.config.analytics_data_manager import AnalyticsDataManager
 import datetime
@@ -11,8 +13,13 @@ from mlpipe.workflows.pipeline.create_pipeline import create_pipeline_workflow
 
 module_logger = logging.getLogger(__name__)
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet')
+socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
 start_time = datetime.datetime.now()
+logging.getLogger('flask_cors').level = logging.DEBUG
+cors = CORS(app, resources={
+    r"/api/*": {"origins": "*"},
+    r"/socket.io/*": {"origins": "*"}
+})
 
 
 @app.route('/')
@@ -50,11 +57,19 @@ def view_analytics(name: str):
 @app.route('/api/signal', methods=['POST'])
 def signal():
     print("signal received", request.form)
-    # works
-
-    #socketio.emit('my response', request.form, broadcast=True, namespace='/ws')
+    # expected input example: {"type": "analytics_description", "name": "someAnalyticsFileNameWithoutExt"}
     socketio.send(request.form, broadcast=True, namespace='/ws')
     return "OK"
+
+
+@socketio.on('connect', namespace='/ws')
+def test_connect():
+    socketio.send({'data': 'Connected'})
+
+
+@socketio.on('disconnect', namespace='/ws')
+def test_disconnect():
+    print('Client disconnected')
 
 
 if __name__ == '__main__':

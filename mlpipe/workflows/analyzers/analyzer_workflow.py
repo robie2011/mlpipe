@@ -6,7 +6,7 @@ from .helper import create_np_group_data
 from mlpipe.workflows.analyzers.interface import AnalyticsResultMeta, AnalyticsResult
 from mlpipe.groupers import AbstractGrouper, group_by_multi_columns
 from mlpipe.processors import StandardDataFormat
-from mlpipe.workflows.utils import get_qualified_name
+from mlpipe.workflows.utils import get_qualified_name, get_class_name
 import logging
 
 module_logger = logging.getLogger(__name__)
@@ -44,8 +44,8 @@ class AnalyzerWorkflow:
         group_ids = np.array(list(map(lambda x: list(x.group_id), groups))).tolist()
         meta = AnalyticsResultMeta(
             sensors=input_data.labels,
-            metrics=list(map(get_qualified_name, self.aggregators)),
-            groupers=list(map(get_qualified_name, self.group_by)),
+            metrics=list(map(get_class_name, self.aggregators)),
+            groupers=list(map(get_class_name, self.group_by)),
             groups=group_ids,
             prettyGroupnames=list(map(lambda x: x.get_pretty_group_names(), self.group_by))
         )

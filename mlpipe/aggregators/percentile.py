@@ -7,6 +7,6 @@ class Percentile(AbstractNumpyReduction):
         if percentile > 100.0 or percentile < 0.0:
             raise ValueError("percentile must be a float between 0 and 100")
 
-        super().__init__(reduce_func=np.percentile)
+        super().__init__(reduce_func=np.nanpercentile)
         self.kwargs['q'] = percentile
         self.kwargs['interpolation'] = interpolation

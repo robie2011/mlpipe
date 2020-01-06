@@ -10,3 +10,4 @@ from .freezed_value_counter import FreezedValueCounter
 from .sum import Sum
 from .trend import Trend
 from .abstract_numpy_reduction import AbstractNumpyReduction
+from .counter import Counter
