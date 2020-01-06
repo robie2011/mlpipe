@@ -41,7 +41,7 @@ class AnalyzerWorkflow:
             module_logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
             output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data).metrics
 
-        group_ids = np.array(list(map(lambda x: list(x.group_id), groups))).tolist()
+        group_ids = np.array(list(map(lambda x: x.group_id, groups))).tolist()
         meta = AnalyticsResultMeta(
             sensors=input_data.labels,
             metrics=list(map(get_class_name, self.aggregators)),

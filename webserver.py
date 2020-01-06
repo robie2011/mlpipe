@@ -13,7 +13,7 @@ from mlpipe.workflows.pipeline.create_pipeline import create_pipeline_workflow
 
 module_logger = logging.getLogger(__name__)
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 start_time = datetime.datetime.now()
 logging.getLogger('flask_cors').level = logging.DEBUG
 cors = CORS(app, resources={

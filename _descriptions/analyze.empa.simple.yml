@@ -15,7 +15,7 @@ pipeline:
 
 analyze:
   groupBy:
-    - name: mlpipe.groupers.YearGrouper
+#    - name: mlpipe.groupers.YearGrouper
     - name: mlpipe.groupers.MonthGrouper
   metrics:
     - name: mlpipe.aggregators.Max
