@@ -2,13 +2,15 @@ from mlpipe.datasources import EmpaCsvSourceAdapter
 from mlpipe.processors import StandardDataFormat
 import numpy as np
 
+MODULE_INIT_TIME = np.datetime64('now')
+
 
 class DemoLiveData(EmpaCsvSourceAdapter):
-    def __init__(self, pathToFile: str, window_minutes: int):
+    def __init__(self, pathToFile: str, windowMinutes: int):
         super().__init__(pathToFile)
         self.cached_data = super().fetch()
-        self.window_delta = np.timedelta64(window_minutes, 'm')
-        init_time_diff = np.datetime64('now') - self.cached_data.timestamps[0]
+        self.window_delta = np.timedelta64(windowMinutes, 'm')
+        init_time_diff = MODULE_INIT_TIME - self.cached_data.timestamps[0]
 
         #
         # ajust timestamp: set first row to current time and subtract window_delta to ensure we have enough row for first fetch

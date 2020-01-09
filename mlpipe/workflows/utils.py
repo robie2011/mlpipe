@@ -1,7 +1,7 @@
 import copy
 from importlib import import_module
 from inspect import getmro
-from typing import List
+from typing import List, Dict
 
 
 def get_component_config(key_values: dict):
@@ -84,3 +84,19 @@ def sequential_execution(funcs: List[object]):
     for f in funcs[1:]:
         data = f(data)
     return data
+
+
+def load_description_file(path: str):
+    import os
+    _, ext = os.path.splitext(path)
+    with open(path, "r") as f:
+        if ext == ".json":
+            import json
+            return json.load(f)
+        elif ext == ".yaml" or ext == ".yml":
+            import yaml
+            return yaml.load(f, Loader=yaml.FullLoader)
+        else:
+            raise ValueError("Description loader for extension '{0}' not found".format(ext))
+
+

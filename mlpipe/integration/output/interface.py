@@ -1,29 +1,17 @@
 from abc import ABC, abstractmethod
-import numpy as np
+from mlpipe.integration import IntegrationResult
+import logging
+from mlpipe.workflows.utils import get_class_name
 
 
-def _check_result(result: np.ndarray):
-    fields = ['timestamp', 'prediction', 'rows for prediction']
-    if result.shape[1] != len(fields):
-        raise ValueError(
-            "Numpy Result Variable should contains following fields: " ", ".join(fields))
+module_logger = logging.getLogger(__file__)
 
 
 class AbstractOutput(ABC):
-    def write(self,
-              model_name: str,
-              session_name: str,
-              result: np.ndarray):
-        _check_result(result)
-
-        self._write(
-            model_name=model_name,
-            session_name=session_name,
-            result=result)
+    def write(self, result: IntegrationResult):
+        module_logger.info(f"using output class {get_class_name(self)}")
+        self._write(result)
 
     @abstractmethod
-    def _write(self,
-               model_name: str,
-               session_name: str,
-               result: np.ndarray):
+    def _write(self, result: IntegrationResult):
         pass

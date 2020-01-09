@@ -48,11 +48,16 @@ def evaluate(description: Dict):
         project = cast(TrainingProject, project)
         evaluation_project = copy.deepcopy(project.description)
         evaluation_project['source'] = description['testSource']
-        execution_result = run_pipeline_create_model_input(evaluation_project, pretrained_scalers=project.scalers)
+        execution_result = run_pipeline_create_model_input(
+            evaluation_project, pretrained_scalers=project.scalers)
         data = execution_result.package
 
-        if evaluation_project['modelInput']['predictionType'] == PredictionTypes.BINARY.value:
-            y_ = cast(np.ndarray, project.model.predict_classes(data.X)).reshape(-1, )
+        pred_type = evaluation_project['modelInput']['predictionType']
+        predictions = project.model_predict(data.X)
+
+        # additional stats
+        if pred_type == PredictionTypes.BINARY.value:
+            y_ = predictions.reshape(-1, )
             result = confusion_matrix(y_true=data.y, y_pred=y_)
             if DISABLE_EVAL_STATS:
                 print("WARNING: returning cf-matrix for UNIT TEST")
@@ -74,6 +79,6 @@ def evaluate(description: Dict):
                 stats=_get_stats(result=execution_result, ix_error=ix_error)
             )
         else:
-            raise Exception("Not implemented")
+            raise NotImplementedError(pred_type)
 
 

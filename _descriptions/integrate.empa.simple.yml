@@ -1,8 +1,9 @@
 name: empa_mlp
-session: 2019-12-27_112450
+session: 2020-01-09_104439
 source:
-  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  name: mlpipe.datasources.DemoLiveData
   pathToFile: data/meeting_room_sensors_201908_201912.csv
+  windowMinutes: 16
   fields:
     - 3200000 as TempAussen
     - 40210012 as TempInnen
@@ -14,4 +15,4 @@ source:
 executionFrequencyMinutes: 1
 
 output:
-  name: mlpipe.
+  name: mlpipe.integration.output.ConsoleOutput

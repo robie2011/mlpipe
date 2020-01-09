@@ -1,4 +1,3 @@
-import json
 import numbers
 import os
 import time
@@ -8,7 +7,7 @@ import logging
 from mlpipe.config import app_settings
 
 # some imports are done withing functions for performance improvements
-
+from mlpipe.workflows.utils import load_description_file
 
 module_logger = logging.getLogger(__name__)
 
@@ -93,24 +92,12 @@ def describe_model(args):
     print(project.model.summary())
 
 
-def _load_description_file(path: str):
-    import yaml
-    _, ext = os.path.splitext(path)
-    with open(path, "r") as f:
-        if ext == ".json":
-            return json.load(f)
-        elif ext == ".yaml" or ext == ".yml":
-            return yaml.load(f, Loader=yaml.FullLoader)
-        else:
-            raise ValueError("Description loader for extension '{0}' not found".format(ext))
-
-
 def train_model(args):
     from mlpipe.workflows.main_training_workflow import train
 
     for f in args.files:
         path = f if os.path.isabs(f) else os.path.abspath(f)
-        description = _load_description_file(path)
+        description = load_description_file(path)
         module_logger.info("")
         module_logger.info(f"TRAINING MODEL: {description['name']}")
         module_logger.info(f"file: {path}")
@@ -122,7 +109,7 @@ def test_model(args):
     for f in args.files:
         try:
             path = f if os.path.isabs(f) else os.path.abspath(f)
-            description = _load_description_file(path)
+            description = load_description_file(path)
 
             module_logger.info("")
             module_logger.info("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
@@ -179,7 +166,7 @@ def analyze_data(args):
             base_path, ext = os.path.splitext(path)
             name = os.path.basename(base_path)
 
-            description = _load_description_file(path)
+            description = load_description_file(path)
             keys_allowed = ['source', 'analyze', 'pipeline']
             filtered_desc = dict(filter(lambda x: x[0] in keys_allowed, description.items()))
             AnalyticsDataManager.save(name=name, description=filtered_desc, overwrite=args.force)

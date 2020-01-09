@@ -43,7 +43,6 @@ def train(description):
             path_best_model=path_best_model_weights
         )
 
-
         fit_history: History = model.fit(**fit_params)
         best_model = get_best_model(path_to_model=path_best_model_weights, model=model)
 

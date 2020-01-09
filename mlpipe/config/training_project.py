@@ -8,8 +8,24 @@ from keras import Sequential
 from keras.callbacks import History
 from keras.engine.saving import load_model
 from sklearn.base import TransformerMixin
+from mlpipe.api.interface import PredictionTypes
 from mlpipe.config import app_settings
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
+import numpy as np
+
+
+class ModelPrediction:
+    def __init__(self, prediction_type: str, model: Sequential):
+        self.model = model
+        self.pred_type = prediction_type
+
+    def predict(self, input_data: np.ndarray) -> np.ndarray:
+        if self.pred_type == PredictionTypes.BINARY.value:
+            return self.model.predict_classes(input_data)
+        elif self.pred_type == PredictionTypes.REGRESSION.value:
+            return self.model.predict(input_data)
+        else:
+            raise NotImplementedError(self.pred_type)
 
 
 class TrainingProject(object):
@@ -81,6 +97,14 @@ class TrainingProject(object):
         new_path = os.path.join(self.path_training_dir, uuid4().__str__())
         self._tmp_files.append(new_path)
         return new_path
+
+    def model_predict(self, input_data: np.ndarray) -> np.ndarray:
+        pred_type = self.description['modelInput']['predictionType']
+        return ModelPrediction(prediction_type=pred_type, model=self.model).predict(input_data)
+
+    def get_custom_model(self):
+        pred_type = self.description['modelInput']['predictionType']
+        return ModelPrediction(prediction_type=pred_type, model=self.model)
 
     def __enter__(self):
         os.makedirs(self.path_training_dir, exist_ok=True)

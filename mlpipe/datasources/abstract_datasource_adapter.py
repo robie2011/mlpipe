@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 import numpy as np
 from typing import NamedTuple, List, Union
-
+import logging
 from mlpipe.processors import StandardDataFormat
+from mlpipe.workflows.utils import get_class_name
+
+module_logger = logging.getLogger(__file__)
 
 
 class AggregatorInput(NamedTuple):
@@ -17,6 +20,9 @@ class DataResult(NamedTuple):
 
 
 class AbstractDatasourceAdapter(ABC):
+    def __init__(self):
+        module_logger.info(f"using datasource class {get_class_name(self)}")
+
     @abstractmethod
     def test(self) -> Union[bool, str]:
         pass
