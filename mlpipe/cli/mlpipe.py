@@ -1,5 +1,5 @@
 import argparse
-from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data
+from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data, integrate_model
 
 
 def actionNotImplemented(args):
@@ -17,6 +17,10 @@ def main():
     # test
     parser_test = subparsers.add_parser('test')
     parser_test.add_argument("files", metavar="FILES", default=[], nargs='*')
+
+    # integrate
+    parser_integrate = subparsers.add_parser('integrate')
+    parser_integrate.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # list
     parser_list = subparsers.add_parser('list')
@@ -40,7 +44,8 @@ def main():
         "list": list_models,
         "describe": describe_model,
         "test": test_model,
-        "analyze": analyze_data
+        "analyze": analyze_data,
+        "integrate": integrate_model
     }
 
     action_switcher.get(args.action, actionNotImplemented)(args)

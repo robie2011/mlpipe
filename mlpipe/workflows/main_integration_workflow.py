@@ -19,6 +19,7 @@ class IntegrationWorkflow:
         self.output = IntegrationWorkflow._get_output_instance(description['output'])
         self.executionFrequencyMinutes = description['executionFrequencyMinutes']
         self.executionCount = 0
+        self.next_execution = datetime.now()
 
         with TrainingProject(name=self.model_name, session_id=self.session_id, create=False) as project:
             self.modified_desc = project.description
@@ -46,15 +47,17 @@ class IntegrationWorkflow:
         self.output.write(integration_result)
 
     def run(self, limit_execution=-1):
-        next_execution = datetime.now() + timedelta(minutes=self.executionFrequencyMinutes)
-        self._run()
-        while limit_execution > -1 and self.executionCount <= limit_execution:
-            delta_seconds = (next_execution - datetime.now()).total_seconds()
+        while limit_execution < 0 or (limit_execution > -1 and self.executionCount <= limit_execution):
+            delta_seconds = (self.next_execution - datetime.now()).total_seconds()
             if delta_seconds > 0:
                 sleep(delta_seconds)
+            self.next_execution = self._calc_next_execution_time()
             self._run()
 
         module_logger.info("maximum execution count reached. terminating integration")
+
+    def _calc_next_execution_time(self):
+        return datetime.now() + timedelta(minutes=self.executionFrequencyMinutes)
 
     @staticmethod
     def _get_output_instance(desc_output) -> AbstractOutput:

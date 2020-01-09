@@ -4,14 +4,16 @@ import pickle
 import traceback
 from typing import List, Dict
 from uuid import uuid4
-from keras import Sequential
-from keras.callbacks import History
-from keras.engine.saving import load_model
 from sklearn.base import TransformerMixin
 from mlpipe.api.interface import PredictionTypes
 from mlpipe.config import app_settings
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
 import numpy as np
+
+from keras import Sequential
+from keras.engine.saving import load_model
+from keras.callbacks import History
+
 
 
 class ModelPrediction:

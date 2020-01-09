@@ -12,6 +12,10 @@ from mlpipe.workflows.utils import load_description_file
 module_logger = logging.getLogger(__name__)
 
 
+def _print_heading(text: str):
+    line = f"MLPIPE CLI: {text}"
+    module_logger.info(line)
+
 def _calc_dir_size(path: str):
     root_dir = Path(path)
     dir_size = sum(f.stat().st_size for f in root_dir.glob("**/*.*") if f.is_file())
@@ -21,7 +25,9 @@ def _calc_dir_size(path: str):
 def _get_history(name: str, session_id: str):
     from mlpipe.config.interface import TrainingProjectFileNames, HistorySummary
     import pickle
-    """writing new logic instead of using TrainingProject because TrainingProject requires loading tensorflow lib"""
+    # todo: check
+    # code duplication: (TrainingProject)
+    # because TrainingProject requires loading tensorflow lib
     path_history = os.path.join(
         app_settings.dir_training, name, session_id, TrainingProjectFileNames.HISTORY_SUMMARY.value)
     if not os.path.isfile(path_history):
@@ -35,6 +41,7 @@ def list_models(args):
     import numpy as np
     import tabulate
     from mlpipe.cli.interface import ModelLocation
+    _print_heading("LIST")
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     result: List[ModelLocation] = []
     names = os.listdir(app_settings.dir_training)
@@ -85,6 +92,7 @@ def describe_model(args):
     name, session_id = cast(str, args.model_session).split("/")
     from mlpipe.config.training_project import TrainingProject
     project = TrainingProject(name=name, session_id=session_id)
+    _print_heading("DESCRIBE MODEL")
     title = "Model Architecture: {0}".format(project.path_training_dir)
     print(title)
     print("_" * len(title))
@@ -98,10 +106,26 @@ def train_model(args):
     for f in args.files:
         path = f if os.path.isabs(f) else os.path.abspath(f)
         description = load_description_file(path)
-        module_logger.info("")
-        module_logger.info(f"TRAINING MODEL: {description['name']}")
+        _print_heading(f"TRAINING MODEL: {description['name']}")
         module_logger.info(f"file: {path}")
         train(description)
+
+
+def integrate_model(args):
+    import threading
+    from mlpipe.workflows.main_integration_workflow import IntegrationWorkflow
+    threads = []
+
+    for f in args.files:
+        path = f if os.path.isabs(f) else os.path.abspath(f)
+        description = load_description_file(path)
+        _print_heading(f"INTEGRATE MODEL: {description['name']}/{description['session']}")
+        module_logger.info(f"file: {path}")
+        t = threading.Thread(target=IntegrationWorkflow(description).run)
+        threads.append(t)
+        t.start()
+
+    module_logger.info(f"Total threads: {len(threading.enumerate())}")
 
 
 def test_model(args):
@@ -111,8 +135,7 @@ def test_model(args):
             path = f if os.path.isabs(f) else os.path.abspath(f)
             description = load_description_file(path)
 
-            module_logger.info("")
-            module_logger.info("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
+            _print_heading("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
             module_logger.info(f"file: {path}")
             module_logger.info("test data source: ")
             for k, v in description['testSource'].items():
@@ -162,6 +185,7 @@ def analyze_data(args):
         import grequests
         name_updates = []
         for f in args.files:
+            _print_heading("ANALYZE")
             path = f if os.path.isabs(f) else os.path.abspath(f)
             base_path, ext = os.path.splitext(path)
             name = os.path.basename(base_path)
