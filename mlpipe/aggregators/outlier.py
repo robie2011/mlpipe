@@ -39,3 +39,6 @@ class Outlier(AbstractAggregator):
 
         affected_index = np.logical_or(min_filter, max_filter)
         return AggregatorOutput(metrics=np.sum(affected_index, axis=1), affected_index=affected_index)
+
+    def javascript_group_aggregation(self):
+        return "(a,b) => a + b"

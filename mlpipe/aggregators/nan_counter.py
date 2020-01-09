@@ -20,3 +20,6 @@ class NanCounter(AbstractAggregator):
         return AggregatorOutput(
             metrics=np.add.reduce(nan_values, axis=1),
             affected_index=nan_values)
+
+    def javascript_group_aggregation(self):
+        return "(a,b) => a + b"

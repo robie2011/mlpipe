@@ -10,3 +10,9 @@ class Percentile(AbstractNumpyReduction):
         super().__init__(reduce_func=np.nanpercentile)
         self.kwargs['q'] = percentile
         self.kwargs['interpolation'] = interpolation
+
+    def javascript_group_aggregation(self):
+        """
+        we don't know distribution of these groups
+        """
+        return ""

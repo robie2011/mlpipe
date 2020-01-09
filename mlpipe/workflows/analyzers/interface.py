@@ -13,12 +13,13 @@ class AnalyticsResultMeta:
     sensors: List[str]
     metrics: List[str]
     groupers: List[str]
-    groups: List[List[int]]
+    groupToPartitionerToPartition: List[List[int]]
     prettyGroupnames: List[str]
+    metricsAggregationFunc: List[str]
 
 
 @dataclass
 class AnalyticsResult:
     meta: AnalyticsResultMeta
-    metrics: List[List[float]]
+    groupToMetricToSensorToMeasurement: List[List[List[float]]]
     metrics_datastructure_help = "shape is (groups, aggregations, sensors)"

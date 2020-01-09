@@ -30,6 +30,7 @@ class AnalyzerWorkflow:
         n_max_group_members = np.max(np.fromiter(map(lambda x: x.indexes.shape[0], groups), dtype='int'))
         grouped_data = create_np_group_data(groups, n_groups, n_max_group_members, input_data.data)
 
+        # (groups, aggregators, signals)
         output = np.full(
             (n_groups, len(self.aggregators), input_data.data.shape[1]),
             fill_value=np.nan,
@@ -42,15 +43,17 @@ class AnalyzerWorkflow:
             output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data).metrics
 
         group_ids = np.array(list(map(lambda x: x.group_id, groups))).tolist()
+
         meta = AnalyticsResultMeta(
             sensors=input_data.labels,
             metrics=list(map(get_class_name, self.aggregators)),
             groupers=list(map(get_class_name, self.group_by)),
-            groups=group_ids,
-            prettyGroupnames=list(map(lambda x: x.get_pretty_group_names(), self.group_by))
+            groupToPartitionerToPartition=group_ids,
+            prettyGroupnames=list(map(lambda x: x.get_pretty_group_names(), self.group_by)),
+            metricsAggregationFunc=list(map(lambda x: x.javascript_group_aggregation(), self.aggregators))
         )
 
         return AnalyticsResult(
             meta=meta,
-            metrics=output.tolist()
+            groupToMetricToSensorToMeasurement=output.tolist()
         )

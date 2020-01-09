@@ -10,3 +10,9 @@ class Trend(AbstractAggregator):
         return AggregatorOutput(
             metrics=last_values - first_values,
             affected_index=np.zeros(grouped_data.shape))
+
+    def javascript_group_aggregation(self):
+        """
+        we don't know size of these groups
+        """
+        return ""

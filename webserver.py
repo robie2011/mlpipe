@@ -24,7 +24,7 @@ cors = CORS(app, resources={
 
 @app.route('/')
 def hello_world():
-    return 'MLPIPE Webserver online since ' +start_time
+    return 'MLPIPE Webserver online since ' + str(start_time)
 
 
 @app.route('/api/analytics_descriptions')

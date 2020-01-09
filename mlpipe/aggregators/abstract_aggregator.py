@@ -18,3 +18,15 @@ class AbstractAggregator(ABC):
         second axis represents different sensors
         """
         pass
+
+    @abstractmethod
+    def javascript_group_aggregation(self):
+        """
+        Will be used to aggregate multiple groups.
+        If merging groups do not make sense (e.g. aggregate two percentile)
+        return an empty string.
+        Otherwise return a string which contains a javascript arrow-function that
+        takes two numbers and return one number
+        see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+        """
+        pass
