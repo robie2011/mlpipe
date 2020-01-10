@@ -6,7 +6,8 @@ from typing import Dict
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.integration import IntegrationResult
 from mlpipe.integration.output.interface import AbstractOutput
-from mlpipe.workflows.main_training_workflow import run_pipeline_create_model_input
+from mlpipe.workflows.description_evaluator import ExecutionConfig
+from mlpipe.workflows.description_evaluator.evaluator import execute_from_object
 from mlpipe.workflows.utils import pick_from_object, create_instance
 
 module_logger = logging.getLogger(__file__)
@@ -32,8 +33,8 @@ class IntegrationWorkflow:
         module_logger.info(f"Executing integration #{self.executionCount}")
 
         time_execution = datetime.now()
-        execution_result = run_pipeline_create_model_input(
-            self.modified_desc, pretrained_scalers=self.scalers)
+        execution_result = execute_from_object(
+            self.modified_desc, ExecutionConfig(scalers=self.scalers))
         predictions = self.custom_model.predict(execution_result.package.X)
         integration_result = IntegrationResult(
             model_name=self.model_name,

@@ -1,3 +1,8 @@
+import unittest
+from mlpipe.workflows.description_evaluator import YamlStringDescription
+from mlpipe.workflows.description_evaluator.evaluator import execute_from_yaml
+
+description_str = """
 name: empa_mlp
 source:
   name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
@@ -22,3 +27,13 @@ analyze:
     - name: mlpipe.aggregators.Counter
     - name: mlpipe.aggregators.Percentile
       percentile: 75
+"""
+
+
+class TestAnalytics(unittest.TestCase):
+    def test_something(self):
+        execute_from_yaml(description_str)
+
+
+if __name__ == '__main__':
+    unittest.main()

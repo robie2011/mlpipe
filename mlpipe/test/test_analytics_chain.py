@@ -106,10 +106,8 @@ class AnalyticsChain(unittest.TestCase):
         }
         timer.tock("create export format")
 
-        with open('./export_data_empa.json', 'w') as f:
-            f.write(json.dumps(export_data))
-
         timer.tock("write file")
+        json.dumps(export_data, allow_nan=True)
 
 
 if __name__ == '__main__':

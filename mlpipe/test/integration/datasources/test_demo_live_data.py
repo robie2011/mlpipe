@@ -10,7 +10,9 @@ class TestDemoLiveData(unittest.TestCase):
         window_size = 3
         source = DemoLiveData(pathToFile=path_test_csv_file, windowMinutes=window_size)
         result = source.fetch()
-        print(result)
+        for i in range(result.data.shape[0]):
+            print(result.data[i,:])
+            
         self.assertEqual(result.data.shape[0], window_size)
         self.assertEqual(result.timestamps.shape[0], window_size)
         self.assertEqual(result.data[0, 0], 17.8)

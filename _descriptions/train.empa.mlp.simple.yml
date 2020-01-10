@@ -120,7 +120,6 @@ modelCompile:
 modelTraining:
   epochs: 10
   batch_size: 4320
-  repeat: 3
 
 backupTraining: False
 
@@ -128,12 +127,3 @@ seed:
   numpy: 2
   tensorflow: 2
 
-analyze:
-  groupBy:
-    - name: mlpipe.groupers.YearGrouper
-    - name: mlpipe.groupers.MonthGrouper
-  metrics:
-    - name: mlpipe.aggregators.Max
-    - name: mlpipe.aggregators.Min
-    - name: mlpipe.aggregators.Percentile
-      percentile: .75

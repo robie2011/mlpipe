@@ -56,7 +56,7 @@ modelInput:
       fields:
         - Wochentag
 
-  shuffle: True
+  shuffle: False
   ratioTestdata: .20
   create3dSequence: 20
 
@@ -82,7 +82,6 @@ modelCompile:
 modelTraining:
   epochs: 10
   batch_size: 4320
-  repeat: 3
 
 seed:
   numpy: 2

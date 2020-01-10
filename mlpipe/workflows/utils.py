@@ -1,7 +1,10 @@
 import copy
 from importlib import import_module
 from inspect import getmro
-from typing import List, Dict
+from typing import List, Callable, Optional
+
+
+Funcs = Callable[[Optional[object]], object]
 
 
 def get_component_config(key_values: dict):
@@ -79,13 +82,7 @@ def pick_from_object(obj, *keys):
     return result
 
 
-def sequential_execution(funcs: List[object]):
-    data = funcs[0]()
-    for f in funcs[1:]:
-        data = f(data)
-    return data
-
-
+# todo: moving to description_eval.py ?
 def load_description_file(path: str):
     import os
     _, ext = os.path.splitext(path)

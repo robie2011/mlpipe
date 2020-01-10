@@ -76,7 +76,6 @@ modelCompile:
 modelTraining:
   epochs: 5
   batch_size: 10
-  repeat: 3
 
 analyze:
   groupBy:

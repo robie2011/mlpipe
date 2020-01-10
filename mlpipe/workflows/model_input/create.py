@@ -9,6 +9,7 @@ from sklearn.base import TransformerMixin
 from sklearn.model_selection import train_test_split
 from mlpipe.encoders import AbstractEncoder
 from mlpipe.processors import StandardDataFormat
+from mlpipe.processors.column_selector import ColumnSelector
 from mlpipe.workflows.model_input.interface import PreprocessingDescription
 from mlpipe.workflows.utils import create_instance, pick_from_object
 from typing import cast
@@ -96,7 +97,8 @@ class PreprocessedModelInput:
 @dataclass
 class CreateModelInputWorkflow:
     def __init__(self, description: PreprocessingDescription,
-                 pretrained_scalers=[]):
+                 pretrained_scalers=[],
+                 ignore_prediction_field = False):
         self.description = copy.deepcopy(description)
         self.has_pretrained_scalers = False
         self.scalers: List[TransformerMixin] = []
@@ -119,6 +121,9 @@ class CreateModelInputWorkflow:
                 self.encoders.append(encoder)
 
     def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
+
+        #input_data = ColumnSelector(input_data.labels + [self.description['predictionTargetField']]).process(input_data)
+
         cols_with_index = list(enumerate(input_data.labels))
         try:
             ix_prediction_target = next(ix for ix, name in cols_with_index

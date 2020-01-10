@@ -120,7 +120,6 @@ modelCompile:
 modelTraining:
   epochs: 10
   batch_size: 4320
-  repeat: 3
 
 backupTraining: False
 

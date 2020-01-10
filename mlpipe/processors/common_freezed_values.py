@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import itertools
 
@@ -21,7 +23,7 @@ def get_mask_for_freezed_values(data: np.ndarray, threshold: int):
     return _get_mask(data.shape, threshold=threshold, match=match)
 
 
-def _get_mask(data_shape: (int, int), threshold: int, match: np.ndarray):
+def _get_mask(data_shape: Tuple[int, ...], threshold: int, match: np.ndarray):
     """
     Input: 2D matrix having different series on each column.
     detecting unchanged values for more than `threshold`-times

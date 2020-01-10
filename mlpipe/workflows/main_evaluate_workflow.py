@@ -7,10 +7,11 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 from mlpipe.api.interface import PredictionTypes
 from mlpipe.config.training_project import TrainingProject
-from .main_training_workflow import run_pipeline_create_model_input, PipelineAndModelInputExecutionResult
-
+from .description_evaluator.evaluator import execute_from_object
+from .description_evaluator import PipelineAndModelInputExecutionResult, ExecutionConfig
 
 DISABLE_EVAL_STATS = False
+
 
 def _read_json(path: str) -> Dict:
     with open(path, "r") as f:
@@ -48,8 +49,10 @@ def evaluate(description: Dict):
         project = cast(TrainingProject, project)
         evaluation_project = copy.deepcopy(project.description)
         evaluation_project['source'] = description['testSource']
-        execution_result = run_pipeline_create_model_input(
-            evaluation_project, pretrained_scalers=project.scalers)
+        execution_result = execute_from_object(
+            evaluation_project,
+            ExecutionConfig(scalers=project.scalers)
+        )
         data = execution_result.package
 
         pred_type = evaluation_project['modelInput']['predictionType']

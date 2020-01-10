@@ -9,7 +9,7 @@ class TestIntegrationWorkflow(unittest.TestCase):
         path_test_csv_file = get_dir_from_code_root(["_descriptions", "integrate.empa.simple.yml"])
         description = load_description_file(path_test_csv_file)
         wf = IntegrationWorkflow(description)
-        wf.run(limit_execution=3)
+        wf.run(limit_execution=1)
 
 
 if __name__ == '__main__':
