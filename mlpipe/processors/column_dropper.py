@@ -2,6 +2,7 @@ from typing import List
 import numpy as np
 from .column_selector import ColumnSelector
 from .interfaces import AbstractProcessor, StandardDataFormat
+from ..datautils import LabelSelector
 
 
 class ColumnDropper(AbstractProcessor):
@@ -9,7 +10,8 @@ class ColumnDropper(AbstractProcessor):
         self._columns = columns
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        columns = np.array([i for i, label
-                            in enumerate(processor_input.labels)
-                            if label not in self._columns])
-        return ColumnSelector.select_columns(processor_input, columns)
+
+        ix = LabelSelector(elements=processor_input.labels)\
+            .without(self._columns).indexes
+
+        return ColumnSelector.select_columns(processor_input, ix)

@@ -8,7 +8,7 @@ from mlpipe.workflows.load_data.create_loader import create_loader_workflow
 from mlpipe.workflows.model_input.create import CreateModelInputWorkflow, PreprocessedModelInput
 from mlpipe.workflows.pipeline.create_pipeline import create_pipeline_workflow
 
-module_logger = logging.getLogger(__file__)
+module_logger = logging.getLogger(__name__)
 
 
 def execute_from_yaml(text: str, config: ExecutionConfig = None):

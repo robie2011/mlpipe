@@ -27,7 +27,7 @@ class YamlStringDescription(AbstractDescription):
     def load(self) -> Dict:
         import yaml
         import io
-        return yaml.load(io.StringIO(self.text))
+        return yaml.load(io.StringIO(self.text), Loader=yaml.FullLoader)
 
 
 @dataclass

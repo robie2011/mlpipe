@@ -65,8 +65,8 @@ def evaluate(description: Dict):
             if DISABLE_EVAL_STATS:
                 print("WARNING: returning cf-matrix for UNIT TEST")
                 return result
-
-            ix_error = np.arange(data.y.shape[0])[data.y != y_]
+            ix_all = np.arange(data.y.shape[0])
+            ix_error = ix_all[data.y.reshape(-1,) != y_]
 
             tn, fp, fn, tp = result.ravel()
             tpr = tp / (tp + fn)

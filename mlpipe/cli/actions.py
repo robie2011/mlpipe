@@ -108,7 +108,8 @@ def train_model(args):
         description = load_description_file(path)
         _print_heading(f"TRAINING MODEL: {description['name']}")
         module_logger.info(f"file: {path}")
-        train(description)
+        path_training_dir, model = train(description)
+        module_logger.info(f"trained model: {path_training_dir}")
 
 
 def integrate_model(args):
@@ -175,7 +176,9 @@ def print_evaluation_result(result):
                 else:
                     module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
         else:
-            module_logger.info("   {0}: ".format(attr), value)
+            #module_logger.info("   {0}: ".format(str(attr)), value)
+            module_logger.info(terminal_tab + attr + ":")
+            module_logger.info(value)
 
 
 def analyze_data(args):

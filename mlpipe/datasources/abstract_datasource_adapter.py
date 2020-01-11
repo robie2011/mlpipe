@@ -5,7 +5,7 @@ import logging
 from mlpipe.processors import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name
 
-module_logger = logging.getLogger(__file__)
+module_logger = logging.getLogger(__name__)
 
 
 class AggregatorInput(NamedTuple):

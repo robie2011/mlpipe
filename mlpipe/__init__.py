@@ -1,10 +1,18 @@
-import logging
+from mlpipe.logging_setup import setup_logging
 
-package_logger = logging.getLogger(__name__)
-package_logger.setLevel(logging.DEBUG)
+# package_logger = logging.getLogger(__name__)
+#package_logger.setLevel(logging.DEBUG)
 
-# add the handlers to the logger
-formatter = logging.Formatter('%(asctime)s [%(name)s] (%(levelname)s) %(message)s')
-ch = logging.StreamHandler()
-ch.setFormatter(formatter)
-package_logger.addHandler(ch)
+# logging coloring library
+# https://pypi.org/project/coloredlogs/#usage
+# coloredlogs.install(logger=package_logger, fmt=LOGGING_FORMAT)
+
+
+# builtin logging handler
+# formatter = logging.Formatter(LOGGING_FORMAT)
+# ch = logging.StreamHandler()
+# ch.setFormatter(formatter)
+# package_logger.addHandler(ch)
+
+
+setup_logging()

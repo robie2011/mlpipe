@@ -15,3 +15,5 @@ def get_dir(join_to_root_path=[]):
 
 def get_dict_values(d: Dict, *keys: str):
     return [d.get(k) for k in keys]
+
+

@@ -121,8 +121,6 @@ modelTraining:
   epochs: 10
   batch_size: 4320
 
-backupTraining: False
-
 seed:
   numpy: 2
   tensorflow: 2

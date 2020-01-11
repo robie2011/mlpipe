@@ -10,7 +10,7 @@ from mlpipe.workflows.description_evaluator import ExecutionConfig
 from mlpipe.workflows.description_evaluator.evaluator import execute_from_object
 from mlpipe.workflows.utils import pick_from_object, create_instance
 
-module_logger = logging.getLogger(__file__)
+module_logger = logging.getLogger(__name__)
 
 
 class IntegrationWorkflow:
@@ -48,7 +48,7 @@ class IntegrationWorkflow:
         self.output.write(integration_result)
 
     def run(self, limit_execution=-1):
-        while limit_execution < 0 or (limit_execution > -1 and self.executionCount <= limit_execution):
+        while limit_execution < 0 or (limit_execution > -1 and self.executionCount < limit_execution):
             delta_seconds = (self.next_execution - datetime.now()).total_seconds()
             if delta_seconds > 0:
                 sleep(delta_seconds)

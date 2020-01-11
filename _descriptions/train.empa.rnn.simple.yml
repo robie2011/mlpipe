@@ -1,4 +1,4 @@
-name: empa_mlp
+name: empa_rnn
 source:
   name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv

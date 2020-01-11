@@ -7,9 +7,14 @@ from typing import List, Tuple
 import numpy as np
 from sklearn.base import TransformerMixin
 from sklearn.model_selection import train_test_split
+
+from mlpipe.datautils import LabelSelector
 from mlpipe.encoders import AbstractEncoder
 from mlpipe.processors import StandardDataFormat
 from mlpipe.processors.column_selector import ColumnSelector
+from mlpipe.processors.internal.encoder import Encoder
+from mlpipe.processors.internal.scaler import Scaler
+from mlpipe.processors.internal.shuffle import Shuffle
 from mlpipe.workflows.model_input.interface import PreprocessingDescription
 from mlpipe.workflows.utils import create_instance, pick_from_object
 from typing import cast
@@ -97,108 +102,47 @@ class PreprocessedModelInput:
 @dataclass
 class CreateModelInputWorkflow:
     def __init__(self, description: PreprocessingDescription,
-                 pretrained_scalers=[],
-                 ignore_prediction_field = False):
+                 pretrained_scalers=[]):
         self.description = copy.deepcopy(description)
-        self.has_pretrained_scalers = False
-        self.scalers: List[TransformerMixin] = []
-        scalers_desc = self.description.get("scale", None)
-        if pretrained_scalers:
-            self.scalers = pretrained_scalers
-            self.has_pretrained_scalers = True
-        elif scalers_desc:
-            for scale_desc in scalers_desc:
-                name, fields, kwargs = pick_from_object(scale_desc, "name", "fields")
-                scaler = create_instance(qualified_name=name, kwargs=kwargs)
-                self.scalers.append(scaler)
+        self.scalers: List[TransformerMixin] = pretrained_scalers
 
-        self.encoders = []
-        encoders_desc = self.description.get('encode', None)
-        if encoders_desc:
-            for encode_desc in encoders_desc:
-                name, fields, kwargs = pick_from_object(encode_desc, "name", "fields")
-                encoder = create_instance(qualified_name=name, kwargs=kwargs)
-                self.encoders.append(encoder)
+    def _pipeline_beta(self, input_data: StandardDataFormat) -> (PreprocessedModelInput, List[object]):
+        input_data = ColumnSelector(self.description['predictionSourceFields'] + [self.description['predictionTargetField']]).process(input_data)
 
-    def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
-
-        #input_data = ColumnSelector(input_data.labels + [self.description['predictionTargetField']]).process(input_data)
-
-        cols_with_index = list(enumerate(input_data.labels))
-        try:
-            ix_prediction_target = next(ix for ix, name in cols_with_index
-                                        if name == self.description['predictionTargetField'])
-        except StopIteration as e:
-            raise Exception("predictionTargetField '{0}' can not be found. \r\n Labels found in input source: {1}".format(
-                self.description['predictionTargetField'],
-                input_data.labels
-            ))
-
-        # note: scaling target field may be required
-        # therefore we scale requested fields first.
-        # Here we don't have to make distinction between source and target field
         scalers_trained = []
         scalers_desc = self.description.get("scale", None)
         if scalers_desc:
-            fields_scalers = zip(
-                map(lambda x: x['fields'], scalers_desc),
-                self.scalers
-            )
+            for ix, desc_scale in enumerate(scalers_desc):
+                saved_state = None if len(self.scalers) == 0 else self.scalers[ix]
+                name, fields, kwargs = pick_from_object(desc_scale, "name", "fields")
+                scaler = Scaler(name=name, kwargs=kwargs, fields=fields, saved_state=saved_state)
+                input_data = scaler.process(input_data)
+                scalers_trained.append(scaler.saved_state)
 
-            for fields, scaler in fields_scalers:
-                qualified_classname = type(scaler).__name__
-                module_logger.info("run scaling for fields={0} with scaler={1}".format(
-                    ", ".join(fields), qualified_classname))
-
-                ix_col_selected, name_col_selected = _map_indexes(source=input_data.labels, selection=fields)
-                partial_data = input_data.data[:, ix_col_selected]
-
-                func_transform = scaler.transform if self.has_pretrained_scalers else scaler.fit_transform
-                input_data.data[:, ix_col_selected] = func_transform(partial_data)
-
-                scalers_trained.append(scaler)
-
-        # filtering source data
-        ix_prediction_sources, ix_prediction_names = _map_indexes(
-            source=input_data.labels,
-            selection=self.description['predictionSourceFields'])
-        X, y, timestamps = input_data.data[:, ix_prediction_sources], \
-                           input_data.data[:, ix_prediction_target], \
-                           input_data.timestamps
-        X_labels = ix_prediction_names
-
-        # input_data shouldn't be used after this line
-        # because we split data in different variables
-        del input_data
+        if 'shuffle' in self.description and self.description['shuffle']:
+            input_data = Shuffle().process(input_data)
 
         # note: currently trained encoder can be discarded because
         # trained parameters are wellknown (see RangeEncoder)
         encoders_desc = self.description.get('encode', None)
         if encoders_desc:
-            fields_encoders = zip(
-                map(lambda x: x['fields'], encoders_desc),
-                self.encoders
-            )
+            for encode_desc in encoders_desc:
+                name, value_from, value_to, fields, kwargs = pick_from_object(
+                    encode_desc, "name", "value_from", "value_to", "fields")
+                encoder = Encoder(name=name, value_from=value_from, value_to=value_to, fields=fields)
+                input_data = encoder.process(input_data)
 
-            for fields, encoder in fields_encoders:
-                qualified_classname = type(encoder).__name__
-                for field in fields:
-                    module_logger.info("run encoding for field={0} with scaler={1}".format(field, qualified_classname))
-                    ix_field = _get_column_id(columns=X_labels, selection=field)
-                    column_data = X[:, ix_field]
+        return input_data, scalers_trained
 
-                    # removing old data
-                    X_labels.remove(field)
-                    X = np.delete(X, ix_field, axis=1)
+    def model_preprocessing(self, input_data: StandardDataFormat) -> PreprocessedModelInput:
+        input_data, scalers_trained = self._pipeline_beta(input_data)
 
-                    # adding new data
-                    encoded_data = cast(AbstractEncoder, encoder).encode(column_data)
-                    X = np.hstack((X, encoded_data))
+        target_selection = LabelSelector(input_data.labels).without(
+            self.description['predictionTargetField'])
+        X = input_data.data[:, target_selection.indexes]
+        y = input_data.data[:, target_selection.indexes_unselected]
+        timestamps = input_data.timestamps
 
-                    # add new labels
-                    encoding_id = "{0}_encoded$".format(field, int(random() * 1000))
-                    new_labels = ["{0}_{1}".format(encoding_id, i) for i in range(encoded_data.shape[1])]
-                    X_labels += new_labels
 
         if 'create3dSequence' in self.description:
             n_sequence = int(self.description['create3dSequence'])
@@ -222,14 +166,6 @@ class CreateModelInputWorkflow:
 
             y = y[ix_valid_endpoints]
             X = output
-
-        if 'shuffle' in self.description and self.description['shuffle']:
-            module_logger.info("shuffle data")
-            ix = np.arange(X.shape[0])
-            np.random.shuffle(ix)
-            X = X[ix]
-            y = y[ix]
-            timestamps = timestamps[ix]
 
         return PreprocessedModelInput(X=X, y=y, scalers=scalers_trained)
 
