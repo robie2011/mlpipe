@@ -2,22 +2,17 @@ import hashlib
 import json
 import copy
 from dataclasses import dataclass
-from random import random
 from typing import List, Tuple
 import numpy as np
 from sklearn.base import TransformerMixin
 from sklearn.model_selection import train_test_split
 
 from mlpipe.datautils import LabelSelector
-from mlpipe.encoders import AbstractEncoder
 from mlpipe.processors import StandardDataFormat
 from mlpipe.processors.column_selector import ColumnSelector
-from mlpipe.processors.internal.encoder import Encoder
 from mlpipe.processors.internal.scaler import Scaler
-from mlpipe.processors.internal.shuffle import Shuffle
 from mlpipe.workflows.model_input.interface import PreprocessingDescription
-from mlpipe.workflows.utils import create_instance, pick_from_object
-from typing import cast
+from mlpipe.workflows.utils import pick_from_object
 import logging
 
 module_logger = logging.getLogger(__name__)
@@ -118,19 +113,6 @@ class CreateModelInputWorkflow:
                 scaler = Scaler(name=name, kwargs=kwargs, fields=fields, saved_state=saved_state)
                 input_data = scaler.process(input_data)
                 scalers_trained.append(scaler.saved_state)
-
-        if 'shuffle' in self.description and self.description['shuffle']:
-            input_data = Shuffle().process(input_data)
-
-        # note: currently trained encoder can be discarded because
-        # trained parameters are wellknown (see RangeEncoder)
-        encoders_desc = self.description.get('encode', None)
-        if encoders_desc:
-            for encode_desc in encoders_desc:
-                name, value_from, value_to, fields, kwargs = pick_from_object(
-                    encode_desc, "name", "value_from", "value_to", "fields")
-                encoder = Encoder(name=name, value_from=value_from, value_to=value_to, fields=fields)
-                input_data = encoder.process(input_data)
 
         return input_data, scalers_trained
 
