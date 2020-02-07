@@ -1,0 +1,134 @@
+# ohne abluft
+# durchschnitt der letzten
+
+name: empa_mlp_avg
+source:
+  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipeline:
+  - name: mlpipe.features.TimeFeatureExtractor
+    extract: hour
+    output_field: Stunden
+  - name: mlpipe.features.TimeFeatureExtractor
+    extract: weekday
+    output_field: Wochentag
+  - name: mlpipe.aggregators.Max
+    sequence: 60
+    generate:
+    - inputField: CO2
+      outputField: CO2_Max15
+    - inputField: TempInnen
+      outputField: TempInnen_Max15
+  - name: mlpipe.aggregators.Mean
+    sequence: 60
+    generate:
+    - inputField: CO2
+      outputField: CO2_Mean15
+    - inputField: TempInnen
+      outputField: TempInnen_Mean15
+  - name: mlpipe.aggregators.Min
+    sequence: 60
+    generate:
+    - inputField: CO2
+      outputField: CO2_Min15
+    - inputField: TempInnen
+      outputField: TempInnen_Min15
+  - name: mlpipe.aggregators.Trend
+    sequence: 60
+    generate:
+    - inputField: CO2
+      outputField: CO2_Trend15
+    - inputField: TempInnen
+      outputField: TempInnen_Trend15
+  - name: mlpipe.processors.NanRemover
+
+# validation: get sourceField information from pipeline
+modelInput:
+  predictionSourceFields:
+    - TempAussen
+    - TempInnen
+    - Zuluft
+    - CO2
+    - Stunden
+    - Wochentag
+    - CO2_Max15
+    - CO2_Min15
+    - CO2_Trend15
+    - TempInnen_Max15
+    - TempInnen_Min15
+    - TempInnen_Trend15
+    - CO2_Mean15
+    - TempInnen_Mean15
+
+  predictionTargetField: Präsenz
+
+  # binary, class, regression
+  predictionType: binary
+
+  scale:
+    - name: sklearn.preprocessing.RobustScaler
+      fields:
+        - TempAussen
+        - TempInnen
+        - Zuluft
+        - CO2
+        - CO2_Max15
+        - CO2_Min15
+        - CO2_Trend15
+        - TempInnen_Max15
+        - TempInnen_Min15
+        - TempInnen_Trend15
+        - CO2_Mean15
+        - TempInnen_Mean15
+
+  encode:
+    - name: mlpipe.encoders.RangeEncoder
+      value_from: 0
+      value_to: 24
+      fields:
+        - Stunden
+    - name: mlpipe.encoders.RangeEncoder
+      value_from: 0
+      value_to: 7
+      fields:
+        - Wochentag
+
+  shuffle: True
+  ratioTestdata: .20
+
+sequentialModel:
+  - name: keras.layers.Dense
+    units: 200
+    activation: tanh
+  - name: keras.layers.Dense
+    units: 100
+    activation: tanh
+  - name: keras.layers.Dense
+    units: 50
+    activation: tanh
+  - name: keras.layers.Dense
+    units: 1
+    activation: sigmoid
+
+modelCompile:
+  loss: binary_crossentropy
+  optimizer: Adam
+  metrics:
+    - accuracy
+
+modelTraining:
+  epochs: 150
+  batch_size: 4320
+
+seed:
+  numpy: 2
+  tensorflow: 2
+

@@ -1,0 +1,129 @@
+name: empa_mlp
+source:
+  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipelinePrimary:
+  - name: mlpipe.features.TimeFeatureExtractor
+    extract: hour
+    output_field: Stunden
+  - name: mlpipe.features.TimeFeatureExtractor
+    extract: weekday
+    output_field: Wochentag
+  - name: mlpipe.aggregators.Max
+    sequence: 15
+    generate:
+    - inputField: CO2
+      outputField: CO2_Max15
+    - inputField: TempInnen
+      outputField: TempInnen_Max15
+  - name: mlpipe.aggregators.Mean
+    sequence: 15
+    generate:
+    - inputField: CO2
+      outputField: CO2_Mean15
+    - inputField: TempInnen
+      outputField: TempInnen_Mean15
+  - name: mlpipe.aggregators.Min
+    sequence: 15
+    generate:
+    - inputField: CO2
+      outputField: CO2_Min15
+    - inputField: TempInnen
+      outputField: TempInnen_Min15
+  - name: mlpipe.aggregators.Trend
+    sequence: 15
+    generate:
+    - inputField: CO2
+      outputField: CO2_Trend15
+    - inputField: TempInnen
+      outputField: TempInnen_Trend15
+  - name: mlpipe.processors.NanRemover
+
+
+model:
+
+  # multiclass, multilabel, regression, binary
+  problemType: binary
+
+  design:
+    type: keras.sequentialModel
+    layers:
+      - name: keras.layers.Dense
+        units: 50
+        activation: tanh
+      - name: keras.layers.Dense
+        units: 1
+        activation: sigmoid
+    input:
+      - TempAussen
+      - TempInnen
+      - Zuluft
+      - Abluft
+      - CO2
+      - Stunden
+      - Wochentag
+      - CO2_Max15
+      - CO2_Min15
+      - CO2_Trend15
+      - TempInnen_Max15
+      - TempInnen_Min15
+      - TempInnen_Trend15
+      - CO2_Mean15
+      - TempInnen_Mean15
+    output:
+      - Präsenz
+      - ABC
+    training:
+      splitRatio: .6
+      compile:
+        loss: binary_crossentropy
+        optimizer: Adam
+        metrics:
+          - accuracy
+      fit:
+        epochs: 10
+        batch_size: 4320
+
+
+# validation: get sourceField information from pipeline
+pipelineSecondary:
+  - name: sklearn.preprocessing.RobustScaler
+    fields:
+      - TempAussen
+      - TempInnen
+      - Zuluft
+      - Abluft
+      - CO2
+      - CO2_Max15
+      - CO2_Min15
+      - CO2_Trend15
+      - TempInnen_Max15
+      - TempInnen_Min15
+      - TempInnen_Trend15
+      - CO2_Mean15
+      - TempInnen_Mean15
+  - name: mlpipe.encoders.RangeEncoder
+    value_from: 0
+    value_to: 24
+    fields:
+      - Stunden
+  - name: mlpipe.encoders.RangeEncoder
+    value_from: 0
+    value_to: 7
+    fields:
+      - Wochentag
+   # todo: Data 3D converter
+
+
+seed:
+  numpy: 2
+  tensorflow: 2
+

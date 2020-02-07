@@ -1,0 +1,18 @@
+cut -f1,10 /Users/robert.rajakone/repos/2019_p8/code/trainframework/sensors.csv | grep "22"
+
+65NT_KLI01_Y722_M01 Volumenstrom Zuluft (m^3/h) Rückmeldung Messwerte	12
+65NT_KLI01_Y721_M01 Volumenstrom Zuluft (m^3/h) Rückmeldung Messwerte	22
+65NT_KLI01_Y732_M01 Volumenstrom Abluft (m^3/h) Rückmeldung Messwerte	22
+65NT_ERZ11_B871_M00 Innentemperatur (°C) Rückmeldung Messwerte	22
+65NT_ERZ11_B871_M01 Konzentration (ppm) Rückmeldung Messwerte	22
+65NT_ERZ11_B873_M00 Präsenz aktiv (1/0) Rückmeldung Messwerte	22
+
+
+Zweites Zimmer:
+     - 3200000 as TempAussen
+     - 40210022 as Zuluft
+     - 40210025 as Abluft
+     - 40210032 as TempInnen
+     - 40210033 as CO2
+     - 40210149 as Präsenz
+
