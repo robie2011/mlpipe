@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List
 import numpy as np
+from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 
 
 @dataclass
@@ -24,7 +25,24 @@ class StandardDataFormat:
         )
 
 
-class AbstractProcessor(ABC):
+class ProcessorStateManager:
+    def __init__(self, func_save, func_restore):
+        self._func_save = func_save
+        self._fuc_restore = func_restore
+
+    def save(self, data):
+        return self._func_save(data)
+
+    def restore(self):
+        return self._fuc_restore()
+
+
+class AbstractProcessor(ABC, InstanceLoggerMixin):
+    state: ProcessorStateManager = None
+
+    def set_state_handler(self, handler: ProcessorStateManager):
+        self.state = handler
+
     @abstractmethod
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         pass
