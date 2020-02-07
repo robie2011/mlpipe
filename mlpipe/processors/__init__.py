@@ -5,4 +5,4 @@ from .nan_remover import NanRemover
 from .outlier_remover import OutlierRemover
 from .linear_interpolation import LinearInterpolation
 from .freezed_value_remover import FreezedValueRemover
-
+from .seed_setup import SeedSetup

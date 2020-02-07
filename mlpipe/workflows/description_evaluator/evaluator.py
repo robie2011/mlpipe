@@ -31,8 +31,6 @@ def _execute(desc_info: AbstractDescription, config: ExecutionConfig = None):
     desc = desc_info.load()
     actions = cast(List[object], [])
 
-    setup_seed(desc.get("seed", {}))
-
     desc_source = desc['source']
     actions.append(create_loader_workflow(desc_source).load)
     actions.append(stats._stats_after_initial)
@@ -57,21 +55,6 @@ def _execute(desc_info: AbstractDescription, config: ExecutionConfig = None):
     return PipelineAndModelInputExecutionResult(
         package=data, stats=stats
     )
-
-
-# todo make private
-def setup_seed(seed_desc: Dict):
-    import tensorflow
-    import numpy
-    import random
-    # https://machinelearningmastery.com/reproducible-results-neural-networks-keras/
-    # https://www.tensorflow.org/api_docs/python/tf/random/set_seed?version=stable
-    np_seed = seed_desc.get("numpy", random.randint(0, 1000))
-    tf_seed = seed_desc.get("tensorflow", random.randint(0, 1000))
-    module_logger.info("using numpy random seed={0}".format(np_seed))
-    module_logger.info("using tensorflow random seed={0}".format(tf_seed))
-    numpy.random.seed(np_seed)
-    tensorflow.random.set_seed(tf_seed)
 
 
 def sequential_execution(funcs: List[Funcs]):

@@ -1,5 +1,4 @@
 from typing import List
-import numpy as np
 from .column_selector import ColumnSelector
 from .interfaces import AbstractProcessor, StandardDataFormat
 from ..datautils import LabelSelector
