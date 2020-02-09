@@ -123,32 +123,6 @@ class CreateModelInputWorkflow:
             self.description['predictionTargetField'])
         X = input_data.data[:, target_selection.indexes]
         y = input_data.data[:, target_selection.indexes_unselected]
-        timestamps = input_data.timestamps
-
-
-        if 'create3dSequence' in self.description:
-            n_sequence = int(self.description['create3dSequence'])
-            module_logger.info("create3dSequence: create 3D-Sequence with sequence length={0}".format(n_sequence))
-            ix_valid_endpoints = create_sequence_endpoints(timestamps=timestamps, n_sequence=n_sequence)
-            module_logger.info("create3dSequence: found {0:,} valid endpoints (Previous row size was {1:,})".format(
-                ix_valid_endpoints.shape[0],
-                X.shape[0]
-            ))
-            p_dropped_size = 1-ix_valid_endpoints.shape[0]/X.shape[0]
-            if p_dropped_size > .1:
-                module_logger.warning(f"create3dSequence: {p_dropped_size*100}% of rows were removed")
-
-            output_size = (ix_valid_endpoints.shape[0], n_sequence, X.shape[1])
-            output = np.full(output_size, np.nan)
-            for i in range(len(ix_valid_endpoints)):
-                ix_endpoint = ix_valid_endpoints[i]
-                ix_end = ix_endpoint + 1
-                ix_start = ix_end - n_sequence
-                output[i] = X[ix_start:ix_end]
-
-            y = y[ix_valid_endpoints]
-            X = output
-
         return PreprocessedModelInput(X=X, y=y, scalers=scalers_trained)
 
 
