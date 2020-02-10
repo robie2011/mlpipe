@@ -1,9 +1,10 @@
 from typing import List, Union
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
-from mlpipe.workflows.pipeline.workflow import SingleAggregationConfig, MultiAggregation, \
-    ProcessorOrMultiAggregation, PipelineWorkflow
 from mlpipe.processors import AbstractProcessor
+from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
+from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation, \
+    ProcessorOrMultiAggregation
 from mlpipe.workflows.utils import get_component_config, create_instance
 import logging
 

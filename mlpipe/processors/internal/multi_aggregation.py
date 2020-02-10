@@ -1,20 +1,18 @@
-from dataclasses import dataclass
-from typing import List, Union, Dict
 import logging
-import numpy as np
+from dataclasses import dataclass
+from typing import Dict, List, Union
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.api.sequence_creator import create_sequence_3d
 from mlpipe.processors import StandardDataFormat, AbstractProcessor
 from mlpipe.workflows.utils import get_qualified_name
 
-
 module_logger = logging.getLogger(__name__)
-
 
 # python 3.8+
 # class InputOutputField(TypedDict):
 #     inputField: str
 #     outputField: str
+
 InputOutputField = Dict
 
 
@@ -104,41 +102,3 @@ class MultiAggregation(AbstractProcessor):
 
 
 ProcessorOrMultiAggregation = Union[MultiAggregation, AbstractProcessor]
-
-
-@dataclass
-class PipelineWorkflow:
-    pipelines: List[ProcessorOrMultiAggregation]
-
-    def execute(self, input_data: StandardDataFormat) -> StandardDataFormat:
-        for pipe in self.pipelines:
-            module_logger.debug("execute pipe: {0}".format(type(pipe).__name__))
-            input_data_after = pipe.process(input_data)
-            self._analyze(input_data_before=input_data, input_data_after=input_data_after, processor=pipe)
-            input_data = input_data_after
-        return input_data
-
-    def _analyze(
-            self,
-            input_data_before: StandardDataFormat,
-            input_data_after: StandardDataFormat,
-            processor: ProcessorOrMultiAggregation):
-        n_total = input_data_before.data.shape[0]
-        n_total_new = input_data_after.data.shape[0]
-        n_remove = n_total - n_total_new
-        p_removed = n_remove / n_total
-        p_usual_cleaning = .1
-
-        if n_remove != 0:
-            module_logger.debug("Row size updated: change: {0:,} from total {1:,}. Remaining {2:,}. Processed by {3}".format(
-                (-1) * n_remove,
-                n_total,
-                n_total_new,
-                get_qualified_name(processor)
-            ))
-
-            if p_removed > p_usual_cleaning:
-                module_logger.warning("unusual behaviour: {0}% of source rows were removed by {1}".format(
-                    p_removed * 100,
-                    get_qualified_name(processor)
-                ))
