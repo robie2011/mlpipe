@@ -1,9 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
-
 import numpy as np
 from numpy.testing import assert_array_equal
-
 from mlpipe.helpers import print_3d_array
 from mlpipe.processors import StandardDataFormat
 from mlpipe.processors.sequence3d import Sequence3d
@@ -12,6 +10,7 @@ from mlpipe.processors.sequence3d import Sequence3d
 def print_2darray(data):
     for i in range(data.shape[0]):
         print(data[i, :])
+
 
 data = np.array([np.arange(5), np.arange(50, 55)]).T
 
@@ -39,12 +38,14 @@ class SequenceCreatorTestCase(unittest.TestCase):
         print_2darray(result)
         assert_array_equal(result_expected, result)
 
-
     def test_create_sequence_timestamps_hole_before_last_entry(self):
         timedelta(minutes=1)
-        ts_start = datetime(2019, 7, 2, 12, 0)
 
-        stamps = np.arange(datetime(2019, 7, 1), datetime(2019, 7, 2), timedelta(minutes=1)).astype(datetime)[:5]
+
+        stamps = np.arange(
+            datetime(2019, 7, 1),
+            datetime(2019, 7, 2),
+            timedelta(minutes=1)).astype(datetime)[:5]
         stamps[-1] = stamps[-1] + timedelta(minutes=1)
         print(stamps)
 

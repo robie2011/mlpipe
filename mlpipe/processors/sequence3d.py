@@ -4,8 +4,6 @@ from . import StandardDataFormat
 from .interfaces import AbstractProcessor
 import numpy as np
 
-from ..helpers import print_3d_array
-
 
 def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:
     # copied from p8 project
@@ -58,7 +56,10 @@ class Sequence3d(AbstractProcessor):
         return processor_input.modify_copy(data=data, timestamps=timestamps)
 
     @staticmethod
-    def create_sequence_3d(features: np.ndarray, n_sequence: int, include_incomplete_sequence=False) -> (np.ndarray, [int]):
+    def create_sequence_3d(
+            features: np.ndarray,
+            n_sequence: int,
+            include_incomplete_sequence=False) -> (np.ndarray, [int]):
         """
         create 3D Sequence for RNN/LSTM
         endpoints are used to filter valid sequence
