@@ -4,6 +4,8 @@ from . import StandardDataFormat
 from .interfaces import AbstractProcessor
 import numpy as np
 
+from ..helpers import print_3d_array
+
 
 def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:
     # copied from p8 project
@@ -37,6 +39,7 @@ def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[
 @dataclass
 class Sequence3d(AbstractProcessor):
     sequence: int
+    validate = True
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         logger = self.get_logger()
@@ -44,13 +47,35 @@ class Sequence3d(AbstractProcessor):
         ix_valid_endpoints = _create_sequence_endpoints(timestamps=processor_input.timestamps, n_sequence=self.sequence)
         logger.info("found {0:,} valid endpoints".format(ix_valid_endpoints.shape[0]))
 
-        output_size = (ix_valid_endpoints.shape[0], self.sequence, processor_input.data.shape[1])
-        output = np.full(output_size, np.nan)
-        for i in range(len(ix_valid_endpoints)):
-            ix_endpoint = ix_valid_endpoints[i]
-            ix_end = ix_endpoint + 1 # because range end ix is exclusive
-            ix_start = ix_end - self.sequence
-            output[i] = processor_input.data[ix_start:ix_end]
+        data = Sequence3d.create_sequence_3d(
+            features=processor_input.data,
+            n_sequence=self.sequence,
+            include_incomplete_sequence=True)
+
+        data = data[ix_valid_endpoints]
 
         timestamps = processor_input.timestamps[ix_valid_endpoints]
-        return processor_input.modify_copy(data=output, timestamps=timestamps)
+        return processor_input.modify_copy(data=data, timestamps=timestamps)
+
+    @staticmethod
+    def create_sequence_3d(features: np.ndarray, n_sequence: int, include_incomplete_sequence=False) -> (np.ndarray, [int]):
+        """
+        create 3D Sequence for RNN/LSTM
+        endpoints are used to filter valid sequence
+        """
+        output_size = (features.shape[0] - (n_sequence - 1), n_sequence, features.shape[1])
+        output = np.full(output_size, np.nan)
+
+        for i in range(n_sequence):
+            ix_end = features.shape[0] - (n_sequence - 1) + i
+            output[:, i] = features[i:ix_end]
+
+        if include_incomplete_sequence:
+            top_part_shape = [*output.shape]
+            top_part_shape[0] = n_sequence - 1
+            top_part = np.zeros(top_part_shape)
+
+            output = np.concatenate((top_part, output), axis=0)
+
+        return output
+

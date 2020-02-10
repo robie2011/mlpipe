@@ -1,14 +1,14 @@
 import unittest
-from mlpipe.api.sequence_creator import create_sequence_3d
 import numpy as np
 from mlpipe import aggregators as agg
 from mlpipe.helpers import print_3d_array
+from mlpipe.processors.sequence3d import Sequence3d
 
 
 class TestFeatureEngineeringChain(unittest.TestCase):
     def test_chain(self):
         data = np.array([np.arange(5), np.arange(50, 60, 2)]).T
-        sequence_data = create_sequence_3d(features=data, n_sequence=3)
+        sequence_data = Sequence3d.create_sequence_3d(features=data, n_sequence=3)
         print_3d_array(sequence_data)
 
         feature_generators = [agg.Sum(), agg.Mean(), agg.Trend()]

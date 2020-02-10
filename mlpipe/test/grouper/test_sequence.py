@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
-from mlpipe.api.sequence_creator import create_sequence_3d
+from mlpipe.processors.sequence3d import Sequence3d
 
 
 class TestSequence(unittest.TestCase):
@@ -60,5 +60,5 @@ class TestSequence(unittest.TestCase):
             [14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
         ])
 
-        result = create_sequence_3d(sequences, n_sequence=10)
+        result = Sequence3d.create_sequence_3d(sequences, n_sequence=10)
         assert_array_equal(result_expected, result)

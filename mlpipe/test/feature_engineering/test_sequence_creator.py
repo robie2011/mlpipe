@@ -1,33 +1,65 @@
 import unittest
-from mlpipe.api.sequence_creator import create_sequence_3d
+from datetime import datetime, timedelta
+
 import numpy as np
 from numpy.testing import assert_array_equal
 
+from mlpipe.helpers import print_3d_array
+from mlpipe.processors import StandardDataFormat
+from mlpipe.processors.sequence3d import Sequence3d
+
+
+def print_2darray(data):
+    for i in range(data.shape[0]):
+        print(data[i, :])
+
+data = np.array([np.arange(5), np.arange(50, 55)]).T
+
+s = 3
+n_sensors = 2
+n_sequence = 3
+n_length_new = data.shape[0] - n_sequence + 1
 
 class SequenceCreatorTestCase(unittest.TestCase):
-    def create_sequence(self):
+    def test_create_sequence(self):
         # test data: https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=589074770
+        print_2darray(data)
+        result_expected = np.zeros((n_length_new, n_sequence, n_sensors), dtype='int')
 
-        data = np.array([np.arange(5), np.arange(50, 55)])
-        # array([[0, 1, 2, 3, 4],
-        #        [50, 51, 52, 53, 54]])
+        result_expected[0, :, 0] = [0, 1, 2]
+        result_expected[1, :, 0] = [1, 2, 3]
+        result_expected[2, :, 0] = [2, 3, 4]
 
-        result_expected = np.array([
-            [
-                [0, 1, 2],
-                [1, 2, 3],
-                [2, 3, 4]
-            ],
-            [
-                [50, 51, 52],
-                [51, 52, 53],
-                [52, 53, 54],
-            ]
-        ])
+        result_expected[0, :, 1] = [50, 51, 52]
+        result_expected[1, :, 1] = [51, 52, 53]
+        result_expected[2, :, 1] = [52, 53, 54]
 
-        result = create_sequence_3d(features=data, n_sequence=3)
+        result = Sequence3d.create_sequence_3d(features=data, n_sequence=3)
+        print("result")
+        print_2darray(result)
         assert_array_equal(result_expected, result)
 
+
+    def test_create_sequence_timestamps_hole_before_last_entry(self):
+        timedelta(minutes=1)
+        ts_start = datetime(2019, 7, 2, 12, 0)
+
+        stamps = np.arange(datetime(2019, 7, 1), datetime(2019, 7, 2), timedelta(minutes=1)).astype(datetime)[:5]
+        stamps[-1] = stamps[-1] + timedelta(minutes=1)
+        print(stamps)
+
+        result_expected = np.zeros((n_length_new-1, n_sequence, n_sensors))
+
+        result_expected[0, :, 0] = [0, 1, 2]
+        result_expected[1, :, 0] = [1, 2, 3]
+
+        result_expected[0, :, 1] = [50, 51, 52]
+        result_expected[1, :, 1] = [51, 52, 53]
+
+        result = Sequence3d(sequence=3).process(StandardDataFormat(timestamps=stamps, data=data, labels=['a', 'b']))
+        print("result")
+        print_3d_array(result.data)
+        assert_array_equal(result_expected, result.data)
 
 if __name__ == '__main__':
     unittest.main()

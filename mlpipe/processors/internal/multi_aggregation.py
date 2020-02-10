@@ -2,9 +2,10 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, List, Union
 from mlpipe.aggregators import AbstractAggregator
-from mlpipe.api.sequence_creator import create_sequence_3d
 from mlpipe.processors import StandardDataFormat, AbstractProcessor
+from mlpipe.processors.sequence3d import Sequence3d
 from mlpipe.workflows.utils import get_qualified_name
+import numpy as np
 
 module_logger = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class MissingFieldsForLogic(MissingFields):
 
 class MultiAggregationDataFormat:
     def __init__(self, data: StandardDataFormat, sequence: int):
-        self.grouped_data = create_sequence_3d(features=data.data, n_sequence=sequence)
+        self.grouped_data = Sequence3d.create_sequence_3d(features=data.data, n_sequence=sequence)
         self.ix_by_label = {data.labels[i]: i for i in range(len(data.labels))}
 
     def get_partial_data(self, fields: List[str]) -> np.ndarray:
