@@ -2,7 +2,6 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 import mlpipe.helpers.data as helper_data
-from mlpipe import aggregators as agg
 from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.min import Min
 from mlpipe.aggregators.max import Max
@@ -12,6 +11,9 @@ from mlpipe.aggregators.mean import Mean
 
 # data = helper_data.generated_3d_data()
 # helpers.print_3d_array
+from mlpipe.aggregators.sum import Sum
+from mlpipe.aggregators.trend import Trend
+
 """
     sensor  0
     t=0  [417. 147. 397. 204. 417.]
@@ -127,7 +129,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [2, 2],
             [5, -9]
         ])
-        result = agg.Trend().aggregate(grouped_data=data)
+        result = Trend().aggregate(grouped_data=data)
         assert_array_equal(result_expected, result.metrics)
 
     def test_sum(self):
@@ -145,5 +147,5 @@ class TestSimpleAggregators(unittest.TestCase):
             [6, 36],
             [12, 28]
         ])
-        result = agg.Sum().aggregate(grouped_data=data)
+        result = Sum().aggregate(grouped_data=data)
         assert_array_equal(result_expected, result.metrics)

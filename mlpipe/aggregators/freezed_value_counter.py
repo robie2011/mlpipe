@@ -58,7 +58,7 @@ class FreezedValueCounter(AbstractAggregator):
             # In our calculation we have drop such invalid values
             is_index_freezed3d[:, :, sensor_id][sensor.mask] = False
 
-        return AggregatorOutput(metrics=is_index_freezed3d.sum(axis=1), affected_index=is_index_freezed3d)
+        return AggregatorOutput(metrics=is_index_freezed3d.sum(axis=1))
 
     def javascript_group_aggregation(self):
         return "(a,b) => a+b"

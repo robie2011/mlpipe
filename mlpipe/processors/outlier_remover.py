@@ -11,8 +11,8 @@ class OutlierRemover(AbstractProcessor):
         self.limits = limits
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        affected_index = Outlier(self.limits).aggregate(
-            grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0))).affected_index
+        affected_index = Outlier(self.limits).affected_index(
+            grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0)))
         affected_index = np.squeeze(affected_index, axis=0)
         data = processor_input.data.copy()
         data[affected_index == True] = np.nan

@@ -16,15 +16,15 @@ source:
 
 analyze:
   groupBy:
-    - name: mlpipe.groupers.YearGrouper
-    - name: mlpipe.groupers.MonthGrouper
-    - name: mlpipe.groupers.WeekdayGrouper
+    - name: mlpipe.dsl.groupers.YearGrouper
+    - name: mlpipe.dsl.groupers.MonthGrouper
+    - name: mlpipe.dsl.groupers.WeekdayGrouper
   metrics:
-    - name: mlpipe.aggregators.Max
-    - name: mlpipe.aggregators.Min
-    - name: mlpipe.aggregators.NanCounter
-    - name: mlpipe.aggregators.Counter
-    - name: mlpipe.aggregators.Percentile
+    - name: mlpipe.dsl.aggregators.Max
+    - name: mlpipe.dsl.aggregators.Min
+    - name: mlpipe.dsl.aggregators.NanCounter
+    - name: mlpipe.dsl.aggregators.Counter
+    - name: mlpipe.dsl.aggregators.Percentile
       percentile: 75
 """
 

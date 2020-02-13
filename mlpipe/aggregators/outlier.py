@@ -24,6 +24,10 @@ class Outlier(AbstractAggregator):
         self.limits = limits
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
+        affected_index = self.affected_index(grouped_data)
+        return AggregatorOutput(metrics=np.sum(affected_index, axis=1))
+
+    def affected_index(self, grouped_data: np.ndarray) -> np.ndarray:
         """note: use np.nan for no limit"""
         # we have a 1D array in which each element
         # define minimum for each sensor
@@ -40,8 +44,7 @@ class Outlier(AbstractAggregator):
         max_filter = np.logical_and(
             np.invert(grouped_data.mask), grouped_data > max_matrix)
 
-        affected_index = np.logical_or(min_filter, max_filter)
-        return AggregatorOutput(metrics=np.sum(affected_index, axis=1), affected_index=affected_index)
+        return np.logical_or(min_filter, max_filter)
 
     def javascript_group_aggregation(self):
         return "(a,b) => a + b"

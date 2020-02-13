@@ -18,9 +18,7 @@ class NanCounter(AbstractAggregator):
         nan_values = np.isnan(grouped_data)
 
         # todo: this code is probably correct because we are using masked array. VERIFY.
-        return AggregatorOutput(
-            metrics=np.add.reduce(nan_values, axis=1),
-            affected_index=nan_values)
+        return AggregatorOutput(metrics=np.add.reduce(nan_values, axis=1))
 
     def javascript_group_aggregation(self):
         return "(a,b) => a + b"
