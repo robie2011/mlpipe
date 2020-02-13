@@ -15,4 +15,4 @@ class AbstractNumpyReduction(AbstractAggregator):
         self.kwargs = {'axis': 1}
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
-        return AggregatorOutput(metrics=self.reduce_func(grouped_data, **self.kwargs))
+        return self.reduce_func(grouped_data, **self.kwargs)

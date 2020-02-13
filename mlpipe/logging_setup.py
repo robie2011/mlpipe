@@ -27,6 +27,7 @@ def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_k
                 dict_parser = DictionaryParser(config, separator='/')
                 fmt = dict_parser.get('coloredlogs/format', None)
                 _level = dict_parser.get('coloredlogs/level', 'INFO')
+                # noinspection PyProtectedMember
                 level = logging._nameToLevel[_level]
 
                 coloredlogs.install(fmt=fmt, level=level)

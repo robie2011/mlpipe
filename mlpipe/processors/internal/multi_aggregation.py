@@ -94,7 +94,7 @@ class MultiAggregation(AbstractProcessor):
             grouped_data.flags.writeable = False
             module_logger.debug("  > run aggreagtion with {0}".format(get_qualified_name(aggregator.instance)))
             result = aggregator.instance.aggregate(grouped_data=grouped_data)
-            collector.hstack_bottom(fields_out, result.metrics)
+            collector.hstack_bottom(fields_out, result)
 
         return processor_input.modify_copy(
             labels=processor_input.labels + collector.labels,

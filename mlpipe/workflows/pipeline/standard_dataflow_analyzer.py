@@ -7,6 +7,7 @@ class StandardDataflowAnalyzer(InstanceLoggerMixin):
     n_cols_before = 0
     n_step = 0
 
+    # noinspection PyUnusedLocal
     def before_pipe_handler(self, instance: str, data: StandardDataFormat):
         self.n_rows_before = data.data.shape[0]
         self.n_cols_before = data.data.shape[1]

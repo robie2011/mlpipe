@@ -15,7 +15,7 @@ class OutlierRemover(AbstractProcessor):
             grouped_data=np.ma.array(np.expand_dims(processor_input.data, axis=0)))
         affected_index = np.squeeze(affected_index, axis=0)
         data = processor_input.data.copy()
-        data[affected_index == True] = np.nan
+        data[affected_index] = np.nan
 
         return StandardDataFormat(
             labels=processor_input.labels,

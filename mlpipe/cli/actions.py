@@ -37,6 +37,7 @@ def _get_history(name: str, session_id: str):
         return pickle.load(f, fix_imports=False)
 
 
+# noinspection PyUnusedLocal
 def list_models(args):
     import numpy as np
     import tabulate

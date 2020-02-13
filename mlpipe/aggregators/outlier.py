@@ -25,7 +25,7 @@ class Outlier(AbstractAggregator):
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         affected_index = self.affected_index(grouped_data)
-        return AggregatorOutput(metrics=np.sum(affected_index, axis=1))
+        return np.sum(affected_index, axis=1)
 
     def affected_index(self, grouped_data: np.ndarray) -> np.ndarray:
         """note: use np.nan for no limit"""

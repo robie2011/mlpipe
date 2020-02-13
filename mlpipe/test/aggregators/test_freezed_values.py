@@ -56,7 +56,7 @@ class TestFreezedValues(unittest.TestCase):
 
         result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
 
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_freezed_values_masked(self):
         # this is mostly copied from "test_freezed_values" Test
@@ -90,4 +90,4 @@ class TestFreezedValues(unittest.TestCase):
 
         result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
 
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)

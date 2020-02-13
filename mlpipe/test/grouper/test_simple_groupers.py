@@ -3,10 +3,8 @@ import time
 import unittest
 from datetime import datetime, timedelta
 from typing import Sequence, Type
-
 import numpy as np
 from numpy.testing import assert_array_equal
-
 from mlpipe.groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
 from mlpipe.helpers.test_data import load_empa_data
 from mlpipe.workflows.analyze.helper import CombinedGroup, group_by_multi_columns
@@ -118,7 +116,7 @@ class TestSimpleGroupers(unittest.TestCase):
         pool = mp.Pool(mp.cpu_count())
         print("start")
         ts = time.time()
-        results = np.array([pool.apply(run_grouper, args=(row, timestamps, None)) for row in groupers]).T
+        np.array([pool.apply(run_grouper, args=(row, timestamps, None)) for row in groupers]).T
         print("parallel execution time: ", (time.time() - ts) * 1000)
         pool.close()
 
@@ -128,7 +126,9 @@ class TestSimpleGroupers(unittest.TestCase):
         groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         print("start")
         ts = time.time()
-        results = np.array(
+
+        # noinspection PyStatementEffect
+        np.array(
             [run_grouper(grouper, timestamps=timestamps, raw_data=empty_array) for grouper in groupers]).T
         print("serial execution time: ", (time.time() - ts) * 1000)
 

@@ -15,4 +15,5 @@ class ColumnDropper(AbstractProcessor):
         ix = LabelSelector(elements=processor_input.labels)\
             .without(self._columns).indexes
 
+        # noinspection PyProtectedMember
         return ColumnSelector._select_columns(processor_input, ix)

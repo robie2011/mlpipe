@@ -88,7 +88,7 @@ class AnalyticsChain(unittest.TestCase):
         )
 
         for i in range(len(analyzers)):
-            aggregator_output_data[:, i, :] = analyzers[i].aggregate(grouped_data=grouped_data).metrics
+            aggregator_output_data[:, i, :] = analyzers[i].aggregate(grouped_data=grouped_data)
         timer.tock("run analyzers")
 
         if DISABLE_EXPORT:
@@ -97,6 +97,7 @@ class AnalyticsChain(unittest.TestCase):
         # fix: convert int64 to normal int
         group_ids = np.array(list(map(lambda x: list(x.group_id), groups)), dtype='int').tolist()
 
+        # noinspection PyUnusedLocal
         export_data = {
             "meta": {
                 "sensors": raw_data_df.columns[1:].astype('str').tolist(),  # todo: get dynamically: sensor names

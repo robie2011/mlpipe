@@ -5,6 +5,7 @@ import numpy as np
 import mlpipe.helpers.data as helper_data
 from mlpipe.processors.nan_remover import NanRemover
 from mlpipe.processors.standard_data_format import StandardDataFormat
+from numpy.testing import assert_array_equal
 
 
 class TestNanRemover(unittest.TestCase):
@@ -22,7 +23,8 @@ class TestNanRemover(unittest.TestCase):
             data=data,
             labels=['a', 'b'],
             timestamps=helper_data.generate_timestamps(2, samples=4))
-        NanRemover().process(process_data)
+        result = NanRemover().process(process_data)
+        assert_array_equal(result_excepted, result.data)
 
 
 if __name__ == '__main__':

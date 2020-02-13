@@ -50,7 +50,7 @@ class TestSimpleAggregators(unittest.TestCase):
         result_expected[0:2, 2] = 2
 
         result = NanCounter().aggregate(grouped_data=data)
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_max(self):
         result_expected = np.array([
@@ -60,7 +60,7 @@ class TestSimpleAggregators(unittest.TestCase):
         ])
 
         result = Max().aggregate(grouped_data=helper_data.generated_3d_data())
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_min(self):
         result_expected = np.array([
@@ -69,7 +69,7 @@ class TestSimpleAggregators(unittest.TestCase):
             103, 130, 19, 53]).reshape(3, 4)
 
         result = Min().aggregate(grouped_data=helper_data.generated_3d_data())
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_mean(self):
         grouped_data = helper_data.generated_3d_data()
@@ -82,7 +82,7 @@ class TestSimpleAggregators(unittest.TestCase):
 
         result = Mean().aggregate(grouped_data)
         self.assertEqual(result_expected[0, 0], (417+147+397+204+417)/5)
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_percentile(self):
         #  https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=0
@@ -94,7 +94,7 @@ class TestSimpleAggregators(unittest.TestCase):
         result = Percentile(
             percentile=.25,
             interpolation='higher').aggregate(grouped_data=helper_data.generated_3d_data())
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_outliers(self):
         limits = [
@@ -111,7 +111,7 @@ class TestSimpleAggregators(unittest.TestCase):
         ])
 
         result = Outlier(limits=limits).aggregate(grouped_data=helper_data.generated_3d_data())
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_trend(self):
         data = np.ma.zeros((2, 3, 2))
@@ -130,7 +130,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [5, -9]
         ])
         result = Trend().aggregate(grouped_data=data)
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
 
     def test_sum(self):
         data = np.zeros((2, 3, 2), dtype='int')
@@ -148,4 +148,4 @@ class TestSimpleAggregators(unittest.TestCase):
             [12, 28]
         ])
         result = Sum().aggregate(grouped_data=data)
-        assert_array_equal(result_expected, result.metrics)
+        assert_array_equal(result_expected, result)
