@@ -1,6 +1,6 @@
 import numpy as np
 
-from mlpipe.aggregators import Outlier
+from mlpipe.aggregators.outlier import Outlier
 from mlpipe.aggregators.outlier import ColumnLimit
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.standard_data_format import StandardDataFormat

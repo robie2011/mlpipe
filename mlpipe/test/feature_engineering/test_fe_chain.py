@@ -1,8 +1,8 @@
 import unittest
-
 import numpy as np
-
-from mlpipe import aggregators as agg
+from mlpipe.aggregators.sum import Sum
+from mlpipe.aggregators.mean import Mean
+from mlpipe.aggregators.trend import Trend
 from mlpipe.helpers import print_3d_array
 from mlpipe.processors.sequence3d import Sequence3d
 
@@ -13,7 +13,7 @@ class TestFeatureEngineeringChain(unittest.TestCase):
         sequence_data = Sequence3d.create_sequence_3d(features=data, n_sequence=3)
         print_3d_array(sequence_data)
 
-        feature_generators = [agg.Sum(), agg.Mean(), agg.Trend()]
+        feature_generators = [Sum(), Mean(), Trend()]
         features = [g.aggregate(grouped_data=sequence_data).metrics for g in feature_generators]
         f_out = features[0]
         for f in features[1:]:

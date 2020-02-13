@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 from typing import List, Union
 import numpy as np
-from mlpipe.aggregators import AbstractAggregator
+from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.sequence3d import Sequence3d

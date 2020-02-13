@@ -23,6 +23,7 @@ for package, base, group in tasks:
     lines = [f"from {c[0]} import {c[1]}" for c in clazz]
     with open(output_file, "w") as f:
         for i in lines:
+            f.write("# noinspection PyUnresolvedReferences\r\n")
             f.write(i)
             f.write("\r\n")
 

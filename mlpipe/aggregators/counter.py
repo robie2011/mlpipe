@@ -1,6 +1,6 @@
 import numpy as np
 
-from mlpipe.aggregators import AbstractNumpyReduction
+from mlpipe.aggregators.abstract_numpy_reduction import AbstractNumpyReduction
 
 
 class Counter(AbstractNumpyReduction):

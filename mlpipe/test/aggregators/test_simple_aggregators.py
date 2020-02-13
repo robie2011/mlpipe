@@ -3,7 +3,12 @@ import numpy as np
 from numpy.testing import assert_array_equal
 import mlpipe.helpers.data as helper_data
 from mlpipe import aggregators as agg
-from mlpipe.aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
+from mlpipe.aggregators.nan_counter import NanCounter
+from mlpipe.aggregators.min import Min
+from mlpipe.aggregators.max import Max
+from mlpipe.aggregators.percentile import Percentile
+from mlpipe.aggregators.outlier import Outlier
+from mlpipe.aggregators.mean import Mean
 
 # data = helper_data.generated_3d_data()
 # helpers.print_3d_array

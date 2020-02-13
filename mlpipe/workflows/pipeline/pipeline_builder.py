@@ -1,6 +1,6 @@
 import logging
 from typing import List, Union
-from mlpipe.aggregators import AbstractAggregator
+from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation, \
