@@ -1,6 +1,7 @@
 from typing import List
 from .column_selector import ColumnSelector
-from .interfaces import AbstractProcessor, StandardDataFormat
+from .interfaces import AbstractProcessor
+from .standard_data_format import StandardDataFormat
 from ..datautils import LabelSelector
 
 
@@ -13,4 +14,4 @@ class ColumnDropper(AbstractProcessor):
         ix = LabelSelector(elements=processor_input.labels)\
             .without(self._columns).indexes
 
-        return ColumnSelector.select_columns(processor_input, ix)
+        return ColumnSelector._select_columns(processor_input, ix)

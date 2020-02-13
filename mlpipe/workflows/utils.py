@@ -8,16 +8,20 @@ Funcs = Callable[[Optional[object]], object]
 
 
 def get_component_config(key_values: dict):
-    meta_config = ["name", "sequence", "generate"]
+    meta_config = ["name", "sequence", "generate"] if 'sequence' in key_values else ["name"]
     return {k: v for (k, v) in key_values.items() if k not in meta_config}
 
 
-def create_instance(qualified_name: str, kwargs: dict, assert_base_classes=[]):
+def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base_classes=[]):
     clazz = load(qualified_name=qualified_name, assert_base_classes=assert_base_classes)
     try:
-        return clazz(**kwargs)
+        if kwargs:
+            return clazz(**kwargs)
+        else:
+            return clazz()
     except TypeError as e:
-        raise Exception("Can not initialize class {0}. \r\n{1}".format(qualified_name, e.args))
+        raise Exception(
+            "Can not initialize class {0}. \r\n{1}\r\nkwargs:".format(qualified_name, e.args, kwargs))
 
 
 class NotImplementedBaseClass(Exception):

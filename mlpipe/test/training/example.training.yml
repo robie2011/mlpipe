@@ -1,12 +1,12 @@
 name: unit_test
 source:
   name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
-  pathToFile: ./mlpipe/test/dsl/testinput.csv
+  pathToFile: /Users/robert.rajakone/repos/2019_p9/code/mlpipe/test/dsl/testinput.csv
   fields:
     - abc1 as temp1
     - abc2 as temp2
 
-pipeline:
+pipelinePrimary:
   - name: mlpipe.aggregators.Max
     sequence: 5
     generate:
@@ -29,53 +29,48 @@ pipeline:
   - name: mlpipe.features.TimeFeatureExtractor
     extract: hour
     output_field: hourExtracted
-  - name: mlpipe.processors.NanRemover
+  - name: mlpipe.pipes.NanRemover
+
+pipelineSecondary:
+  - name: mlpipe.pipes.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - temp2
+      - tempMax
+      - temp2Trend
+  - name: mlpipe.pipes.Shuffle
 
 
-# validation: get sourceField information from pipeline
-modelInput:
-  predictionSourceFields:
+model:
+  input:
     - temp2
     - tempMax
     - temp2Trend
-
-  predictionTargetField: temp1
-
+  target: temp1
   # binary, class, regression
   predictionType: binary
 
-  scale:
-    - name: sklearn.preprocessing.RobustScaler
-      fields:
-        - temp2
-        - tempMax
-        - temp2Trend
+  sequentialModel:
+    - name: keras.layers.Dense
+      units: 30
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 10
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 1
+      activation: sigmoid
 
-  #create3dSequence: 10
-  shuffle: False
-  ratioTestdata: .20
+  compile:
+    loss: binary_crossentropy
+    optimizer: Adam
+    metrics:
+      - accuracy
 
-
-sequentialModel:
-  - name: keras.layers.Dense
-    units: 30
-    activation: tanh
-  - name: keras.layers.Dense
-    units: 10
-    activation: tanh
-  - name: keras.layers.Dense
-    units: 1
-    activation: sigmoid
-
-modelCompile:
-  loss: binary_crossentropy
-  optimizer: Adam
-  metrics:
-    - accuracy
-
-modelTraining:
-  epochs: 5
-  batch_size: 10
+  fit:
+    epochs: 10
+    batch_size: 5
+  testRatio: .5
 
 analyze:
   groupBy:

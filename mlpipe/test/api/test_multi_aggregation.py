@@ -3,8 +3,9 @@ import numpy as np
 import unittest
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from mlpipe.workflows.pipeline.workflow import SingleAggregationConfig, MultiAggregation, PipelineWorkflow
-from mlpipe.processors import StandardDataFormat
+from mlpipe.processors.standard_data_format import StandardDataFormat
+from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
+from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation
 
 
 class TestMultiAggregation(unittest.TestCase):
@@ -44,7 +45,7 @@ class TestMultiAggregation(unittest.TestCase):
             ]
         )
 
-        result = PipelineWorkflow(pipelines=[multi]).execute(input_data=data)
+        result = PipelineExecutor(pipeline=[multi]).execute(data=data)
         self.assertEqual(['temp1', 'temp2', 'temp1Max', 'temp1Min'], result.labels)
         assert_array_equal(data.timestamps, result.timestamps)
         assert_array_equal(np.full((4, 2), fill_value=np.nan), result.data[:4, [2, 3]])

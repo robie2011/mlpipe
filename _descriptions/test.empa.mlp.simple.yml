@@ -1,6 +1,6 @@
 name: empa_mlp
-session: 2020-01-10_144507
-testSource:
+session: 2020-02-11_235028
+source:
   name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields:

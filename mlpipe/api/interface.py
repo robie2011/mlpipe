@@ -15,7 +15,7 @@ from typing import List, Union, Dict
 #   input/output fields:
 #       - aggregator will get only releveant fields
 #       - after aggregation we should name these fields correctly
-from mlpipe.workflows.analyzers.interface import AnalyzeDescription
+from mlpipe.workflows.analyze.interface import AnalyzeDescription
 from mlpipe.workflows.interface import ClassDescription
 
 PipelineDescription = List[ClassDescription]
@@ -33,12 +33,6 @@ class AnalyzeRequest(CreatePipelineRequest):
 
 
 CreateOrAnalyzePipeline = Union[AnalyzeRequest, CreatePipelineRequest]
-
-
-# TOOD: not finished
-class ModelTrainRequest:
-    pipelineName: str
-    model: object  # todo: include generic modell
 
 
 class PredictionTypes(Enum):

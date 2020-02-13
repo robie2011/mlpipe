@@ -1,5 +1,5 @@
 name: empa_mlp
-session: 2020-01-09_104439
+session: 2020-02-11_235028
 source:
   name: mlpipe.datasources.DemoLiveData
   pathToFile: data/meeting_room_sensors_201908_201912.csv

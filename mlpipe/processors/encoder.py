@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from random import random
 from typing import List, cast
 from mlpipe.datautils import LabelSelector
-from mlpipe.encoders import AbstractEncoder
-from mlpipe.processors import AbstractProcessor, StandardDataFormat, ColumnDropper
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.column_dropper import ColumnDropper
+from mlpipe.processors.standard_data_format import StandardDataFormat
 import numpy as np
 import logging
 from mlpipe.workflows.utils import create_instance

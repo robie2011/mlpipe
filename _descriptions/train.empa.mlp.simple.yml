@@ -10,7 +10,7 @@ source:
     - 40210013 as CO2
     - 40210148 as Präsenz
 
-pipeline:
+pipelinePrimary:
   - name: mlpipe.features.TimeFeatureExtractor
     extract: hour
     output_field: Stunden
@@ -47,16 +47,49 @@ pipeline:
       outputField: TempInnen_Trend15
   - name: mlpipe.processors.NanRemover
 
-# validation: get sourceField information from pipeline
-modelInput:
-  predictionSourceFields:
+pipelineSecondary:
+  - name: mlpipe.processors.Shuffle
+  - name: mlpipe.processors.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - TempAussen
+      - TempInnen
+      - Zuluft
+      - Abluft
+      - CO2
+      - CO2_Max15
+      - CO2_Min15
+      - CO2_Trend15
+      - TempInnen_Max15
+      - TempInnen_Min15
+      - TempInnen_Trend15
+      - CO2_Mean15
+      - TempInnen_Mean15
+  - name: mlpipe.encoders.RangeEncoder
+    value_from: 0
+    value_to: 24
+    generate:
+    - inputField: Stunden
+      outputField: StundenOneHot
+  - name: mlpipe.encoders.RangeEncoder
+    value_from: 0
+    value_to: 7
+    generate:
+    - inputField: Wochentag
+      outputField: WochentagOneHot
+  - name: mlpipe.processors.SeedSetup
+    numpy: 2
+    tensorflow: 2
+
+model:
+  input:
     - TempAussen
     - TempInnen
     - Zuluft
     - Abluft
     - CO2
-    - Stunden
-    - Wochentag
+    - REGEX:StundenOneHot\$.*
+    - REGEX:WochentagOneHot\$.*
     - CO2_Max15
     - CO2_Min15
     - CO2_Trend15
@@ -66,63 +99,24 @@ modelInput:
     - CO2_Mean15
     - TempInnen_Mean15
 
-  predictionTargetField: Präsenz
-
-  # binary, class, regression
+  target: Präsenz
   predictionType: binary
+  testRatio: .20
 
-  scale:
-    - name: sklearn.preprocessing.RobustScaler
-      fields:
-        - TempAussen
-        - TempInnen
-        - Zuluft
-        - Abluft
-        - CO2
-        - CO2_Max15
-        - CO2_Min15
-        - CO2_Trend15
-        - TempInnen_Max15
-        - TempInnen_Min15
-        - TempInnen_Trend15
-        - CO2_Mean15
-        - TempInnen_Mean15
+  sequentialModel:
+    - name: keras.layers.Dense
+      units: 50
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 1
+      activation: sigmoid
 
-  encode:
-    - name: mlpipe.encoders.RangeEncoder
-      value_from: 0
-      value_to: 24
-      fields:
-        - Stunden
-    - name: mlpipe.encoders.RangeEncoder
-      value_from: 0
-      value_to: 7
-      fields:
-        - Wochentag
+  compile:
+    loss: binary_crossentropy
+    optimizer: Adam
+    metrics:
+      - accuracy
 
-  shuffle: True
-  ratioTestdata: .20
-
-sequentialModel:
-  - name: keras.layers.Dense
-    units: 50
-    activation: tanh
-  - name: keras.layers.Dense
-    units: 1
-    activation: sigmoid
-
-modelCompile:
-  loss: binary_crossentropy
-  optimizer: Adam
-  metrics:
-    - accuracy
-
-modelTraining:
-  epochs: 10
-  batch_size: 4320
-  # spliting size?
-
-seed:
-  numpy: 2
-  tensorflow: 2
-
+  fit:
+    epochs: 10
+    batch_size: 4320

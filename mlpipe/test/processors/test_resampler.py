@@ -2,7 +2,8 @@ import unittest
 import numpy as np
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
-from mlpipe.processors import Resampler, StandardDataFormat
+from mlpipe.processors.resampler import Resampler
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class TestResampler(unittest.TestCase):

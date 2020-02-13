@@ -1,11 +1,12 @@
 import os
 
-enable_datasource_caching = True
+train_enable_datasource_caching = True
 dir_training = "/tmp/mlpipe/training"
 dir_data_package = "/tmp/mlpipe/packages"
 dir_tmp = "/tmp/mlpipe/tmp"
 dir_analytics = "/tmp/mlpipe/analytics"
 api_port = 5000
+TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK = False
 
 training_monitor = 'val_loss'
 

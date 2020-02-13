@@ -1,4 +1,5 @@
-from mlpipe.processors import AbstractProcessor, StandardDataFormat
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class SeedSetup(AbstractProcessor):
@@ -18,3 +19,4 @@ class SeedSetup(AbstractProcessor):
         self.get_logger().info("using tensorflow random seed={0}".format(self.tf_seed))
         numpy.random.seed(self.np_seed)
         tensorflow.random.set_seed(self.tf_seed)
+        return processor_input

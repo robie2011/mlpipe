@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 import numpy as np
 from numpy.testing import assert_array_equal
 from mlpipe.helpers import print_3d_array
-from mlpipe.processors import StandardDataFormat
 from mlpipe.processors.sequence3d import Sequence3d
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 def print_2darray(data):
@@ -18,6 +18,7 @@ s = 3
 n_sensors = 2
 n_sequence = 3
 n_length_new = data.shape[0] - n_sequence + 1
+
 
 class SequenceCreatorTestCase(unittest.TestCase):
     def test_create_sequence(self):
@@ -40,7 +41,6 @@ class SequenceCreatorTestCase(unittest.TestCase):
 
     def test_create_sequence_timestamps_hole_before_last_entry(self):
         timedelta(minutes=1)
-
 
         stamps = np.arange(
             datetime(2019, 7, 1),

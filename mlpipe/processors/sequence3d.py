@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List
-from . import StandardDataFormat
 from .interfaces import AbstractProcessor
 import numpy as np
+from .standard_data_format import StandardDataFormat
 
 
 def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:

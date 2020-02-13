@@ -1,5 +1,6 @@
 import pandas as pd
-from .interfaces import StandardDataFormat, AbstractProcessor
+from .interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class LinearInterpolation(AbstractProcessor):

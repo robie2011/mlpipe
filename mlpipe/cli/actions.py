@@ -7,6 +7,7 @@ import logging
 from mlpipe.config import app_settings
 
 # some imports are done withing functions for performance improvements
+from mlpipe.dsl.interpreter import create_workflow_from_object, create_workflow_from_file
 from mlpipe.workflows.utils import load_description_file
 
 module_logger = logging.getLogger(__name__)
@@ -101,20 +102,20 @@ def describe_model(args):
 
 
 def train_model(args):
-    from mlpipe.workflows.main_training_workflow import train
+    from mlpipe.dsl.interpreter import create_workflow_from_file
 
     for f in args.files:
         path = f if os.path.isabs(f) else os.path.abspath(f)
         description = load_description_file(path)
         _print_heading(f"TRAINING MODEL: {description['name']}")
         module_logger.info(f"file: {path}")
-        path_training_dir, model = train(description)
+        manager = create_workflow_from_file(path, overrides={"@mode": "train"})
+        path_training_dir, model = manager.run()
         module_logger.info(f"trained model: {path_training_dir}")
 
 
 def integrate_model(args):
     import threading
-    from mlpipe.workflows.main_integration_workflow import IntegrationWorkflow
     threads = []
 
     for f in args.files:
@@ -122,7 +123,8 @@ def integrate_model(args):
         description = load_description_file(path)
         _print_heading(f"INTEGRATE MODEL: {description['name']}/{description['session']}")
         module_logger.info(f"file: {path}")
-        t = threading.Thread(target=IntegrationWorkflow(description).run)
+        manager = create_workflow_from_file(path, overrides={"@mode": "integrate"})
+        t = threading.Thread(target=manager.run)
         threads.append(t)
         t.start()
 
@@ -130,7 +132,6 @@ def integrate_model(args):
 
 
 def test_model(args):
-    from mlpipe.workflows.main_evaluate_workflow import evaluate
     for f in args.files:
         try:
             path = f if os.path.isabs(f) else os.path.abspath(f)
@@ -139,7 +140,7 @@ def test_model(args):
             _print_heading("TESTING MODEL: {0}/{1}".format(description['name'], description['session']))
             module_logger.info(f"file: {path}")
             module_logger.info("test data source: ")
-            for k, v in description['testSource'].items():
+            for k, v in description['source'].items():
                 if not isinstance(v, str) and v.__iter__:
                     module_logger.info("   {0}: ".format(k))
                     for x in v:
@@ -148,37 +149,41 @@ def test_model(args):
                     module_logger.info("   {0}: {1}".format(k, v))
             module_logger.info("")
 
-            result = evaluate(description)
-            print_evaluation_result(result)
+            description['@mode'] = 'evaluate'
+            manager = create_workflow_from_file(path, overrides={"@mode": "evaluate"})
+            result = manager.run()
+            for k, v in result.items():
+                print(f"     {k}: {v}")
+
         except Exception as e:
             module_logger.error(e)
 
 
-def print_evaluation_result(result):
-    module_logger.info("")
-    module_logger.info("result:")
-    terminal_tab = "   "
-    for attr, value in result.__dict__.items():
-        # formatting number output: https://pyformat.info/
-        if attr.startswith("n_"):
-            module_logger.info(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
-        elif attr.startswith("p_"):
-            module_logger.info(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
-        elif isinstance(value, numbers.Number):
-            module_logger.info(terminal_tab + "{0}: {1:,}".format(attr, value))
-        elif isinstance(value, dict):
-            module_logger.info(terminal_tab + "{0}:".format(attr))
-            for k, v in value.items():
-                if isinstance(v, tuple):
-                    module_logger.info(terminal_tab * 2 + "{0}:".format(k))
-                    for ti in v:
-                        module_logger.info(terminal_tab * 3 + "{0}".format(ti))
-                else:
-                    module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
-        else:
-            #module_logger.info("   {0}: ".format(str(attr)), value)
-            module_logger.info(terminal_tab + attr + ":")
-            module_logger.info(value)
+# def print_evaluation_result(result):
+#     module_logger.info("")
+#     module_logger.info("result:")
+#     terminal_tab = "   "
+#     for attr, value in result.__dict__.items():
+#         # formatting number output: https://pyformat.info/
+#         if attr.startswith("n_"):
+#             module_logger.info(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
+#         elif attr.startswith("p_"):
+#             module_logger.info(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
+#         elif isinstance(value, numbers.Number):
+#             module_logger.info(terminal_tab + "{0}: {1:,}".format(attr, value))
+#         elif isinstance(value, dict):
+#             module_logger.info(terminal_tab + "{0}:".format(attr))
+#             for k, v in value.items():
+#                 if isinstance(v, tuple):
+#                     module_logger.info(terminal_tab * 2 + "{0}:".format(k))
+#                     for ti in v:
+#                         module_logger.info(terminal_tab * 3 + "{0}".format(ti))
+#                 else:
+#                     module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
+#         else:
+#             #module_logger.info("   {0}: ".format(str(attr)), value)
+#             module_logger.info(terminal_tab + attr + ":")
+#             module_logger.info(value)
 
 
 def analyze_data(args):

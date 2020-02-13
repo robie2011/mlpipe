@@ -1,15 +1,15 @@
+from typing import List
 from mlpipe.datasources import EmpaCsvSourceAdapter
-from mlpipe.processors import StandardDataFormat
 import numpy as np
-
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 MODULE_INIT_TIME = np.datetime64('now')
 
 
 class DemoLiveData(EmpaCsvSourceAdapter):
-    def __init__(self, pathToFile: str, windowMinutes: int, reset_init_time=False):
-        super().__init__(pathToFile)
-        self.cached_data = super().fetch()
+    def __init__(self, pathToFile: str, fields: List[str], windowMinutes: int, reset_init_time=False):
+        super().__init__(pathToFile=pathToFile, fields=fields)
+        self.cached_data = super()._fetch()
         if reset_init_time:
             self._reset_init_time()
         self.window_delta = np.timedelta64(windowMinutes, 'm')
@@ -26,7 +26,7 @@ class DemoLiveData(EmpaCsvSourceAdapter):
     def _reset_init_time(self):
         MODULE_INIT_TIME = np.datetime64('now')
 
-    def fetch(self) -> StandardDataFormat:
+    def _fetch(self) -> StandardDataFormat:
         date_end = np.datetime64('now')
         date_start = date_end - self.window_delta
         valid_ix = np.logical_and(self.cached_data.timestamps >= date_start, self.cached_data.timestamps < date_end)

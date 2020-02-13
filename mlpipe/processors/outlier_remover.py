@@ -1,7 +1,8 @@
 import numpy as np
 
 from mlpipe.aggregators.outlier import ColumnLimit
-from mlpipe.processors import AbstractProcessor, StandardDataFormat
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.aggregators import Outlier
 
 

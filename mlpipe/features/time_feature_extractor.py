@@ -1,7 +1,10 @@
 import numpy as np
-from mlpipe.processors import AbstractProcessor, StandardDataFormat
 import pandas as pd
 from typing import Callable
+
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
+
 _ITimeExtractor = Callable[[pd.Series], np.ndarray]
 
 allowed_extractions: [(str, _ITimeExtractor)] = [

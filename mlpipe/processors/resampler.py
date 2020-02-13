@@ -1,5 +1,5 @@
 import numpy as np
-from .interfaces import AbstractProcessor, StandardDataFormat
+from .interfaces import AbstractProcessor
 import pandas as pd
 
 
@@ -7,6 +7,9 @@ import pandas as pd
 #   - 'T' or 'min' for Minute
 #   - read about valid frequency:
 #     https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects
+from .standard_data_format import StandardDataFormat
+
+
 class Resampler(AbstractProcessor):
     def __init__(self, freq: str):
         self._freq = freq

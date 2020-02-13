@@ -1,19 +1,15 @@
-import json
 import os
-import pickle
 import traceback
 from typing import List, Dict
 from uuid import uuid4
-from sklearn.base import TransformerMixin
+import numpy as np
+from keras import Sequential
+from keras.callbacks import History
+from keras.engine.saving import load_model
 from mlpipe.api.interface import PredictionTypes
 from mlpipe.config import app_settings
+from mlpipe.config import file_handlers
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
-import numpy as np
-
-from keras import Sequential
-from keras.engine.saving import load_model
-from keras.callbacks import History
-
 
 
 class ModelPrediction:
@@ -54,35 +50,29 @@ class TrainingProject(object):
         m.save(self._get_project_file(TrainingProjectFileNames.MODEL), overwrite=True)
 
     @property
-    def scalers(self) -> List[TransformerMixin]:
-        if os.path.isfile(self._get_project_file(TrainingProjectFileNames.SCALERS)):
-            with open(self._get_project_file(TrainingProjectFileNames.SCALERS), "rb") as f:
-                return pickle.load(f)
+    def states(self) -> List[object]:
+        if os.path.isfile(self._get_project_file(TrainingProjectFileNames.STATES)):
+            return file_handlers.read_binary(self._get_project_file(TrainingProjectFileNames.STATES))
         else:
             return []
 
-    @scalers.setter
-    def scalers(self, s: List[TransformerMixin]):
+    @states.setter
+    def states(self, s: List[object]):
         if s is None or s == []:
             return
-
-        with open(self._get_project_file(TrainingProjectFileNames.SCALERS), "wb") as f:
-            pickle.dump(s, f)
+        file_handlers.write_binary(self._get_project_file(TrainingProjectFileNames.STATES), s)
 
     @property
     def description(self) -> Dict:
-        with open(self._get_project_file(TrainingProjectFileNames.DESCRIPTION), "r") as f:
-            return json.load(f)
+        return file_handlers.read_json(self._get_project_file(TrainingProjectFileNames.DESCRIPTION))
 
     @description.setter
     def description(self, d: Dict):
-        with open(self._get_project_file(TrainingProjectFileNames.DESCRIPTION), "w") as f:
-            json.dump(d, f, indent=4)
+        file_handlers.write_json(self._get_project_file(TrainingProjectFileNames.DESCRIPTION), d)
 
     @property
     def history(self) -> HistorySummary:
-        with open(self._get_project_file(TrainingProjectFileNames.HISTORY_SUMMARY), "rb") as f:
-            return pickle.load(f)
+        return file_handlers.read_binary(self._get_project_file(TrainingProjectFileNames.HISTORY_SUMMARY))
 
     @history.setter
     def history(self, h: History):
@@ -92,8 +82,15 @@ class TrainingProject(object):
             history=h.history
         )
 
-        with open(self._get_project_file(TrainingProjectFileNames.HISTORY_SUMMARY), "wb") as f:
-            pickle.dump(history_summary, f)
+        file_handlers.write_binary(self._get_project_file(TrainingProjectFileNames.HISTORY_SUMMARY), history_summary)
+
+    @property
+    def evaluation(self) -> Dict:
+        return file_handlers.read_binary(self._get_project_file(TrainingProjectFileNames.EVALUATION))
+
+    @evaluation.setter
+    def evaluation(self, data: Dict):
+        file_handlers.write_binary(self._get_project_file(TrainingProjectFileNames.EVALUATION), data)
 
     def create_path_tmp_file(self):
         new_path = os.path.join(self.path_training_dir, uuid4().__str__())
@@ -120,6 +117,6 @@ class TrainingProject(object):
         # https://stackoverflow.com/a/22417454/2248405
         if exc_type is not None:
             traceback.print_exception(exc_type, exc_value, tb)
-            return False # uncomment to pass exception through
+            return False  # uncomment to pass exception through
 
         return True

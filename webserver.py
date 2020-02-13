@@ -7,7 +7,7 @@ from mlpipe.config import app_settings
 from mlpipe.config.analytics_data_manager import AnalyticsDataManager
 from mlpipe.workflows.analyzers.main_analyze_workflow import create_analyzer_workflow
 from mlpipe.workflows.load_data.create_loader import create_loader_workflow
-from mlpipe.workflows.pipeline.create_pipeline import create_pipeline_workflow
+from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
 
 module_logger = logging.getLogger(__name__)
 app = Flask(__name__)
@@ -46,7 +46,7 @@ def view_analytics(name: str):
 
     if 'pipeline' in desc:
         module_logger.debug("pipe data")
-        data = create_pipeline_workflow(descriptions=desc['pipeline']).execute(data)
+        data = build_pipeline_executor(descriptions=desc['pipeline']).execute(data)
 
     result = create_analyzer_workflow(desc['analyze']).run(data)
     #return json.dumps(result, allow_nan=False, default=lambda o: o.__dict__)

@@ -3,7 +3,7 @@ import json
 from os.path import basename
 import pandas as pd
 from mlpipe.api.interface import CreatePipelineRequest
-from mlpipe.processors import StandardDataFormat
+from mlpipe.processors.standard_data_format import StandardDataFormat
 import os.path
 from _experiments.storage import meta_info
 import io

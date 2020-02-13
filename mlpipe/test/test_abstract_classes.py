@@ -1,5 +1,6 @@
 import unittest
-from mlpipe.datasources import AbstractDatasourceAdapter
+
+from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter
 
 
 class TestAbstractClass(unittest.TestCase):

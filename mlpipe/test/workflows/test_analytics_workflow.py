@@ -1,6 +1,6 @@
 import unittest
-from mlpipe.workflows.description_evaluator import YamlStringDescription
-from mlpipe.workflows.description_evaluator.evaluator import execute_from_yaml
+from mlpipe.dsl.descriptions import YamlStringDescription
+from mlpipe.dsl.interpreter import create_workflow_from_yaml
 
 description_str = """
 name: empa_mlp
@@ -31,8 +31,13 @@ analyze:
 
 
 class TestAnalytics(unittest.TestCase):
-    def test_something(self):
-        execute_from_yaml(description_str)
+    def test_standard(self):
+        import tensorflow as tf
+        tf.get_logger().setLevel('INFO')
+
+        manager = create_workflow_from_yaml(description_str, overrides={"@mode": "analyze"})
+        result = manager.run()
+        print(result)
 
 
 if __name__ == '__main__':

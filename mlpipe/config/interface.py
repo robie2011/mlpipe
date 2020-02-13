@@ -12,7 +12,8 @@ class HistorySummary:
 
 class TrainingProjectFileNames(Enum):
     MODEL = "model.h5"
-    SCALERS = "scalers.pickle"
+    STATES = "states.pickle"
     DESCRIPTION = "description.json"
     HISTORY = "history.pickle"
     HISTORY_SUMMARY = "history_summary.pickle"
+    EVALUATION = "evaluation.pickle"

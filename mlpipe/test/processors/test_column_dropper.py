@@ -1,8 +1,9 @@
 import unittest
-from mlpipe.processors import *
 import numpy as np
 from datetime import datetime, timedelta
 from numpy.testing import assert_array_equal
+from mlpipe.processors.column_dropper import ColumnDropper
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class TestColumnDropper(unittest.TestCase):

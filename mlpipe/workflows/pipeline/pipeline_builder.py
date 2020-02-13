@@ -1,12 +1,12 @@
+import logging
 from typing import List, Union
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
-from mlpipe.processors import AbstractProcessor
+from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
 from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation, \
     ProcessorOrMultiAggregation
 from mlpipe.workflows.utils import get_component_config, create_instance
-import logging
 
 module_logger = logging.getLogger(__name__)
 
@@ -43,6 +43,8 @@ def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
 
 def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> List[ProcessorOrMultiAggregation]:
     reduced_pipeline: List[ProcessorOrMultiAggregation] = []
+    if not pipeline:
+        return reduced_pipeline
 
     if isinstance(pipeline[0], SingleAggregationConfig):
         reduced_pipeline.append(MultiAggregation(
@@ -77,7 +79,7 @@ def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> List[ProcessorOr
     return reduced_pipeline
 
 
-def create_pipeline_workflow(descriptions: PipelineDescription) -> PipelineWorkflow:
+def build_pipeline_executor(descriptions: PipelineDescription) -> PipelineExecutor:
     flatten_pipeline = _initialize_processors_and_aggregators(descriptions)
-    reduced_piplines = _reduce_pipeline(flatten_pipeline)
-    return PipelineWorkflow(pipelines=reduced_piplines)
+    reduced_pipline = _reduce_pipeline(flatten_pipeline)
+    return PipelineExecutor(pipeline=reduced_pipline)

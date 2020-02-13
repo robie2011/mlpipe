@@ -4,7 +4,7 @@ import os
 import coloredlogs
 import yaml
 
-from mlpipe.datautils import DictionaryParser
+from mlpipe.utils.dictionary_parser import DictionaryParser
 
 
 def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_key='LOG_CFG'):

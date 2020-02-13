@@ -1,8 +1,10 @@
 import logging
 from dataclasses import dataclass
-from typing import Dict, List, Union
+from typing import List, Union
 from mlpipe.aggregators import AbstractAggregator
-from mlpipe.processors import StandardDataFormat, AbstractProcessor
+from mlpipe.dsl import InputOutputField
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.processors.sequence3d import Sequence3d
 from mlpipe.workflows.utils import get_qualified_name
 import numpy as np
@@ -13,8 +15,6 @@ module_logger = logging.getLogger(__name__)
 # class InputOutputField(TypedDict):
 #     inputField: str
 #     outputField: str
-
-InputOutputField = Dict
 
 
 @dataclass

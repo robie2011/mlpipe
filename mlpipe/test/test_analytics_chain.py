@@ -5,6 +5,8 @@ from mlpipe.aggregators import *
 import mlpipe.helpers.test_data as tdata
 import json
 
+from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup
+
 tdata.DEBUG = True
 DISABLE_EXPORT = True
 

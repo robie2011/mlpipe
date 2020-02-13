@@ -6,9 +6,8 @@ from datetime import datetime, timedelta
 from mlpipe.groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
 import multiprocessing as mp
 import time
-from mlpipe.groupers import CombinedGroup, group_by_multi_columns
 from mlpipe.helpers.test_data import load_empa_data
-
+from mlpipe.workflows.analyze.helper import CombinedGroup, group_by_multi_columns
 
 sequences = np.array([
             [23.0, 10],

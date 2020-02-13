@@ -3,7 +3,7 @@ from mlpipe.features import TimeFeatureExtractor
 from numpy.testing import assert_array_equal
 import datetime
 import numpy as np
-from mlpipe.processors import StandardDataFormat
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 test_data = StandardDataFormat(
     timestamps=np.array([

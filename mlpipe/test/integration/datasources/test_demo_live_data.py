@@ -1,7 +1,7 @@
 import unittest
 
 from mlpipe.datasources import DemoLiveData
-from mlpipe.utils import get_dir_from_code_root
+from mlpipe.utils.path_tool import get_dir_from_code_root
 
 """
 11:23:55 ~/repos/2019_p9/code[master] > head data/meeting_room_sensors_201908_201912.csv
@@ -23,10 +23,16 @@ class TestDemoLiveData(unittest.TestCase):
         path_test_csv_file = get_dir_from_code_root(["data", "meeting_room_sensors_201908_201912.csv"])
         window_size = 3
 
-        source = DemoLiveData(pathToFile=path_test_csv_file, windowMinutes=window_size, reset_init_time=True)
-        result = source.fetch()
+        source = DemoLiveData(
+            pathToFile=path_test_csv_file,
+            windowMinutes=window_size,
+            reset_init_time=True,
+            fields=[]
+        )
+
+        result = source._fetch()
         for i in range(result.data.shape[0]):
-            print(result.data[i,:])
+            print(result.data[i, :])
 
         self.assertEqual(result.data.shape[0], window_size)
         self.assertEqual(result.timestamps.shape[0], window_size)
