@@ -1,4 +1,6 @@
+import logging
 from typing import Dict
+
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl import _get_descriptions_name
@@ -6,7 +8,6 @@ from mlpipe.groupers import AbstractGrouper
 from mlpipe.workflows.analyze.analyze_workflow_manager import AnalyzeWorkflowManager
 from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
 from mlpipe.workflows.utils import create_instance, get_component_config
-import logging
 
 module_logger = logging.getLogger(__name__)
 

@@ -1,4 +1,5 @@
 from typing import Dict
+
 from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter
 from mlpipe.integration.output.interface import AbstractOutput
 from mlpipe.workflows.utils import pick_from_object, create_instance

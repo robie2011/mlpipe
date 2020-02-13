@@ -1,8 +1,10 @@
-import mlpipe.helpers.data as helper_data
 import unittest
+
 import numpy as np
-from mlpipe.processors.standard_data_format import StandardDataFormat
+
+import mlpipe.helpers.data as helper_data
 from mlpipe.processors.freezed_value_remover import FreezedValueRemover
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class TestFreezedValueRemover(unittest.TestCase):

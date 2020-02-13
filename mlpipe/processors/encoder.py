@@ -1,12 +1,14 @@
+import logging
 from dataclasses import dataclass
 from random import random
 from typing import List, cast
-from mlpipe.datautils import LabelSelector
-from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.processors.column_dropper import ColumnDropper
-from mlpipe.processors.standard_data_format import StandardDataFormat
+
 import numpy as np
-import logging
+
+from mlpipe.datautils import LabelSelector
+from mlpipe.processors.column_dropper import ColumnDropper
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import create_instance
 
 module_logger = logging.getLogger(__name__)

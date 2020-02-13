@@ -1,6 +1,8 @@
 import numpy as np
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
+
 
 # todo: Check interesting post
 #  https://stackoverflow.com/questions/57712650/numpy-array-first-occurence-of-n-consecutive-values-smaller-than-threshold

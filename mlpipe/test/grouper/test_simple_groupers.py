@@ -1,11 +1,13 @@
-import unittest
-from typing import Sequence
-import numpy as np
-from numpy.testing import assert_array_equal
-from datetime import datetime, timedelta
-from mlpipe.groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
 import multiprocessing as mp
 import time
+import unittest
+from datetime import datetime, timedelta
+from typing import Sequence
+
+import numpy as np
+from numpy.testing import assert_array_equal
+
+from mlpipe.groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
 from mlpipe.helpers.test_data import load_empa_data
 from mlpipe.workflows.analyze.helper import CombinedGroup, group_by_multi_columns
 

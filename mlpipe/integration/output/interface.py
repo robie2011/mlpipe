@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
-from mlpipe.integration import IntegrationResult
 import logging
-from mlpipe.workflows.utils import get_class_name
+from abc import ABC, abstractmethod
 
+from mlpipe.integration import IntegrationResult
+from mlpipe.workflows.utils import get_class_name
 
 module_logger = logging.getLogger(__name__)
 

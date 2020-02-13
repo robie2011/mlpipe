@@ -1,8 +1,6 @@
-import numpy as np
-from .interfaces import AbstractProcessor
 import pandas as pd
 
-
+from .interfaces import AbstractProcessor
 # frequency:
 #   - 'T' or 'min' for Minute
 #   - read about valid frequency:

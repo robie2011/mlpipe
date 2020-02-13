@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 from keras import Sequential
+
 from mlpipe.models.interface import AbstractModelLoader
 
 

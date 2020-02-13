@@ -1,7 +1,9 @@
-from dataclasses import dataclass
-from .abstract_datasource_adapter import AbstractDatasourceAdapter
-import pandas as pd
 import os
+from dataclasses import dataclass
+
+import pandas as pd
+
+from .abstract_datasource_adapter import AbstractDatasourceAdapter
 from ..processors.standard_data_format import StandardDataFormat
 
 

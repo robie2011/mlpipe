@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from typing import List
+
 import numpy as np
+
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.groupers import AbstractGrouper
-from ..abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.utils import get_qualified_name, get_class_name
 from .helper import create_np_group_data, group_by_multi_columns
 from .interface import AnalyticsResultMeta, AnalyticsResult
+from ..abstract_workflow_manager import AbstractWorkflowManager
 
 
 @dataclass

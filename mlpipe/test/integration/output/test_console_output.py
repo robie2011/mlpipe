@@ -1,9 +1,10 @@
 import unittest
+from datetime import datetime
+
 import numpy as np
 
 from mlpipe.integration import IntegrationResult
 from mlpipe.integration.output.console import ConsoleOutput
-from datetime import datetime
 
 
 class TestConsoleOutput(unittest.TestCase):

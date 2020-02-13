@@ -1,5 +1,5 @@
 import unittest
-from mlpipe.dsl.descriptions import YamlStringDescription
+
 from mlpipe.dsl.interpreter import create_workflow_from_yaml
 
 description_str = """

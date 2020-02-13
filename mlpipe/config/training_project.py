@@ -2,10 +2,12 @@ import os
 import traceback
 from typing import List, Dict
 from uuid import uuid4
+
 import numpy as np
 from keras import Sequential
 from keras.callbacks import History
 from keras.engine.saving import load_model
+
 from mlpipe.api.interface import PredictionTypes
 from mlpipe.config import app_settings
 from mlpipe.config import file_handlers

@@ -1,6 +1,8 @@
 from typing import List
-from mlpipe.datasources import EmpaCsvSourceAdapter
+
 import numpy as np
+
+from mlpipe.datasources import EmpaCsvSourceAdapter
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 MODULE_INIT_TIME = np.datetime64('now')

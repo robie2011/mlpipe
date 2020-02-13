@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from time import time, sleep
+from time import sleep
 from typing import List
+
 from keras import Sequential
 
 from mlpipe.integration import IntegrationResult

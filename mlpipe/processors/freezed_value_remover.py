@@ -1,6 +1,7 @@
 import numpy as np
-from mlpipe.processors.standard_data_format import StandardDataFormat
+
 from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 from .common_freezed_values import get_mask_for_freezed_values
 
 

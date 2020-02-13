@@ -1,12 +1,13 @@
 from dataclasses import dataclass
-from typing import List, Dict, cast
+from typing import List, cast
+
+import numpy as np
 from sklearn import preprocessing as skpp
+
+from mlpipe.dsl import InputOutputField
 from mlpipe.processors.column_dropper import ColumnDropper
 from mlpipe.processors.column_selector import ColumnSelector
 from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.dsl import InputOutputField
-import numpy as np
-
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 

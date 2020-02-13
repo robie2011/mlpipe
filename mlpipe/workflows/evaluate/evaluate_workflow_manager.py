@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from time import time
 from typing import List
+
 from keras import Sequential
+
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_output_set
 from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEvaluator

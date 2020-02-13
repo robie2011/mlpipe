@@ -1,13 +1,15 @@
 import logging
 from dataclasses import dataclass
 from typing import List, Union
+
+import numpy as np
+
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.dsl import InputOutputField
 from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.processors.sequence3d import Sequence3d
+from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_qualified_name
-import numpy as np
 
 module_logger = logging.getLogger(__name__)
 

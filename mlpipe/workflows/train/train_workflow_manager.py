@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
-from keras import Sequential
+
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.models.model_trainer import fit, FitResult
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
-from mlpipe.workflows.data_selector import convert_to_model_input_output_set, ModelInputOutputSet
+from mlpipe.workflows.data_selector import convert_to_model_input_output_set
 from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 
 

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import List, Dict
+
 from mlpipe.datautils import LabelSelector
+from mlpipe.processors.column_selector import ColumnSelector
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.standard_data_format import StandardDataFormat
-from mlpipe.processors.column_selector import ColumnSelector
 from mlpipe.workflows.utils import create_instance
 
 

@@ -1,5 +1,7 @@
 import unittest
+
 import numpy as np
+
 from mlpipe import aggregators as agg
 from mlpipe.helpers import print_3d_array
 from mlpipe.processors.sequence3d import Sequence3d

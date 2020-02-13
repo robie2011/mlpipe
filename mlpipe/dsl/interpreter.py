@@ -1,7 +1,8 @@
 import logging
 from typing import Dict
-from mlpipe.dsl.descriptions import AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
+
 from mlpipe.dsl.analyze_interpreter import _create_workflow_analyze
+from mlpipe.dsl.descriptions import AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
 from mlpipe.dsl.evaluate_interpreter import _create_workflow_evaluate
 from mlpipe.dsl.integrate_interpreter import _create_workflow_integrate
 from mlpipe.dsl.train_interpreter import _create_workflow_training

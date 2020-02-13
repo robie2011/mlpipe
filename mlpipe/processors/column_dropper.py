@@ -1,4 +1,5 @@
 from typing import List
+
 from .column_selector import ColumnSelector
 from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat

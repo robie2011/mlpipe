@@ -1,6 +1,8 @@
 from typing import Dict
+
 import numpy as np
 from sklearn.metrics import confusion_matrix
+
 from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEvaluator
 
 

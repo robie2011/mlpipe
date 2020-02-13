@@ -1,7 +1,7 @@
+import itertools
 from typing import Tuple
 
 import numpy as np
-import itertools
 
 
 def _get_range_exceeding_maximum_length(ix_start: np.ndarray, ix_end: np.ndarray, threshold: int):

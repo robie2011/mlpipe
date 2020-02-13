@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Callable
+
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
-from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.processors.internal.multi_aggregation import ProcessorOrMultiAggregation
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 DataHandler = Callable[[str, StandardDataFormat], None]
 

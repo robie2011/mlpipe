@@ -1,9 +1,11 @@
 import unittest
+
 import numpy as np
-from mlpipe.aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
-from mlpipe import aggregators as agg
 from numpy.testing import assert_array_equal
+
 import mlpipe.helpers.data as helper_data
+from mlpipe import aggregators as agg
+from mlpipe.aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
 
 # data = helper_data.generated_3d_data()
 # helpers.print_3d_array

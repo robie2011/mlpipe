@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import List
+
 import numpy as np
-from mlpipe.processors.standard_data_format import StandardDataFormat
+
 from mlpipe.processors.column_selector import ColumnSelector
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 @dataclass

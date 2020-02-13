@@ -1,6 +1,7 @@
+from typing import Callable
+
 import numpy as np
 import pandas as pd
-from typing import Callable
 
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.standard_data_format import StandardDataFormat

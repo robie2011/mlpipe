@@ -1,11 +1,13 @@
-from mlpipe.aggregators import Max, Min
-import numpy as np
 import unittest
 from datetime import datetime, timedelta
+
+import numpy as np
 from numpy.testing import assert_array_equal
+
+from mlpipe.aggregators import Max, Min
+from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
-from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation
 
 
 class TestMultiAggregation(unittest.TestCase):

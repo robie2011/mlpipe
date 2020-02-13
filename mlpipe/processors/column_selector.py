@@ -1,5 +1,5 @@
 from typing import List
-import numpy as np
+
 from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat
 from ..datautils import LabelSelector

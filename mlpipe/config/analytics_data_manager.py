@@ -1,12 +1,13 @@
 import json
+import logging
 import os
 import time
 from pathlib import Path
 from typing import Dict
-import tabulate
-from mlpipe.config import app_settings
-import logging
 
+import tabulate
+
+from mlpipe.config import app_settings
 
 module_logger = logging.getLogger(__name__)
 

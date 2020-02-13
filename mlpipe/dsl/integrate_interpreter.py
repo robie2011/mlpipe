@@ -1,9 +1,9 @@
 import logging
 from typing import Dict
+
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl.instance_creator import create_output_adapter
-from mlpipe.workflows.evaluate.evaluate_workflow_manager import EvaluateWorkflowManager
 from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 from mlpipe.workflows.integrate.integration_workflow_manager import IntegrationWorkflowManager
 from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor

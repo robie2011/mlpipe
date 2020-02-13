@@ -1,4 +1,5 @@
 import numpy as np
+
 from .abstract_numpy_reduction import AbstractNumpyReduction
 
 

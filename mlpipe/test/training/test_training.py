@@ -1,8 +1,7 @@
 import locale
 import unittest
-from typing import Tuple
 
-from mlpipe.dsl.interpreter import create_workflow_from_file, create_workflow_from_object, create_workflow_from_yaml
+from mlpipe.dsl.interpreter import create_workflow_from_file, create_workflow_from_yaml
 from mlpipe.utils.path_tool import get_dir
 
 locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
@@ -25,6 +24,7 @@ _name_session = None
 
 
 def _get_test_model_name_session():
+    global _name_session
     if not _name_session:
         TestWorkflows().test_training()
     return _name_session

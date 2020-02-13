@@ -1,8 +1,10 @@
 import unittest
+
 import numpy as np
+
 import mlpipe.helpers.data as helper_data
-from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.processors.nan_remover import NanRemover
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class TestNanRemover(unittest.TestCase):

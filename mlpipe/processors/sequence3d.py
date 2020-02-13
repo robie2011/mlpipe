@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import List
-from .interfaces import AbstractProcessor
+
 import numpy as np
+
+from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat
 
 

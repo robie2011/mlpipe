@@ -1,10 +1,10 @@
+import json
 import unittest
+
+import mlpipe.helpers.test_data as tdata
+from mlpipe.aggregators import *
 from mlpipe.groupers import *
 from mlpipe.helpers.test_helper import *
-from mlpipe.aggregators import *
-import mlpipe.helpers.test_data as tdata
-import json
-
 from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup
 
 tdata.DEBUG = True

@@ -3,9 +3,9 @@ from typing import List, Union
 from mlpipe.aggregators import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
 from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
 from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation, \
     ProcessorOrMultiAggregation
+from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
 from mlpipe.workflows.utils import get_component_config, create_instance
 
 module_logger = logging.getLogger(__name__)

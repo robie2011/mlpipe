@@ -1,8 +1,10 @@
-import unittest
-from mlpipe.features import TimeFeatureExtractor
-from numpy.testing import assert_array_equal
 import datetime
+import unittest
+
 import numpy as np
+from numpy.testing import assert_array_equal
+
+from mlpipe.features import TimeFeatureExtractor
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 test_data = StandardDataFormat(

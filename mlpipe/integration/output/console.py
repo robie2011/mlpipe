@@ -1,9 +1,7 @@
-import numpy as np
+import logging
 
 from mlpipe.integration import IntegrationResult
 from mlpipe.integration.output.interface import AbstractOutput
-import logging
-
 
 module_logger = logging.getLogger(__name__)
 

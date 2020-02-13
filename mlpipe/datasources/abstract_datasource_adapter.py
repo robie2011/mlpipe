@@ -1,9 +1,11 @@
+import logging
 from abc import ABC, abstractmethod
-import numpy as np
 from typing import NamedTuple, List, Union
+
+import numpy as np
+
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name, get_qualified_name
-import logging
 
 
 class AggregatorInput(NamedTuple):

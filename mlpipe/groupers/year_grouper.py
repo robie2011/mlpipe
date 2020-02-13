@@ -1,6 +1,7 @@
 import numpy as np
-from .abstract_grouper import AbstractGrouper
 import pandas as pd
+
+from .abstract_grouper import AbstractGrouper
 
 
 class YearGrouper(AbstractGrouper):

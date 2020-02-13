@@ -1,8 +1,9 @@
-import numpy as np
-from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.processors.standard_data_format import StandardDataFormat
 import logging
 
+import numpy as np
+
+from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 module_logger = logging.getLogger(__name__)
 

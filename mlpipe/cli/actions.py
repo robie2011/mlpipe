@@ -1,13 +1,13 @@
-import numbers
+import os
+import logging
 import os
 import time
 from pathlib import Path
 from typing import List, cast
-import logging
-from mlpipe.config import app_settings
 
+from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
-from mlpipe.dsl.interpreter import create_workflow_from_object, create_workflow_from_file
+from mlpipe.dsl.interpreter import create_workflow_from_file
 from mlpipe.workflows.utils import load_description_file
 
 module_logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ def _calc_dir_size(path: str):
 
 
 def _get_history(name: str, session_id: str):
-    from mlpipe.config.interface import TrainingProjectFileNames, HistorySummary
+    from mlpipe.config.interface import TrainingProjectFileNames
     import pickle
     # todo: check
     # code duplication: (TrainingProject)

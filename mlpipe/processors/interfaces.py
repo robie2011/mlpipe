@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
 

@@ -1,9 +1,11 @@
 import unittest
+
 import numpy as np
 from numpy.testing import assert_array_equal
+
 from mlpipe.helpers import data as helper_data
-from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.processors.linear_interpolation import LinearInterpolation
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class TestLinearInterpolation(unittest.TestCase):

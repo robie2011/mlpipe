@@ -1,14 +1,6 @@
 from enum import Enum
 from typing import List, Union, Dict
 
-# class ClassConfig(TypedDict, Dict):
-#     qualified_name: str
-
-    # Case 0: No configuration
-    # Case 1: Simple List: Use it as unnamed first argument
-    # Case 2: Dictionary -> kwargs
-    #config: Optional[Union[Dict, List]]
-
 # contains special attributes:
 #   name: qualified name
 #   minutes: for aggregations
@@ -17,6 +9,13 @@ from typing import List, Union, Dict
 #       - after aggregation we should name these fields correctly
 from mlpipe.workflows.analyze.interface import AnalyzeDescription
 from mlpipe.workflows.interface import ClassDescription
+
+# class ClassConfig(TypedDict, Dict):
+#     qualified_name: str
+# Case 0: No configuration
+# Case 1: Simple List: Use it as unnamed first argument
+# Case 2: Dictionary -> kwargs
+# config: Optional[Union[Dict, List]]
 
 PipelineDescription = List[ClassDescription]
 

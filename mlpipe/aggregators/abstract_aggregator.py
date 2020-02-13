@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 import numpy as np
+
 from .aggregator_output import AggregatorOutput
 
 
