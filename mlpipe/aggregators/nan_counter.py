@@ -1,16 +1,14 @@
+from typing import List
 import numpy as np
-
+from ..dsl_interpreter.descriptions import InputOutputField
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
 
 
-# todo: If we use day of month for grouping (year/month/day)
-# then we don't have same amount of group members in each group.
-# e.g. february could have 28 days and january 31 days
-# therefore we will have empty days which is filled with nan.
-# Problem arises if we want to count nans.
-#
 class NanCounter(AbstractAggregator):
+    def __init__(self, sequence: int, generate: List[InputOutputField] = ()):
+        super().__init__(generate=generate, sequence=sequence)
+
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         # todo:
         # use raw input and calculate where nan is found (index)

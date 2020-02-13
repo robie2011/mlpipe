@@ -8,7 +8,7 @@ Funcs = Callable[[Optional[object]], object]
 
 
 def get_component_config(key_values: dict):
-    meta_config = ["name", "sequence", "generate"] if 'sequence' in key_values else ["name"]
+    meta_config = ["name"]
     return {k: v for (k, v) in key_values.items() if k not in meta_config}
 
 

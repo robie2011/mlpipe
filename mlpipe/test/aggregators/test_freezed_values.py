@@ -54,7 +54,7 @@ class TestFreezedValues(unittest.TestCase):
             [1, 7]
         ])
 
-        result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
+        result = FreezedValueCounter(max_freezed_values=3, sequence=np.nan).aggregate(grouped_data=group_matrix)
 
         assert_array_equal(result_expected, result)
 
@@ -88,6 +88,6 @@ class TestFreezedValues(unittest.TestCase):
             [1, 7]
         ])
 
-        result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
+        result = FreezedValueCounter(max_freezed_values=3, sequence=np.nan).aggregate(grouped_data=group_matrix)
 
         assert_array_equal(result_expected, result)

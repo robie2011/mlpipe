@@ -1,16 +1,11 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
+from typing import Optional, Dict, List, Union
 
 import numpy as np
 
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
-
-
-@dataclass
-class ColumnLimit(Dict):
-    min: Optional[float]
-    max: Optional[float]
+from ..dsl_interpreter.descriptions import InputOutputField
 
 
 # comparing nan throw warning: np.array([1, -1, np.nan]) > 0
@@ -19,9 +14,19 @@ class ColumnLimit(Dict):
 np.warnings.filterwarnings('ignore')
 
 
+class InputOutputLimits(InputOutputField):
+    min: Optional[int]
+    max: Optional[int]
+
+
+def _is_ma(data: np.ndarray):
+    return isinstance(data, np.ma.MaskedArray)
+
+
 class Outlier(AbstractAggregator):
-    def __init__(self, limits: [ColumnLimit]):
-        self.limits = limits
+    # note: without InputOutputLimits this class is useless. No defaults possible.
+    def __init__(self, sequence: int, generate: List[InputOutputLimits]):
+        super().__init__(generate=generate, sequence=sequence)
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         affected_index = self.affected_index(grouped_data)
@@ -33,16 +38,16 @@ class Outlier(AbstractAggregator):
         # define minimum for each sensor
         # e.g. minimums[0] define minimum for sensor = xxs[:, :, 0]
         min_matrix = np.zeros(grouped_data.shape, dtype='float')
-        for i in range(len(self.limits)):
-            min_matrix[:, :, i] = self.limits[i]['min'] if 'min' in self.limits[i] else np.nan
-        min_filter = np.logical_and(
-            np.invert(grouped_data.mask), grouped_data < min_matrix)
-
         max_matrix = np.zeros(grouped_data.shape, dtype='float')
-        for i in range(len(self.limits)):
-            max_matrix[:, :, i] = self.limits[i]['max'] if 'max' in self.limits[i] else np.nan
-        max_filter = np.logical_and(
-            np.invert(grouped_data.mask), grouped_data > max_matrix)
+
+        for i, config in enumerate(self.generate):
+            min_matrix[:, :, i] = config['min'] if 'min' in config else np.nan
+            max_matrix[:, :, i] = config['max'] if 'max' in config else np.nan
+
+        mask_filter = np.invert(grouped_data.mask) if _is_ma(grouped_data) else True
+
+        min_filter = np.logical_and(mask_filter, grouped_data < min_matrix)
+        max_filter = np.logical_and(mask_filter, grouped_data > max_matrix)
 
         return np.logical_or(min_filter, max_filter)
 

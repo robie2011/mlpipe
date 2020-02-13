@@ -1,5 +1,6 @@
+from typing import List
 import numpy as np
-
+from ..dsl_interpreter.descriptions import InputOutputField
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
 
@@ -9,7 +10,8 @@ from .aggregator_output import AggregatorOutput
 
 
 class FreezedValueCounter(AbstractAggregator):
-    def __init__(self, max_freezed_values: int):
+    def __init__(self, max_freezed_values: int, sequence: int, generate: List[InputOutputField] = ()):
+        super().__init__(generate=generate, sequence=sequence)
         if max_freezed_values < 0:
             raise ValueError(f"max_freezed_values must be greather or equal 0")
         self.max_freezed_values = max_freezed_values

@@ -1,79 +1,61 @@
 import logging
-from typing import List, Union
+from typing import List, Union, cast
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
 from mlpipe.processors.interfaces import AbstractProcessor
-from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation, \
-    ProcessorOrMultiAggregation
+from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
 from mlpipe.workflows.utils import get_component_config, create_instance
 
 module_logger = logging.getLogger(__name__)
 
-ProcessorOrAggregation = Union[AbstractProcessor, SingleAggregationConfig]
-
 
 def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
-    pipeline: List[ProcessorOrAggregation] = []
+    pipeline: List[AbstractProcessor] = []
     for definition in descriptions:
         config = get_component_config(definition)
-        if 'sequence' in definition:
-            single_aggregation = SingleAggregationConfig(
-                sequence=definition['sequence'],
-                generate=definition['generate'],
-                instance=create_instance(
-                    qualified_name=definition['name'],
-                    kwargs=config,
-                    assert_base_classes=[AbstractAggregator])
-            )
-
-            pipeline.append(single_aggregation)
-
-        else:
-            config = get_component_config(definition)
-            instance = create_instance(
-                qualified_name=definition['name'],
-                kwargs=config,
-                assert_base_classes=[AbstractProcessor])
-            pipeline.append(instance)
+        instance = create_instance(
+            qualified_name=definition['name'],
+            kwargs=config,
+            assert_base_classes=[AbstractProcessor])
+        pipeline.append(instance)
 
     module_logger.debug("extracted pipes: {0}".format(len(pipeline)))
     return pipeline
 
 
-def _reduce_pipeline(pipeline: List[ProcessorOrAggregation]) -> List[ProcessorOrMultiAggregation]:
-    reduced_pipeline: List[ProcessorOrMultiAggregation] = []
+def _reduce_pipeline(pipeline: List[AbstractProcessor]) -> List[AbstractProcessor]:
+    reduced_pipeline: List[AbstractProcessor] = []
     if not pipeline:
         return reduced_pipeline
 
-    if isinstance(pipeline[0], SingleAggregationConfig):
-        reduced_pipeline.append(MultiAggregation(
-            sequence=pipeline[0].sequence,
-            instances=[pipeline[0]]
-        ))
-    else:
-        reduced_pipeline.append(pipeline[0])
+    for ix, pipe in enumerate(pipeline):
+        # case 1: invalid instance
+        if not isinstance(pipe, AbstractProcessor):
+            raise Exception("Unsupported pipe (nr #{0}): {1}".format(ix, pipe))
 
-    for i in range(1, len(pipeline)):
-        current_pipe = pipeline[i]
+        # case 2: normal processor
+        if not isinstance(pipe, AbstractAggregator):
+            reduced_pipeline.append(pipe)
+            continue
 
-        if (isinstance(current_pipe, SingleAggregationConfig)
-                and isinstance(reduced_pipeline[-1], MultiAggregation)
-                and reduced_pipeline[-1].sequence == current_pipe.sequence):
-            reduced_pipeline[-1].instances.append(current_pipe)
+        # case aggregators:
+        # case 3a: reduced pipe is empty or last reduced pipe is not multiaggregation
+        agg = cast(AbstractAggregator, pipe)
+        if not isinstance(agg, AbstractAggregator):
+            raise Exception("Should not happen here")
 
-        elif isinstance(current_pipe, SingleAggregationConfig):
-            reduced_pipeline.append(
-                MultiAggregation(sequence=current_pipe.sequence, instances=[current_pipe])
-            )
+        if not reduced_pipeline \
+                or not isinstance(reduced_pipeline[-1], MultiAggregation) \
+                or cast(MultiAggregation, reduced_pipeline[-1]).sequence != agg.sequence:
+            reduced_pipeline.append(MultiAggregation.from_aggregator(aggregator=agg))
+            continue
 
-        elif isinstance(current_pipe, AbstractProcessor):
-            # current_pipe is an abstract processor
-            processor: AbstractProcessor = current_pipe
-            reduced_pipeline.append(processor)
-
-        else:
-            raise Exception("Unsupported pipe (nr #{0}): {1}".format(i, current_pipe))
+        # case 3b:
+        # - reduced pipe is not empty
+        # - last instance is multi aggregation
+        # - multi aggregation has the same sequence length
+        cast(MultiAggregation, reduced_pipeline[-1]).instances.append(agg)
 
     module_logger.debug("reduced pipes: {0}".format(len(reduced_pipeline)))
     return reduced_pipeline

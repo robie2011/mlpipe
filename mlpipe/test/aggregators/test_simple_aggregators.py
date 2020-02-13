@@ -49,7 +49,7 @@ class TestSimpleAggregators(unittest.TestCase):
         result_expected[1, 1] = 2
         result_expected[0:2, 2] = 2
 
-        result = NanCounter().aggregate(grouped_data=data)
+        result = NanCounter(sequence=np.nan).aggregate(grouped_data=data)
         assert_array_equal(result_expected, result)
 
     def test_max(self):
@@ -59,7 +59,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [989, 748, 909, 789]
         ])
 
-        result = Max().aggregate(grouped_data=helper_data.generated_3d_data())
+        result = Max(sequence=np.nan).aggregate(grouped_data=helper_data.generated_3d_data())
         assert_array_equal(result_expected, result)
 
     def test_min(self):
@@ -68,7 +68,7 @@ class TestSimpleAggregators(unittest.TestCase):
             170, 533, 18, 39,
             103, 130, 19, 53]).reshape(3, 4)
 
-        result = Min().aggregate(grouped_data=helper_data.generated_3d_data())
+        result = Min(sequence=np.nan).aggregate(grouped_data=helper_data.generated_3d_data())
         assert_array_equal(result_expected, result)
 
     def test_mean(self):
@@ -80,7 +80,7 @@ class TestSimpleAggregators(unittest.TestCase):
             for row in range(grouped_data.shape[0]):
                 result_expected[row, sensor] = np.mean(grouped_data[row, :, sensor])
 
-        result = Mean().aggregate(grouped_data)
+        result = Mean(sequence=np.nan).aggregate(grouped_data)
         self.assertEqual(result_expected[0, 0], (417+147+397+204+417)/5)
         assert_array_equal(result_expected, result)
 
@@ -93,15 +93,16 @@ class TestSimpleAggregators(unittest.TestCase):
         ])
         result = Percentile(
             percentile=.25,
-            interpolation='higher').aggregate(grouped_data=helper_data.generated_3d_data())
+            interpolation='higher',
+            sequence=np.nan).aggregate(grouped_data=helper_data.generated_3d_data())
         assert_array_equal(result_expected, result)
 
     def test_outliers(self):
         limits = [
-            {'min': 200, 'max': 500},
-            {'min': 200, 'max': 600},
-            {'min': np.nan, 'max': 400},
-            {'min': 300, 'max': np.nan},
+            {'input': 'a', 'min': 200, 'max': 500},
+            {'input': 'b', 'min': 200, 'max': 600},
+            {'input': 'c', 'min': np.nan, 'max': 400},
+            {'input': 'd', 'min': 300, 'max': np.nan},
         ]
         # https://docs.google.com/spreadsheets/d/1KoBUzJf4TIX5xlHIPg4BK6zDAugQWLJ7Lm_lOg2dcLg/edit#gid=120567734
         result_expected = np.array([
@@ -110,7 +111,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [3, 3, 3, 2]
         ])
 
-        result = Outlier(limits=limits).aggregate(grouped_data=helper_data.generated_3d_data())
+        result = Outlier(sequence=np.nan, generate=limits).aggregate(grouped_data=helper_data.generated_3d_data())
         assert_array_equal(result_expected, result)
 
     def test_trend(self):
@@ -129,7 +130,7 @@ class TestSimpleAggregators(unittest.TestCase):
             [2, 2],
             [5, -9]
         ])
-        result = Trend().aggregate(grouped_data=data)
+        result = Trend(sequence=np.nan).aggregate(grouped_data=data)
         assert_array_equal(result_expected, result)
 
     def test_sum(self):
@@ -147,5 +148,5 @@ class TestSimpleAggregators(unittest.TestCase):
             [6, 36],
             [12, 28]
         ])
-        result = Sum().aggregate(grouped_data=data)
+        result = Sum(sequence=np.nan).aggregate(grouped_data=data)
         assert_array_equal(result_expected, result)

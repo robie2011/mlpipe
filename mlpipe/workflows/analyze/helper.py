@@ -17,6 +17,7 @@ def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only):
     module_logger.debug("create grouped indexes")
     grouped_indexes = np.ma.zeros((n_groups, n_max_group_members), dtype='int')
     grouped_indexes.mask = np.ones((n_groups, n_max_group_members), dtype='int')
+
     for i in range(len(groups)):
         g: CombinedGroup = groups[i]
         n_current_group_size = g.indexes.shape[0]

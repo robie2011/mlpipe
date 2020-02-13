@@ -1,10 +1,8 @@
 import logging
 import logging.config
 import os
-
 import coloredlogs
 import yaml
-
 from mlpipe.utils.dictionary_parser import DictionaryParser
 
 

@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from mlpipe.aggregators.min import Min
 from mlpipe.aggregators.max import Max
-from mlpipe.processors.internal.multi_aggregation import SingleAggregationConfig, MultiAggregation
+from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
 
@@ -29,16 +29,14 @@ class TestMultiAggregation(unittest.TestCase):
         multi = MultiAggregation(
             sequence=5,  # todo: use sequence instead minutes
             instances=[
-                SingleAggregationConfig(
+                Max(
                     sequence=5,
-                    instance=Max(),
                     generate=[
                         {"inputField": "temp1", "outputField": "temp1Max"}
                     ]
                 ),
-                SingleAggregationConfig(
+                Min(
                     sequence=5,
-                    instance=Min(),
                     generate=[
                         {"inputField": "temp1", "outputField": "temp1Min"}
                     ]

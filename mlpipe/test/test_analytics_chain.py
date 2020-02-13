@@ -5,7 +5,6 @@ from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.min import Min
 from mlpipe.aggregators.max import Max
 from mlpipe.aggregators.percentile import Percentile
-from mlpipe.aggregators.outlier import Outlier
 from mlpipe.aggregators.mean import Mean
 from mlpipe.groupers import YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper
 from mlpipe.helpers.test_helper import Timer
@@ -76,10 +75,10 @@ class AnalyticsChain(unittest.TestCase):
         n_sensors = raw_data_only.shape[1]
         grouped_data = create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer)
 
-        analyzers = [Min(), Max(), Mean(), NanCounter(),
-                     Percentile(percentile=.25),
-                     Percentile(percentile=.75),
-                     FreezedValueCounter(max_freezed_values=10)]
+        analyzers = [Min(sequence=np.nan), Max(sequence=np.nan), Mean(sequence=np.nan), NanCounter(sequence=np.nan),
+                     Percentile(percentile=.25, sequence=np.nan),
+                     Percentile(percentile=.75, sequence=np.nan),
+                     FreezedValueCounter(max_freezed_values=10, sequence=np.nan)]
 
         aggregator_output_data = np.full(
             (n_groups, len(analyzers), n_sensors),

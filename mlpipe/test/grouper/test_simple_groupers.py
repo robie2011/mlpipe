@@ -116,6 +116,8 @@ class TestSimpleGroupers(unittest.TestCase):
         pool = mp.Pool(mp.cpu_count())
         print("start")
         ts = time.time()
+
+        # noinspection PyStatementEffect
         np.array([pool.apply(run_grouper, args=(row, timestamps, None)) for row in groupers]).T
         print("parallel execution time: ", (time.time() - ts) * 1000)
         pool.close()

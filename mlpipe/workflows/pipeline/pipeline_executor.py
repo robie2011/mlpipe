@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Callable
-
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
-from mlpipe.processors.internal.multi_aggregation import ProcessorOrMultiAggregation
+from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 DataHandler = Callable[[str, StandardDataFormat], None]
@@ -10,7 +9,7 @@ DataHandler = Callable[[str, StandardDataFormat], None]
 
 @dataclass
 class PipelineExecutor(InstanceLoggerMixin):
-    pipeline: List[ProcessorOrMultiAggregation]
+    pipeline: List[AbstractProcessor]
     _beforePipeExecution: DataHandler = None
     _afterPipeExecution: DataHandler = None
 

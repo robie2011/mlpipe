@@ -34,7 +34,7 @@ class LabelSelector(InstanceLoggerMixin):
                     i = self.elements.index(name)
                     ix_selection.append(i)
                 except ValueError as e:
-                    raise ValueError(f"Can not find label '{name}'. Available labels are: {selection}. Error: {e.args}")
+                    raise ValueError(f"Can not find label '{name}'. Available labels are: {self.elements}. Error: {e.args}")
 
         unselected = [(ix, name) for ix, name
                       in enumerate(self.elements)

@@ -44,6 +44,11 @@ class AnalyzeWorkflowManager(AbstractWorkflowManager):
         for i in range(len(self.metrics)):
             aggreagtor = self.metrics[i]
             logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
+            # todo:
+            #   if in some cases like with "outlier" aggregator can return a smaller output
+            #   which only contains metrics for affected sensors.
+            #   To fix that we need to fillup empty sensors.
+            #   Anyway now we need to iterate over output labels and push it to final result.
             output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data)
 
         group_ids = np.array(list(map(lambda x: x.group_id, groups))).tolist()

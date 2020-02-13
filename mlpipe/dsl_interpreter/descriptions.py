@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
+from typing_extensions import TypedDict
 from mlpipe.workflows.utils import load_description_file
 
-InputOutputField = Dict
+
+class InputOutputField(TypedDict):
+    inputField: str
+    outputField: Optional[str]
 
 
 class AbstractDescription(ABC):

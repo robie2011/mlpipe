@@ -1,3 +1,4 @@
+import numpy as np
 import logging
 from typing import Dict
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
@@ -35,6 +36,13 @@ def _create_workflow_analyze(description: Dict):
     metrics_description = description['analyze']['metrics']
     str_metrics = ", ".join(_get_descriptions_name(metrics_description))
     module_logger.info(f"found metrics ({len(metrics_description)}): {str_metrics}")
+
+    # All metrics are aggregators and requires a sequence length for calling process() method
+    # but we won't call process() method and instead create our dataset and call aggregate() later.
+    # Retrospectively this can be done better by separating logic for aggregation
+    # and grouping from AbstractAggregator-Class
+    for m in metrics_description:
+        m['sequence'] = np.nan
 
     metrics = list(
         map(lambda cfg: create_instance(

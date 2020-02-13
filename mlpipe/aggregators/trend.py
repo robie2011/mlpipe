@@ -1,9 +1,15 @@
+from typing import List
+
 import numpy as np
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
+from ..dsl_interpreter.descriptions import InputOutputField
 
 
 class Trend(AbstractAggregator):
+    def __init__(self, sequence: int, generate: List[InputOutputField] = ()):
+        super().__init__(generate=generate, sequence=sequence)
+
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         last_values = grouped_data[:, -1]
         first_values = grouped_data[:, 0]

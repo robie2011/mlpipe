@@ -13,7 +13,7 @@ class TestFeatureEngineeringChain(unittest.TestCase):
         sequence_data = Sequence3d.create_sequence_3d(features=data, n_sequence=3)
         print_3d_array(sequence_data)
 
-        feature_generators = [Sum(), Mean(), Trend()]
+        feature_generators = [Sum(sequence=np.nan), Mean(sequence=np.nan), Trend(sequence=np.nan)]
         features = [g.aggregate(grouped_data=sequence_data) for g in feature_generators]
         f_out = features[0]
         for f in features[1:]:
