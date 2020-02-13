@@ -1,6 +1,5 @@
 import unittest
-
-from mlpipe.dsl.interpreter import create_workflow_from_yaml
+from mlpipe.dsl_interpreter.interpreter import create_workflow_from_yaml
 
 description_str = """
 name: empa_mlp

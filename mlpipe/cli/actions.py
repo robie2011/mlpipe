@@ -1,13 +1,11 @@
-import os
 import logging
 import os
 import time
 from pathlib import Path
 from typing import List, cast
-
 from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
-from mlpipe.dsl.interpreter import create_workflow_from_file
+from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
 from mlpipe.workflows.utils import load_description_file
 
 module_logger = logging.getLogger(__name__)
@@ -16,6 +14,7 @@ module_logger = logging.getLogger(__name__)
 def _print_heading(text: str):
     line = f"MLPIPE CLI: {text}"
     module_logger.info(line)
+
 
 def _calc_dir_size(path: str):
     root_dir = Path(path)
@@ -102,7 +101,7 @@ def describe_model(args):
 
 
 def train_model(args):
-    from mlpipe.dsl.interpreter import create_workflow_from_file
+    from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
 
     for f in args.files:
         path = f if os.path.isabs(f) else os.path.abspath(f)

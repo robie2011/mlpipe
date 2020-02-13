@@ -12,7 +12,7 @@ def get_component_config(key_values: dict):
     return {k: v for (k, v) in key_values.items() if k not in meta_config}
 
 
-def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base_classes=[]):
+def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base_classes=()):
     clazz = load(qualified_name=qualified_name, assert_base_classes=assert_base_classes)
     try:
         if kwargs:
@@ -35,7 +35,7 @@ class NotImplementedBaseClass(Exception):
                ", ".join(map(lambda x: x.__name__, self.missing_base_classes))
 
 
-def load(qualified_name: str, assert_base_classes=[]):
+def load(qualified_name: str, assert_base_classes=()):
     module_name = '.'.join(qualified_name.split('.')[:-1])
     class_name = qualified_name.split('.')[-1]
     try:

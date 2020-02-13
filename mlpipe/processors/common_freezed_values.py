@@ -35,7 +35,7 @@ def _get_mask(data_shape: Tuple[int, ...], threshold: int, match: np.ndarray):
 
     dummy_data = [[False] * n_cols]
     mask = np.r_[dummy_data, match, dummy_data]
-    has_diff_to_previous = mask[1:] != mask[:-1]
+    has_diff_to_previous: np.ndarray = mask[1:] != mask[:-1]
     indexes = np.arange(has_diff_to_previous.shape[0])
 
     for col in range(n_cols):

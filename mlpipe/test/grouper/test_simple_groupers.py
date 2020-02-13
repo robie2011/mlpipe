@@ -2,7 +2,7 @@ import multiprocessing as mp
 import time
 import unittest
 from datetime import datetime, timedelta
-from typing import Sequence
+from typing import Sequence, Type
 
 import numpy as np
 from numpy.testing import assert_array_equal
@@ -43,7 +43,8 @@ sequences.flags.writeable = False
 empty_array = np.array([])
 empty_array.flags.writeable = False
 
-def run_grouper(clazz: AbstractGrouper, timestamps: np.ndarray, raw_data: np.ndarray):
+
+def run_grouper(clazz: Type[AbstractGrouper], timestamps: np.ndarray, raw_data: np.ndarray):
     return clazz().group(timestamps, raw_data)
 
 
@@ -127,7 +128,8 @@ class TestSimpleGroupers(unittest.TestCase):
         groupers = [HourGrouper, DayGrouper, MonthGrouper, YearGrouper, WeekdayGrouper]
         print("start")
         ts = time.time()
-        results = np.array([run_grouper(grouper, timestamps=timestamps, raw_data=empty_array) for grouper in groupers]).T
+        results = np.array(
+            [run_grouper(grouper, timestamps=timestamps, raw_data=empty_array) for grouper in groupers]).T
         print("serial execution time: ", (time.time() - ts) * 1000)
 
     def test_group_spliting_DEV(self):

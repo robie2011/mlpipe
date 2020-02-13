@@ -3,7 +3,7 @@ import argparse
 from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data, integrate_model
 
 
-def actionNotImplemented(args):
+def action_not_implemented(args):
     print("Action not implemented", args.action)
 
 
@@ -24,7 +24,7 @@ def main():
     parser_integrate.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # list
-    parser_list = subparsers.add_parser('list')
+    subparsers.add_parser('list')
 
     # describe
     parser_describe = subparsers.add_parser("describe")
@@ -49,4 +49,4 @@ def main():
         "integrate": integrate_model
     }
 
-    action_switcher.get(args.action, actionNotImplemented)(args)
+    action_switcher.get(args.action, action_not_implemented)(args)

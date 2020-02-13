@@ -37,8 +37,8 @@ class LabelSelector(InstanceLoggerMixin):
                     raise ValueError(f"Can not find label '{name}'. Available labels are: {selection}. Error: {e.args}")
 
         unselected = [(ix, name) for ix, name
-                         in enumerate(self.elements)
-                         if ix not in ix_selection]
+                      in enumerate(self.elements)
+                      if ix not in ix_selection]
         names_unselected = [name for ix, name in unselected]
         ix_unselected = [ix for ix, name in unselected]
 
@@ -52,4 +52,3 @@ class LabelSelector(InstanceLoggerMixin):
         selected = [name for name in self.elements
                     if name not in labels]
         return self.select(selected)
-

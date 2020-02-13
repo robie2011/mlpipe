@@ -1,7 +1,7 @@
 import locale
 import unittest
 
-from mlpipe.dsl.interpreter import create_workflow_from_file, create_workflow_from_yaml
+from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file, create_workflow_from_yaml
 from mlpipe.utils.path_tool import get_dir
 
 locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
@@ -31,10 +31,8 @@ def _get_test_model_name_session():
 
 
 class TestWorkflows(unittest.TestCase):
-    # def test_analyzer(self):
-    #     path_to_file = get_dir(["test", "training", "example.training.yml"])
-    #     result = create_workflow_from_file(path_to_file)
-    #     print(result.package)
+    def setUp(self) -> None:
+        self.test_training()
 
     def test_training(self):
         path_to_file = get_dir(["test", "training", "example.training.yml"])
@@ -68,19 +66,3 @@ class TestWorkflows(unittest.TestCase):
             "@mode": "evaluate",
         })
         print(manager.run())
-
-    #
-    # def test_evaluate_saved_model(self):
-    #     main_evaluate_workflow.DISABLE_EVAL_STATS = True
-    #     path_to_file = get_dir(["test", "training", "example.training.yml"])
-    #     description = FileDescription(path_to_file).load()
-    #     result = train(description)
-    #     model_path_split = result[0].split("/")
-    #     model_name, trained_session_id = model_path_split[-2], model_path_split[-1]
-    #
-    #     config_str = _get_evaluation_config(model_name=model_name, session_id=trained_session_id)
-    #     result = evaluate(YamlStringDescription(config_str).load())
-    #
-    # def test_evluate_saved_model_real(self):
-    #     path_to_file = get_dir_from_code_root(["_descriptions", "test.empa.mlp.simple.yml"])
-    #     evaluate(FileDescription(path_to_file).load())

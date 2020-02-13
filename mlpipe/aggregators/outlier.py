@@ -12,6 +12,7 @@ class ColumnLimit(Dict):
     min: Optional[float]
     max: Optional[float]
 
+
 # comparing nan throw warning: np.array([1, -1, np.nan]) > 0
 # https://stackoverflow.com/questions/41130138/why-is-invalid-value-encountered-in-greater-warning-thrown-in-python-xarray-fo/41147570
 # https://stackoverflow.com/questions/37651803/runtimewarning-invalid-value-encountered-in-greater

@@ -7,38 +7,38 @@ source:
     - abc2 as temp2
 
 pipelinePrimary:
-  - name: mlpipe.aggregators.Max
+  - name: mlpipe.dsl.aggregators.Max
     sequence: 5
     generate:
     - inputField: temp1
       outputField: tempMax
     - inputField: temp2
       outputField: temp2Max
-  - name: mlpipe.aggregators.Trend
+  - name: mlpipe.dsl.aggregators.Trend
     sequence: 5
     generate:
     - inputField: temp1
       outputField: tempTrend
     - inputField: temp2
       outputField: temp2Trend
-  - name: mlpipe.aggregators.Min
+  - name: mlpipe.dsl.aggregators.Min
     sequence: 5
     generate:
     - inputField: temp1
       outputField: tempMin
-  - name: mlpipe.features.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: hour
     output_field: hourExtracted
-  - name: mlpipe.pipes.NanRemover
+  - name: mlpipe.dsl.processors.NanRemover
 
 pipelineSecondary:
-  - name: mlpipe.pipes.Scaler
+  - name: mlpipe.dsl.processors.Scaler
     scaler: sklearn.preprocessing.RobustScaler
     fields:
       - temp2
       - tempMax
       - temp2Trend
-  - name: mlpipe.pipes.Shuffle
+  - name: mlpipe.dsl.processors.Shuffle
 
 
 model:
@@ -74,10 +74,10 @@ model:
 
 analyze:
   groupBy:
-    - name: mlpipe.groupers.YearGrouper
-    - name: mlpipe.groupers.MonthGrouper
+    - name: mlpipe.dsl.groupers.YearGrouper
+    - name: mlpipe.dsl.groupers.MonthGrouper
   metrics:
-    - name: mlpipe.aggregators.Max
-    - name: mlpipe.aggregators.Min
-    - name: mlpipe.aggregators.Percentile
+    - name: mlpipe.dsl.aggregators.Max
+    - name: mlpipe.dsl.aggregators.Min
+    - name: mlpipe.dsl.aggregators.Percentile
       percentile: .75

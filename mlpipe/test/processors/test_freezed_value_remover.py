@@ -5,6 +5,7 @@ import numpy as np
 import mlpipe.helpers.data as helper_data
 from mlpipe.processors.freezed_value_remover import FreezedValueRemover
 from mlpipe.processors.standard_data_format import StandardDataFormat
+from numpy.testing import assert_array_equal
 
 
 class TestFreezedValueRemover(unittest.TestCase):
@@ -37,3 +38,4 @@ class TestFreezedValueRemover(unittest.TestCase):
         )
 
         processor_data_result = FreezedValueRemover(max_freezed_values=3).process(processor_data)
+        assert_array_equal(result_expected, processor_data_result.data)

@@ -10,12 +10,11 @@ from .aggregator_output import AggregatorOutput
 
 class FreezedValueCounter(AbstractAggregator):
     def __init__(self, max_freezed_values: int):
-        if (max_freezed_values < 0):
+        if max_freezed_values < 0:
             raise ValueError(f"max_freezed_values must be greather or equal 0")
         self.max_freezed_values = max_freezed_values
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
-        freed_indexes_by_sensor = []
         is_index_freezed3d = np.full(shape=grouped_data.shape, fill_value=False)
 
         # calculate for each sensor ...

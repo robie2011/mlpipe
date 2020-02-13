@@ -18,7 +18,10 @@ class TestNanRemover(unittest.TestCase):
         data.flags.writeable = False
 
         result_excepted = data[:2]
-        process_data = StandardDataFormat(data=data, labels=['a', 'b'], timestamps=helper_data.generate_timestamps(2, samples=4))
+        process_data = StandardDataFormat(
+            data=data,
+            labels=['a', 'b'],
+            timestamps=helper_data.generate_timestamps(2, samples=4))
         NanRemover().process(process_data)
 
 

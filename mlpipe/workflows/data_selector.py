@@ -33,12 +33,12 @@ class ModelTrainTestSet(ModelInputOutputSet):
         n_test = self._test_size()
         ix_end = self.x.shape[0] - n_test
         print(ix_end)
-        return ModelInputOutputSet(x =self.x[:ix_end], y=self.y[:ix_end])
+        return ModelInputOutputSet(x=self.x[:ix_end], y=self.y[:ix_end])
 
     def get_test_set(self):
         n_test = self._test_size()
         ix_start = self.x.shape[0] - n_test
-        return ModelInputOutputSet(x =self.x[ix_start:], y=self.y[ix_start:])
+        return ModelInputOutputSet(x=self.x[ix_start:], y=self.y[ix_start:])
 
     @staticmethod
     def from_model_input_output(data: ModelInputOutputSet, test_ratio: float):

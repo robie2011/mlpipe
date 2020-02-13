@@ -30,6 +30,7 @@ sequences = np.array([
 
 sequences.flags.writeable = False
 
+
 class TestFreezedValues(unittest.TestCase):
     def test_freezed_values(self):
         # split each sequences in two groups
@@ -46,7 +47,7 @@ class TestFreezedValues(unittest.TestCase):
 
         group_matrix.mask = np.zeros(group_matrix.shape)
 
-        #print_3d_array(group_matrix)
+        # print_3d_array(group_matrix)
 
         result_expected = np.array([
             [2, 0],
@@ -56,8 +57,6 @@ class TestFreezedValues(unittest.TestCase):
         result = FreezedValueCounter(max_freezed_values=3).aggregate(grouped_data=group_matrix)
 
         assert_array_equal(result_expected, result.metrics)
-
-
 
     def test_freezed_values_masked(self):
         # this is mostly copied from "test_freezed_values" Test
@@ -82,8 +81,7 @@ class TestFreezedValues(unittest.TestCase):
         group_matrix2.mask[:, group_matrix.shape[1]:] = True
         group_matrix = group_matrix2
 
-
-        #print_3d_array(group_matrix)
+        # print_3d_array(group_matrix)
 
         result_expected = np.array([
             [2, 0],

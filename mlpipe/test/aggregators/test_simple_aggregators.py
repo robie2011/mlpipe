@@ -1,8 +1,6 @@
 import unittest
-
 import numpy as np
 from numpy.testing import assert_array_equal
-
 import mlpipe.helpers.data as helper_data
 from mlpipe import aggregators as agg
 from mlpipe.aggregators import NanCounter, Max, Min, Mean, Percentile, Outlier
@@ -86,7 +84,9 @@ class TestSimpleAggregators(unittest.TestCase):
             [687, 835, 85, 316],
             [212, 147, 280, 294]
         ])
-        result = Percentile(percentile=.25, interpolation='higher').aggregate(grouped_data=helper_data.generated_3d_data())
+        result = Percentile(
+            percentile=.25,
+            interpolation='higher').aggregate(grouped_data=helper_data.generated_3d_data())
         assert_array_equal(result_expected, result.metrics)
 
     def test_outliers(self):

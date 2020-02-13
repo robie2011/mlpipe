@@ -9,9 +9,9 @@ module_logger = logging.getLogger(__name__)
 class ConsoleOutput(AbstractOutput):
     def _write(self, result: IntegrationResult):
         msg_meta = f"Integration result meta: name={result.model_name}/{result.session_id}. " \
-               f"Execution Time {result.time_execution}. " \
-               f"Shape init={result.shape_initial}." \
-               f"Shape pipeline: {result.shape_pipeline}"
+                   f"Execution Time {result.time_execution}. " \
+                   f"Shape init={result.shape_initial}." \
+                   f"Shape pipeline: {result.shape_pipeline}"
 
         module_logger.info(msg_meta)
 

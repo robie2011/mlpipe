@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import List, cast
-
 import numpy as np
 from sklearn import preprocessing as skpp
-
-from mlpipe.dsl import InputOutputField
+from mlpipe.dsl_interpreter.descriptions import InputOutputField
 from mlpipe.processors.column_dropper import ColumnDropper
 from mlpipe.processors.column_selector import ColumnSelector
 from mlpipe.processors.interfaces import AbstractProcessor
@@ -26,7 +24,7 @@ class RangeEncoder(AbstractProcessor):
 
     def _init_encoder(self) -> skpp.OneHotEncoder:
         if not self.state:
-            self.state = cast(skpp.OneHotEncoder, self.state) # just for ide
+            self.state = cast(skpp.OneHotEncoder, self.state)  # just for ide
 
             self.state = skpp.OneHotEncoder()
             train_data = np.array(np.arange(self.value_from, self.value_to).tolist() * len(self.generate))
@@ -37,7 +35,7 @@ class RangeEncoder(AbstractProcessor):
         return self.state
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        self.state = cast(skpp.OneHotEncoder, self.state) # just for ide
+        self.state = cast(skpp.OneHotEncoder, self.state)  # just for ide
         fields_input = [f['inputField'] for f in self.generate]
         fields_output = [f['outputField'] for f in self.generate]
 

@@ -11,7 +11,8 @@ class ColumnSelector(AbstractProcessor):
         self.enable_regex = enable_regex
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        indexes = LabelSelector(elements=processor_input.labels).select(self._columns, enable_regex=self.enable_regex).indexes
+        indexes = LabelSelector(elements=processor_input.labels).select(
+            self._columns, enable_regex=self.enable_regex).indexes
         return self._select_columns(processor_input, indexes)
 
     @staticmethod

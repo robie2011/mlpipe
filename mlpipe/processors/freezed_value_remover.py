@@ -13,7 +13,4 @@ class FreezedValueRemover(AbstractProcessor):
         mask = get_mask_for_freezed_values(processor_input.data, self.max_freezed_values)
         data = processor_input.data.copy()
         data[mask] = np.nan
-        return StandardDataFormat(
-            labels=processor_input.labels,
-            timestamps=processor_input.timestamps,
-            data=data)
+        return processor_input.modify_copy(data=data)

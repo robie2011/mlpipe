@@ -10,7 +10,10 @@ from mlpipe.processors.standard_data_format import StandardDataFormat
 
 class TestColumnDropper(unittest.TestCase):
     def test_column_dropper(self):
-        timestamps = np.arange(datetime(2019, 7, 2, 12, 0), datetime(2019, 7, 2, 20, 0), timedelta(minutes=15)).astype(datetime)
+        timestamps = np.arange(
+            datetime(2019, 7, 2, 12, 0),
+            datetime(2019, 7, 2, 20, 0),
+            timedelta(minutes=15)).astype(datetime)
         timestamps.flags.writeable = False
 
         data = np.random.random((5, 3))

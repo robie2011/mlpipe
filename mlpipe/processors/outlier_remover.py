@@ -7,7 +7,7 @@ from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class OutlierRemover(AbstractProcessor):
-    def __init__(self, limits:[ColumnLimit]):
+    def __init__(self, limits: [ColumnLimit]):
         self.limits = limits
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:

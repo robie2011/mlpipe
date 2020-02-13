@@ -21,7 +21,7 @@ def _create_workflow_evaluate(description: Dict) -> EvaluateWorkflowManager:
 
     try:
         evaluator = prediction_evaluators.get(prediction_type)
-    except KeyError as e:
+    except KeyError:
         raise ValueError(f"Prediction type '{prediction_type}' not implemented!")
 
     source_adapter = CachedDatasource(desc_merged['source'])

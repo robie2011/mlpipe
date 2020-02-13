@@ -10,7 +10,7 @@ from ..processors.standard_data_format import StandardDataFormat
 @dataclass
 class StandardCsvSourceAdapter(AbstractDatasourceAdapter):
     pathToFile: str
-    sep=','
+    sep = ','
 
     def test(self):
         if os.path.isfile(self.pathToFile):

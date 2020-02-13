@@ -45,5 +45,6 @@ class TestResampler(unittest.TestCase):
         assert_array_equal(data[-1], result.data[-1])
         assert_array_equal(result.data[1:-1], np.full((2, 3), fill_value=np.nan))
 
+
 if __name__ == '__main__':
     unittest.main()

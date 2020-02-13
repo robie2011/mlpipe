@@ -7,7 +7,7 @@ from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat
 
 
-def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> List[int]:
+def _create_sequence_endpoints(timestamps: np.ndarray, n_sequence: int) -> np.ndarray:
     # copied from p8 project
     """
     For given array of timestamps and required sequence length

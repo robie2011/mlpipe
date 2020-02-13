@@ -1,11 +1,11 @@
 import logging
 from typing import Dict
 
-from mlpipe.dsl.analyze_interpreter import _create_workflow_analyze
-from mlpipe.dsl.descriptions import AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
-from mlpipe.dsl.evaluate_interpreter import _create_workflow_evaluate
-from mlpipe.dsl.integrate_interpreter import _create_workflow_integrate
-from mlpipe.dsl.train_interpreter import _create_workflow_training
+from mlpipe.dsl_interpreter.analyze_interpreter import _create_workflow_analyze
+from mlpipe.dsl_interpreter.descriptions import AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
+from mlpipe.dsl_interpreter.evaluate_interpreter import _create_workflow_evaluate
+from mlpipe.dsl_interpreter.integrate_interpreter import _create_workflow_integrate
+from mlpipe.dsl_interpreter.train_interpreter import _create_workflow_training
 
 module_logger = logging.getLogger(__name__)
 
@@ -42,12 +42,12 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
 
     try:
         execution_mode = description['@mode']
-    except KeyError as e:
+    except KeyError:
         raise ValueError("Configuration file/object need the field '@mode' which specifies execution mode.")
 
     try:
         action = mode_action[execution_mode]
-    except KeyError as e:
+    except KeyError:
         raise ValueError(f"No workflow manager found for '{execution_mode}'")
 
     return action(description)
