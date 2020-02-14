@@ -1,9 +1,7 @@
 import os
 import yaml
 from typing_extensions import TypedDict
-
-from mlpipe.utils.path_tool import get_dir_from_code_root
-
+from mlpipe.utils.path_tool import dir_code
 train_enable_datasource_caching = True
 dir_training = "/tmp/mlpipe/training"
 dir_data_package = "/tmp/mlpipe/packages"
@@ -20,7 +18,7 @@ for c in [dir_training, dir_data_package, dir_tmp, dir_analytics]:
 
 
 def _get_config():
-    path = get_dir_from_code_root(['app_config.yml'])
+    path = dir_code / 'app_config.yml'
     with open(path) as f:
         return yaml.load(f, yaml.FullLoader)
 

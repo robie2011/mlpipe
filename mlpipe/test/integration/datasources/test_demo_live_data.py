@@ -1,7 +1,7 @@
 import unittest
 
 from mlpipe.datasources import DemoLiveData
-from mlpipe.utils.path_tool import get_dir_from_code_root
+from mlpipe.utils.path_tool import dir_code
 
 """
 11:23:55 ~/repos/2019_p9/code[master] > head data/meeting_room_sensors_201908_201912.csv
@@ -20,7 +20,7 @@ from mlpipe.utils.path_tool import get_dir_from_code_root
 
 class TestDemoLiveData(unittest.TestCase):
     def test_fetch(self):
-        path_test_csv_file = get_dir_from_code_root(["data", "meeting_room_sensors_201908_201912.csv"])
+        path_test_csv_file = dir_code / "data" / "meeting_room_sensors_201908_201912.csv"
         window_size = 3
 
         source = DemoLiveData(

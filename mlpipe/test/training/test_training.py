@@ -2,8 +2,7 @@ import locale
 import unittest
 import simplejson
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file, create_workflow_from_yaml
-from mlpipe.utils.file_tool import write_text_file
-from mlpipe.utils.path_tool import get_dir
+from mlpipe.utils.path_tool import dir_mlpipe
 
 locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
 
@@ -36,7 +35,7 @@ class TestWorkflows(unittest.TestCase):
         self.test_training()
 
     def test_training(self):
-        path_to_file = get_dir(["test", "training", "example.training.yml"])
+        path_to_file = dir_mlpipe / "test" / "training" / "example.training.yml"
         manager = create_workflow_from_file(path_to_file, overrides={"@mode": "train"})
         train_dir, _model = manager.run()
         print(train_dir, _model)
@@ -56,7 +55,7 @@ class TestWorkflows(unittest.TestCase):
         print(manager.run())
 
     def test_analyze(self):
-        path_to_file = get_dir(["test", "training", "example.training.yml"])
+        path_to_file = dir_mlpipe / "test" / "training" / "example.training.yml"
         manager = create_workflow_from_file(path_to_file, overrides={"@mode": "analyze"})
         result = manager.run()
         data = simplejson.dumps(result, ignore_nan=True, default=lambda o: o.__dict__)

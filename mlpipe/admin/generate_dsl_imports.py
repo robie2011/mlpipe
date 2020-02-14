@@ -5,8 +5,8 @@ from mlpipe.groupers.abstract_grouper import AbstractGrouper
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.integration.output.interface import AbstractOutput
 from os import path
+from mlpipe.utils.path_tool import dir_mlpipe
 
-root_dir = path.dirname(path.dirname(path.abspath(path.abspath(__file__))))
 
 tasks = (
     ("mlpipe.processors", AbstractProcessor, "processors"),
@@ -19,7 +19,7 @@ tasks = (
 for package, base, group in tasks:
     print(f"create file for {package} / {base.__name__}")
     clazz = create_imports(package, base)
-    output_file = path.join(root_dir, "dsl", f"{group}.py")
+    output_file = dir_mlpipe / "dsl" / f"{group}.py"
     lines = [f"from {c[0]} import {c[1]}" for c in clazz]
     with open(output_file, "w") as f:
         for i in lines:
