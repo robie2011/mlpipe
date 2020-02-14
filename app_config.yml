@@ -1,0 +1,5 @@
+reporting:
+  hosting_url_prefix: "https://cdn.jsdelivr.net/gh/robie2011/test2020@master/"
+  base_href: "#"
+  html_template_path: "/Users/robert.rajakone/repos/2019_p9/SensorReportViewer/dist/SensorReportViewer/index.html"
+  output_path: "/Users/robert.rajakone/repos/2019_p9/SensorReportViewer/dist/SensorReportViewer/report.html"
