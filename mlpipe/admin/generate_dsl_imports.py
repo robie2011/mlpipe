@@ -4,7 +4,6 @@ from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAda
 from mlpipe.groupers.abstract_grouper import AbstractGrouper
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.integration.output.interface import AbstractOutput
-from os import path
 from mlpipe.utils.path_tool import dir_mlpipe
 
 
