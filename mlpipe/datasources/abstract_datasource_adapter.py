@@ -30,6 +30,9 @@ class Field:
 
 class AbstractDatasourceAdapter(ABC):
     def __init__(self, fields: List[str]):
+        if not fields:
+            raise Exception("source fields required")
+
         self.fields = fields
         self.logger = logging.getLogger(get_qualified_name(self))
         self.logger.info(f"using datasource class {get_class_name(self)}")

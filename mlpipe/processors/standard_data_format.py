@@ -7,6 +7,7 @@ from typing import List
 import numpy as np
 
 from mlpipe.config import app_settings
+import pandas as pd
 
 
 @dataclass
@@ -56,3 +57,14 @@ class StandardDataFormat:
         if app_settings.TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK is False \
                 and self.timestamps.shape[0] != self.data.shape[0]:
             raise ValueError(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
+
+    @staticmethod
+    def from_dataframe(df: pd.DataFrame):
+        if not np.dtype('datetime64[ns]') == df.index.dtype:
+            raise Exception(f"DataFrame Index should be of dtype datetime64[ns]")
+
+        return StandardDataFormat(
+            timestamps=df.index.values,
+            data=df.values,
+            labels=df.columns.values.tolist()
+        )

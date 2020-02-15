@@ -1,22 +1,22 @@
 from typing import List
 import numpy as np
-
-from mlpipe.datasources.abstract_datasource_adapter import Field
+from mlpipe.datasources.abstract_datasource_adapter import Field, AbstractDatasourceAdapter
 from mlpipe.datasources.empa import EmpaCsvSourceAdapter
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 MODULE_INIT_TIME = np.datetime64('now')
 
 
-class DemoLiveData(EmpaCsvSourceAdapter):
+class DemoLiveData(AbstractDatasourceAdapter):
     def __init__(self, pathToFile: str, fields: List[str], windowMinutes: int, reset_init_time=False):
-        super().__init__(pathToFile=pathToFile, fields=fields)
-        self.cached_data = super().get()
+        super().__init__(fields=fields)
 
         global MODULE_INIT_TIME
         if reset_init_time:
             MODULE_INIT_TIME = np.datetime64('now')
         self.window_delta = np.timedelta64(windowMinutes, 'm')
+
+        self.cached_data = EmpaCsvSourceAdapter(fields=fields, pathToFile=pathToFile).get()
 
         # we need to add a small duration for processing time till first query
         # otherwise first row will be skipped
@@ -30,7 +30,9 @@ class DemoLiveData(EmpaCsvSourceAdapter):
     def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
         date_end = np.datetime64('now')
         date_start = date_end - self.window_delta
-        valid_ix = np.logical_and(self.cached_data.timestamps >= date_start, self.cached_data.timestamps < date_end)
+        valid_ix = np.logical_and(
+            self.cached_data.timestamps >= date_start,
+            self.cached_data.timestamps < date_end)
 
         return self.cached_data.modify_copy(
             timestamps=self.cached_data.timestamps[valid_ix],

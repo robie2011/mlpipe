@@ -1,6 +1,6 @@
 import unittest
 
-from mlpipe.datasources import DemoLiveData
+from mlpipe.datasources.demo_live_data import DemoLiveData
 from mlpipe.utils.path_tool import dir_code
 
 """
@@ -27,7 +27,7 @@ class TestDemoLiveData(unittest.TestCase):
             pathToFile=path_test_csv_file,
             windowMinutes=window_size,
             reset_init_time=True,
-            fields=[]
+            fields=["3200000", "40210002"]
         )
 
         result = source.get()

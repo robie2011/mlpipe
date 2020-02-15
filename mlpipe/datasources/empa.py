@@ -21,9 +21,8 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
             parse_dates=['_TIMESTAMP'])
         timestamps = data['_TIMESTAMP'].values
 
-        field_names = [f.name for f in _fields]
-        names_todrop = ['_TIMESTAMP']
-        names_todrop += [s for s in data.columns.values.tolist() if s not in field_names]
+        field_names = set([f.name for f in _fields])
+        names_todrop = set(data.columns.values) - field_names
         data = data.drop(labels=names_todrop, axis=1)
 
         values = data.values

@@ -37,11 +37,7 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
             series.append(serie)
 
         df = pd.concat(series, axis=1)
-        return StandardDataFormat(
-            timestamps=df.index.values,
-            data=df.values,
-            labels=df.columns.values.tolist()
-        )
+        return StandardDataFormat.from_dataframe(df)
 
     @staticmethod
     def _get_url(sensor_id: str, date_from: datetime.date, date_to: datetime.datetime) -> str:
