@@ -4,15 +4,13 @@ import shutil
 import tempfile
 from dataclasses import dataclass
 from typing import List, Tuple, Dict
-
 import numpy as np
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint, History
-
 from mlpipe.config import app_settings
 from mlpipe.workflows.data_selector import ModelInputOutputSet, ModelTrainTestSet
 from mlpipe.workflows.interface import ClassDescription
-from mlpipe.workflows.utils import pick_from_object, create_instance
+from mlpipe.workflows.utils import pick_from_dict_kwargs, create_instance
 
 module_logger = logging.getLogger(__name__)
 
@@ -25,7 +23,7 @@ def _create_model(
     model = Sequential()
 
     for ix, layer_desc in enumerate(sequential_model_desc):
-        name, kwargs = pick_from_object(layer_desc, "name")
+        name, kwargs = pick_from_dict_kwargs(layer_desc, "name")
         if ix == 0:
             if len(input_dim) == 1:
                 kwargs['input_dim'] = input_dim[0]

@@ -33,11 +33,6 @@ def main():
     # analyze
     parser_analyze = subparsers.add_parser("analyze")
     parser_analyze.add_argument("files", metavar="FILES", default=[], nargs='*')
-    parser_analyze.add_argument("--force", "-f", action='store_true')
-    analyze_action_group = parser_analyze.add_mutually_exclusive_group(required=True)
-    analyze_action_group.add_argument('--create', '-c', action='store_true')
-    analyze_action_group.add_argument('--delete', '-d', action='store_true')
-    analyze_action_group.add_argument('--list', '-l', action='store_true')
 
     args = parser.parse_args()
     action_switcher = {

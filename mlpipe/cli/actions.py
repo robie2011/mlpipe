@@ -6,6 +6,9 @@ from typing import List, cast
 from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
+from mlpipe.utils.file_tool import write_text_file
+from mlpipe.workflows.analyze.create_report import generate_html_report
+from mlpipe.workflows.analyze.interface import AnalyticsResult
 from mlpipe.workflows.utils import load_description_file
 
 module_logger = logging.getLogger(__name__)
@@ -159,62 +162,17 @@ def test_model(args):
             module_logger.error(e)
 
 
-# def print_evaluation_result(result):
-#     module_logger.info("")
-#     module_logger.info("result:")
-#     terminal_tab = "   "
-#     for attr, value in result.__dict__.items():
-#         # formatting number output: https://pyformat.info/
-#         if attr.startswith("n_"):
-#             module_logger.info(terminal_tab + "{0}: {1} {2:05.3f}%".format(attr, value, value / result.size * 100))
-#         elif attr.startswith("p_"):
-#             module_logger.info(terminal_tab + "{0}: {1:05.3f}%".format(attr, value * 100))
-#         elif isinstance(value, numbers.Number):
-#             module_logger.info(terminal_tab + "{0}: {1:,}".format(attr, value))
-#         elif isinstance(value, dict):
-#             module_logger.info(terminal_tab + "{0}:".format(attr))
-#             for k, v in value.items():
-#                 if isinstance(v, tuple):
-#                     module_logger.info(terminal_tab * 2 + "{0}:".format(k))
-#                     for ti in v:
-#                         module_logger.info(terminal_tab * 3 + "{0}".format(ti))
-#                 else:
-#                     module_logger.info(terminal_tab * 2 + "{0}: {1}".format(k, v))
-#         else:
-#             #module_logger.info("   {0}: ".format(str(attr)), value)
-#             module_logger.info(terminal_tab + attr + ":")
-#             module_logger.info(value)
-
-
 def analyze_data(args):
-    from mlpipe.config.analytics_data_manager import AnalyticsDataManager
+    import simplejson
+    import os
+    import pathlib
 
-    if args.create:
-        import grequests
-        name_updates = []
-        for f in args.files:
-            _print_heading("ANALYZE")
-            path = f if os.path.isabs(f) else os.path.abspath(f)
-            base_path, ext = os.path.splitext(path)
-            name = os.path.basename(base_path)
-
-            description = load_description_file(path)
-            keys_allowed = ['source', 'analyze', 'pipeline']
-            filtered_desc = dict(filter(lambda x: x[0] in keys_allowed, description.items()))
-            AnalyticsDataManager.save(name=name, description=filtered_desc, overwrite=args.force)
-            name_updates.append(name)
-
-        # send signal to webserver
-        rs = [grequests.post(f"http://localhost:{app_settings.api_port}/api/signal",
-                             data={"type": "analytics_description", "name": n})
-              for n in name_updates]
-        grequests.map(rs)
-
-    if args.list:
-        AnalyticsDataManager.list_files()
-        return
-
-    if args.delete:
-        for name in args.files:
-            AnalyticsDataManager.delete(name)
-        return
+    for f in args.files:
+        _print_heading("ANALYZE")
+        desc_file = f if os.path.isabs(f) else os.path.abspath(f)
+        result: AnalyticsResult = create_workflow_from_file(desc_file, overrides={"@mode": "analyze"}).run()
+        data = simplejson.dumps(result, ignore_nan=True, default=lambda o: o.__dict__)
+        file_basename = '.'.join(desc_file.split('.')[:-1])
+        output_file = pathlib.Path().cwd() / f"{file_basename}.html"
+        print(f"writing report: {output_file}")
+        generate_html_report(json_str=data, output_path=output_file)

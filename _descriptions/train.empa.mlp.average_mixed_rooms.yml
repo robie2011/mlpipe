@@ -14,41 +14,41 @@ source:
     - 40210148 as Präsenz
 
 pipeline:
-  - name: mlpipe.features.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: hour
     output_field: Stunden
-  - name: mlpipe.features.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: weekday
     output_field: Wochentag
-  - name: mlpipe.aggregators.Max
+  - name: mlpipe.dsl.aggregators.Max
     sequence: 60
     generate:
     - inputField: CO2
       outputField: CO2_Max
     - inputField: TempInnen
       outputField: TempInnen_Max
-  - name: mlpipe.aggregators.Mean
+  - name: mlpipe.dsl.aggregators.Mean
     sequence: 60
     generate:
     - inputField: CO2
       outputField: CO2_Mean
     - inputField: TempInnen
       outputField: TempInnen_Mean
-  - name: mlpipe.aggregators.Min
+  - name: mlpipe.dsl.aggregators.Min
     sequence: 60
     generate:
     - inputField: CO2
       outputField: CO2_Min
     - inputField: TempInnen
       outputField: TempInnen_Min
-  - name: mlpipe.aggregators.Trend
+  - name: mlpipe.dsl.aggregators.Trend
     sequence: 60
     generate:
     - inputField: CO2
       outputField: CO2_Trend
     - inputField: TempInnen
       outputField: TempInnen_Trend
-  - name: mlpipe.processors.NanRemover
+  - name: mlpipe.dsl.processors.NanRemover
 
 # validation: get sourceField information from pipeline
 modelInput:

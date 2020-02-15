@@ -11,13 +11,13 @@ source:
     - 40210148 as Präsenz
 
 pipeline:
-  - name: mlpipe.features.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: hour
     output_field: Stunden
-  - name: mlpipe.features.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: weekday
     output_field: Wochentag
-  - name: mlpipe.processors.NanRemover
+  - name: mlpipe.dsl.processors.NanRemover
 
 # validation: get sourceField information from pipeline
 modelInput:

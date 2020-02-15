@@ -75,7 +75,11 @@ def get_class_name(o: object):
     return o.__class__.__name__
 
 
-def pick_from_object(obj, *keys):
+def pick_from_dict(obj, *keys):
+    return [obj[k] for k in keys]
+
+
+def pick_from_dict_kwargs(obj, *keys):
     obj = copy.deepcopy(obj)
     result = [obj[k] for k in keys]
 
