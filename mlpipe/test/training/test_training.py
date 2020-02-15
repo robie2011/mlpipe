@@ -59,7 +59,7 @@ class TestWorkflows(unittest.TestCase):
         manager = create_workflow_from_file(path_to_file, overrides={"@mode": "analyze"})
         result = manager.run()
         data = simplejson.dumps(result, ignore_nan=True, default=lambda o: o.__dict__)
-        #write_text_file("/tmp/analytics.json", data)
+        # write_text_file("/tmp/analytics.json", data)
 
     def test_evaluate(self):
         name, session = _get_test_model_name_session()

@@ -102,6 +102,11 @@ def describe_model(args):
     print("_" * len(title))
     print()
     print(project.model.summary())
+    print()
+    print("evaluation result (only test set):")
+    eval_result = project.evaluation
+    for k, v in eval_result.items():
+        print(f"    {k}: {v}")
 
 
 def train_model(args):
