@@ -30,7 +30,7 @@ class TestDemoLiveData(unittest.TestCase):
             fields=[]
         )
 
-        result = source._fetch()
+        result = source.get()
         for i in range(result.data.shape[0]):
             print(result.data[i, :])
 

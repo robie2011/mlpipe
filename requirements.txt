@@ -1,3 +1,4 @@
+requests_ntlm
 beautifulsoup4
 absl-py==0.9.0
 astor==0.8.1

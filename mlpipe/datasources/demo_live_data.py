@@ -1,5 +1,7 @@
 from typing import List
 import numpy as np
+
+from mlpipe.datasources.abstract_datasource_adapter import Field
 from mlpipe.datasources.empa import EmpaCsvSourceAdapter
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
@@ -9,7 +11,7 @@ MODULE_INIT_TIME = np.datetime64('now')
 class DemoLiveData(EmpaCsvSourceAdapter):
     def __init__(self, pathToFile: str, fields: List[str], windowMinutes: int, reset_init_time=False):
         super().__init__(pathToFile=pathToFile, fields=fields)
-        self.cached_data = super()._fetch()
+        self.cached_data = super().get()
 
         global MODULE_INIT_TIME
         if reset_init_time:
@@ -25,7 +27,7 @@ class DemoLiveData(EmpaCsvSourceAdapter):
         # and subtract window_delta to ensure we have enough row for first fetch
         self.cached_data.timestamps = self.cached_data.timestamps + init_time_diff - self.window_delta
 
-    def _fetch(self) -> StandardDataFormat:
+    def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
         date_end = np.datetime64('now')
         date_start = date_end - self.window_delta
         valid_ix = np.logical_and(self.cached_data.timestamps >= date_start, self.cached_data.timestamps < date_end)
