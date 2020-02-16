@@ -1,8 +1,8 @@
 import os
-import yaml
-from typing_extensions import TypedDict
+from mlpipe.config.app_config_parser import AppConfigParser
+from mlpipe.utils.file_tool import File
 from mlpipe.utils.path_tool import dir_code
-train_enable_datasource_caching = True
+
 dir_training = "/tmp/mlpipe/training"
 dir_tmp = "/tmp/mlpipe/tmp"
 TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK = False
@@ -14,19 +14,10 @@ for c in [dir_training, dir_tmp]:
         os.makedirs(c, exist_ok=True)
 
 
-def _get_config():
-    path = dir_code / 'app_config.yml'
-    with open(path) as f:
-        return yaml.load(f, yaml.FullLoader)
+def get_config() -> AppConfigParser:
+    config_dict = File.read_yaml(dir_code / 'app_config.yml')
+    return AppConfigParser(config_dict)
 
 
-class ReportingConfig(TypedDict):
-    hosting_url_prefix: str
-    base_href: str
-    html_template_path: str
-    output_path: str
+AppConfig = get_config()
 
-
-def get_reporting_config() -> ReportingConfig:
-    cfg = _get_config()
-    return cfg['reporting']

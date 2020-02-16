@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Dict
 
 from mlpipe.config import app_settings
-from mlpipe.config.app_settings import train_enable_datasource_caching
+from mlpipe.config.app_settings import AppConfig
 from mlpipe.dsl_interpreter.instance_creator import create_source_adapter
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
@@ -20,7 +20,8 @@ class CachedDatasource(InstanceLoggerMixin):
         return create_source_adapter(source_description=self.source_description).get()
 
     def get(self):
-        if not train_enable_datasource_caching:
+        if not AppConfig.get_config_or_default('general.enable_cache', default=True):
+            self.get_logger().info("caching disabled")
             return self._get()
 
         import pickle

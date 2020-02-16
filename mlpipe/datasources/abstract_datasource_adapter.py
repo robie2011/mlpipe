@@ -36,6 +36,7 @@ class AbstractDatasourceAdapter(ABC):
         self.fields = fields
         self.logger = logging.getLogger(get_qualified_name(self))
         self.logger.info(f"using datasource class {get_class_name(self)}")
+        self.source_returns_alias = False
 
     @abstractmethod
     def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
@@ -46,10 +47,15 @@ class AbstractDatasourceAdapter(ABC):
         required_fields = self._get_fields()
         raw = self._fetch(required_fields)
 
-        AbstractDatasourceAdapter._check_fields_availability(raw, required_fields)
-
-        ix_selection = LabelSelector(elements=raw.labels).select(selection=[f.name for f in required_fields]).indexes
+        AbstractDatasourceAdapter._check_fields_availability(raw, required_fields, using_alias=self.source_returns_alias)
         labels_new = [f.alias for f in required_fields]
+
+        if self.source_returns_alias:
+            ix_selection = LabelSelector(elements=raw.labels).select(
+                selection=[f.alias for f in required_fields]).indexes
+        else:
+            ix_selection = LabelSelector(elements=raw.labels).select(
+                selection=[f.name for f in required_fields]).indexes
 
         # ensure ordering of columns are correct
         data = raw.data[:, ix_selection]
@@ -61,10 +67,17 @@ class AbstractDatasourceAdapter(ABC):
         )
 
     @staticmethod
-    def _check_fields_availability(raw, required_fields):
-        missing_fields = [f.name for f in required_fields if f.name not in raw.labels]
+    def _check_fields_availability(raw, required_fields, using_alias: bool):
+        if using_alias:
+            missing_fields = [f.alias for f in required_fields if f.alias not in raw.labels]
+        else:
+            missing_fields = [f.name for f in required_fields if f.name not in raw.labels]
+
         if missing_fields:
-            raise ValueError(f"source do not contains following fields: {', '.join(missing_fields)}")
+            raise ValueError(
+                f"source do not contains following fields: {', '.join(missing_fields)}. "
+                + f"Available fields are: {', '.join(raw.labels)}"
+            )
 
     def _get_fields(self) -> List[Field]:
         results = []

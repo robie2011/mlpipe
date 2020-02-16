@@ -24,12 +24,20 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
         self.date_to = datetime.datetime.fromisoformat(date_to)
 
     def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
+        self.logger.info(f"getting data from time period {self.date_from.isoformat()} - {self.date_to.isoformat()}")
+        self.logger.info(f"using username for authentification {self.session.auth.username}")
         series = []
         for f in _fields:
             self.logger.info(f"getting data for field: {f.name} aka. {f.alias}")
             url = self._get_url(sensor_id=f.name, date_from=self.date_from, date_to=self.date_to)
             self.logger.debug(f"download data from: {url}")
             resp = self.session.get(url)
+
+            if resp.status_code != 200:
+                raise Exception(resp.text)
+
+            if resp.text.strip() == "[]":
+                raise Exception(f"no data found for sensor {f.name} in given time period")
 
             serie = pd.read_json(resp.text)
             serie = serie.set_index('timestamp')

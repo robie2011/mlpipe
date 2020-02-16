@@ -1,5 +1,17 @@
+general:
+  enable_cache: true
+  dir_cache: /tmp/mlpipe/tmp
+
 reporting:
   hosting_url_prefix: "https://cdn.jsdelivr.net/gh/robie2011/test2020@master/"
   base_href: "#"
   html_template_path: "./static/index.html"
   output_path: "/Users/robert.rajakone/repos/2019_p9/SensorReportViewer/dist/SensorReportViewer/report.html"
+
+unit_test:
+  visualizer_api_auth:
+    username: 'NEST\raro'
+    password: 'W3lc0me!2018$'
+
+training:
+  dir_data: /tmp/mlpipe/training
