@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 from .aggregator_output import AggregatorOutput
 from mlpipe.processors.interfaces import AbstractProcessor
-from ..dsl_interpreter.descriptions import InputOutputField
+from mlpipe.dsl_interpreter.descriptions import InputOutputField
 from ..processors.internal.multi_aggregation_data_format import MultiAggregationDataFormat
 from ..processors.internal.multi_aggregation_fields import MissingFields, MissingFieldsForLogic
 from ..processors.internal.multi_aggregation_result_collector import MultiAggregationResultCollector

@@ -1,7 +1,7 @@
 from typing import List
 import numpy as np
 from .abstract_numpy_reduction import AbstractNumpyReduction
-from ..dsl_interpreter.descriptions import InputOutputField
+from mlpipe.dsl_interpreter.descriptions import InputOutputField
 
 
 class Mean(AbstractNumpyReduction):

@@ -1,11 +1,10 @@
-from dataclasses import dataclass
-from typing import Optional, Dict, List, Union
+from typing import Optional, List
 
 import numpy as np
 
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from .aggregator_output import AggregatorOutput
-from ..dsl_interpreter.descriptions import InputOutputField
+from mlpipe.dsl_interpreter.descriptions import InputOutputField
 
 
 # comparing nan throw warning: np.array([1, -1, np.nan]) > 0
