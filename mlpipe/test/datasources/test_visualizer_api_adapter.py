@@ -1,5 +1,4 @@
 import unittest
-
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
 

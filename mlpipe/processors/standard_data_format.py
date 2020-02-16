@@ -1,11 +1,8 @@
 # https://stackoverflow.com/questions/33533148/how-do-i-specify-that-the-return-type-of-a-method-is-the-same-as-the-class-itsel
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import List
-
 import numpy as np
-
 from mlpipe.config import app_settings
 import pandas as pd
 
@@ -58,6 +55,8 @@ class StandardDataFormat:
                 and self.timestamps.shape[0] != self.data.shape[0]:
             raise ValueError(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
 
+        self.timestamps = self.timestamps.astype('datetime64[ns]')
+
     @staticmethod
     def from_dataframe(df: pd.DataFrame):
         if not np.dtype('datetime64[ns]') == df.index.dtype:
@@ -68,3 +67,6 @@ class StandardDataFormat:
             data=df.values,
             labels=df.columns.values.tolist()
         )
+
+    def to_dataframe(self) -> pd.DataFrame:
+        return pd.DataFrame(data=self.data, columns=self.labels, index=self.timestamps)

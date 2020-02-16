@@ -26,7 +26,7 @@ class TestVisualizerLiveApiAdapter(unittest.TestCase):
         assert_array_equal(np.ones((4,)), delta, err_msg="not all timestamps have one minute difference")
         np_datetime_now = np.datetime64(np.datetime64(datetime.now().isoformat()))
         recent_entry_timestamp_delta = (np_datetime_now-ts[-1]) / np.timedelta64(1, 'm')
-        self.assertEqual(1, np.round(recent_entry_timestamp_delta),
+        self.assertLessEqual(np.round(recent_entry_timestamp_delta), 2,
                          msg="latest timestamp entry should not be older than one minute")
 
 

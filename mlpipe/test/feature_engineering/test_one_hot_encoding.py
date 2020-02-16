@@ -24,7 +24,7 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[2, 1] = 1
         result_expected[3, 2] = 1
 
-        result = encoder.process(StandardDataFormat(data=data, labels=['hour'], timestamps=None))
+        result = encoder.process(StandardDataFormat(data=data, labels=['hour'], timestamps=np.array([])))
         assert_array_equal(result_expected, result.data)
 
     def test_range_encoder_two_cols(self):
@@ -46,7 +46,7 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[3, 1 + 2] = 1
         result_expected[:, 0] = np.array([1, 2, 3, 4])
 
-        result = encoder.process(StandardDataFormat(data=data, labels=['hour', 'abc'], timestamps=None))
+        result = encoder.process(StandardDataFormat(data=data, labels=['hour', 'abc'], timestamps=np.array([])))
         assert_array_equal(result_expected, result.data)
         self.assertEqual("abc", result.labels[0])
         self.assertEqual("hourOneHot$0", result.labels[1])

@@ -26,4 +26,5 @@ class AbstractWorkflowManager(ABC, InstanceLoggerMixin):
 
     def __post_init__(self):
         self.get_logger().info(f"using workflow manager {get_qualified_name(self)}")
-        self._reset_pipeline_stats()
+        if self.pipeline_executor:
+            self._reset_pipeline_stats()
