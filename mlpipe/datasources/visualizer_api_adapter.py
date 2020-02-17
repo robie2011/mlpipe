@@ -18,6 +18,8 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
         super().__init__(fields=fields)
         self.session = requests.Session()
         self.session.auth = HttpNtlmAuth(username=username, password=password)
+
+        # workaround: dateutil.parser.isoparse
         self.date_from = datetime.datetime.fromisoformat(date_from)
         self.date_to = datetime.datetime.fromisoformat(date_to)
         self.timestamp_round_minute = timestamp_round_minute

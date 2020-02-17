@@ -18,8 +18,8 @@ pipelineSecondary:
     scaler: sklearn.preprocessing.MinMaxScaler
     fields:
       - TempAussen
-      - TempInnen
       - Zuluft
+      - Abluft
       - CO2
   - name: mlpipe.dsl.processors.SeedSetup
     numpy: 2
@@ -29,11 +29,12 @@ pipelineSecondary:
 model:
   input:
     - TempAussen
-    - TempInnen
     - Zuluft
+    - Abluft
     - CO2
+    - Präsenz
 
-  target: Abluft
+  target: TempInnen
   predictionType: regression
   testRatio: .20
 
@@ -45,14 +46,18 @@ model:
       units: 100
       activation: tanh
     - name: keras.layers.Dense
+      units: 50
+      activation: relu
+    - name: keras.layers.Dense
       units: 1
-      activation: sigmoid
+      activation: linear
 
   compile:
     loss: mean_absolute_error
-    optimizer: Adam
+    optimizer: rmsprop
     metrics:
       - mean_absolute_percentage_error
+      - mae
 
   fit:
     epochs: 50
