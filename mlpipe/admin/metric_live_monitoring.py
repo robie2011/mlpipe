@@ -1,22 +1,34 @@
+import logging
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from time import sleep
 from typing import List
-import pandas as pd
 import requests
 from ordered_set import OrderedSet
 from requests_ntlm import HttpNtlmAuth
 from typing_extensions import TypedDict
 from mlpipe.config.app_settings import AppConfig
-from datetime import datetime, timedelta
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
-import dateutil.parser as dparser
+from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
+from mlpipe.utils.path_tool import dir_code
 
+module_logger = logging.getLogger(__file__)
 
 username = AppConfig['unit_test.visualizer_api_auth.username']
 password = AppConfig['unit_test.visualizer_api_auth.password']
 
 
 metric = "40210012"
+frequency_seconds = 30
+output_path = dir_code / "output" / f"{metric}.csv"
+
+module_logger.info(f"starting live data monitoring for metric = {metric}")
+module_logger.info(f"choosen frequency (seconds) = {frequency_seconds}")
+module_logger.info(f"output path is = {output_path}")
+
+is_file_exists = output_path.is_file()
+
+
 session = requests.Session()
 session.auth = HttpNtlmAuth(username=username, password=password)
 
@@ -27,18 +39,21 @@ class TimelineEntryDict(TypedDict):
 
 
 @dataclass
-class TimelineEntry:
-    value: float
-    timestamp: datetime
+class InternalCache:
+    nitems: int = 50
+    data: OrderedSet = OrderedSet()
 
-    def __post_init__(self):
-        self._stamp = int(self.timestamp.timestamp())
+    def add(self, s: str):
+        if s not in self.data:
+            self.data.append(s)
+            if len(self.data) > self.nitems:
+                self.data.remove(self.data.items[0])
+            return True
+        else:
+            return False
 
-    def __hash__(self):
-        return self._stamp
 
-
-def download() -> List[TimelineEntry]:
+def download() -> List[TimelineEntryDict]:
     date_to = datetime.now()
     date_from = date_to - timedelta(minutes=3)
     # noinspection PyProtectedMember
@@ -55,36 +70,22 @@ def download() -> List[TimelineEntry]:
     if resp.text.strip() == "[]":
         raise Exception(f"no data found for sensor {metric} in given time period")
 
-    results: List[TimelineEntryDict] = resp.json()
-    return list(map(lambda x: TimelineEntry(
-        value=x['value'], timestamp=dparser.isoparse(x['timestamp'])), results))
+    return resp.json()
 
 
 def process():
-    cache = OrderedSet()
+    cache = InternalCache()
+    with CsvStreamWriter(headers=["timestamp", "value"], path=output_path) as writer:
+        while True:
+            updates = [a for a in download() if cache.add(a['timestamp'])]
+            if updates:
+                module_logger.info(f"writing updates ({len(updates)})")
 
-    while True:
-        need_update = False
-        for b in [a for a in download() if a not in cache]:
-            cache.add(b)
-            need_update = True
+            for b in updates:
+                writer.write([b['timestamp'], b['value']])
 
-        if need_update:
-            data_object = {
-                "timestamp": [],
-                "value": []
-            }
+            sleep(frequency_seconds)
 
-            for c in cache:
-                data_object['timestamp'].append(c.timestamp)
-                data_object['value'].append(c.value)
 
-            df = pd.DataFrame(data_object)
-            df = df.set_index('timestamp')
-            df.index = df.index.round("T")
-            df = df.rename({"value": metric}, axis=1)
-            print(df)
-
-        sleep(10)
-
-process()
+if __name__ == '__main__':
+    process()

@@ -15,4 +15,5 @@ source:
 executionFrequencyMinutes: 1
 
 output:
-  name: mlpipe.integration.output.ConsoleOutput
+  name: mlpipe.dsl.sinks.CsvOutput
+  output_path: output/4021001_predictions.csv
