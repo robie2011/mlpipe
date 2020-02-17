@@ -44,6 +44,7 @@ def list_models(args):
     import numpy as np
     import tabulate
     from mlpipe.cli.interface import ModelLocation
+    from datetime import datetime
     _print_heading("LIST")
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     result: List[ModelLocation] = []
@@ -56,37 +57,30 @@ def list_models(args):
                 print("history not found in training folder: {0}".format(model_path))
                 continue
 
-            ix_best = np.argmin(history.history[app_settings.training_monitor])
-
             result.append(ModelLocation(
                 name=name,
                 session_id=session_id,
                 path=model_path,
                 sizeBytes=_calc_dir_size(model_path),
-                monitored_value=history.history[app_settings.training_monitor][ix_best],
-                accuracy=history.history['accuracy'][ix_best],
                 epochs=len(history.epoch),
                 batch_size=history.params['batch_size'],
                 samples=history.params['samples'],
                 metrics=", ".join(history.params['metrics']),
-                datetime=time.ctime(os.path.getmtime(model_path))
+                datetime=datetime.fromtimestamp(os.path.getmtime(model_path))
             ))
 
-    result = sorted(result, key=lambda r: r.accuracy, reverse=True)
-    result = sorted(result, key=lambda r: r.name)
+    result = sorted(result, key=lambda r: r.datetime, reverse=True)
 
     print(tabulate.tabulate(map(
         lambda x: [
             "{0}/{1}".format(x.name, x.session_id),
             x.sizeBytes / 1024,
-            x.monitored_value,
-            x.accuracy,
             x.epochs,
             x.batch_size,
             x.samples,
             x.datetime
         ], result),
-        headers=["name/session", "size (KB)", app_settings.training_monitor, 'accuracy', "epochs", "batch_size",
+        headers=["name/session", "size (KB)", "epochs", "batch_size",
                  "samples", "datetime"]))
 
 
