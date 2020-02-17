@@ -24,8 +24,7 @@ pipelineSecondary:
   - name: mlpipe.dsl.processors.SeedSetup
     numpy: 2
     tensorflow: 2
-  - name: mlpipe.dsl.processors.Sequence3d
-    sequence: 5
+
 
 model:
   input:
@@ -39,10 +38,12 @@ model:
   testRatio: .20
 
   sequentialModel:
-    - name: keras.layers.GRU
-      units: 15
+    - name: keras.layers.Dense
+      units: 200
+      activation: relu
+    - name: keras.layers.Dense
+      units: 100
       activation: tanh
-      return_sequences: False
     - name: keras.layers.Dense
       units: 1
       activation: sigmoid

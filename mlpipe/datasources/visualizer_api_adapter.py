@@ -16,12 +16,14 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
                  username: str,
                  password: str,
                  date_from: str,
-                 date_to: str):
+                 date_to: str,
+                 timestamp_round_minute: int = True):
         super().__init__(fields=fields)
         self.session = requests.Session()
         self.session.auth = HttpNtlmAuth(username=username, password=password)
         self.date_from = datetime.datetime.fromisoformat(date_from)
         self.date_to = datetime.datetime.fromisoformat(date_to)
+        self.timestamp_round_minute = timestamp_round_minute
 
     def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
         self.logger.info(f"getting data from time period {self.date_from.isoformat()} - {self.date_to.isoformat()}")
@@ -41,6 +43,7 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
 
             serie = pd.read_json(resp.text)
             serie = serie.set_index('timestamp')
+            serie.index = serie.index.round("T")
             serie = serie.rename({"value": f.name}, axis=1)
             series.append(serie)
 
