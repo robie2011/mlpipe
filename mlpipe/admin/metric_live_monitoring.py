@@ -11,6 +11,7 @@ from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
 from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
 from mlpipe.utils.path_tool import dir_code
+import sys
 
 module_logger = logging.getLogger(__file__)
 
@@ -18,7 +19,7 @@ username = AppConfig['unit_test.visualizer_api_auth.username']
 password = AppConfig['unit_test.visualizer_api_auth.password']
 
 
-metric = "40210012"
+metric = sys.argv[1]
 frequency_seconds = 30
 output_path = dir_code / "output" / f"{metric}.csv"
 
