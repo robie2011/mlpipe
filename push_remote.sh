@@ -37,12 +37,13 @@ fi;
 if [ $ENABLE_PACK -eq "1" ]; then
   rm $PACKAGE_PATH
   tar \
-      --exclude 'venv/' \
-      --exclude 'venv3.8/' \
+      --exclude='venv/' \
+      --exclude='venv3.8/' \
       --exclude='__pycache__' \
       --exclude='*.egg-info' \
       --exclude='dist' \
       --exclude='.git' \
+      --exclude='_descriptions/*.csv' \
       --exclude='build' \
       --exclude='.mypy_cache' \
       --exclude='_experiments' \
@@ -59,5 +60,5 @@ scp -P $SSH_PORT $PACKAGE_PATH $SSH_HOST_USER@$SSH_HOST:$REMOTE_PATH
 
 echo "ssh connection string:"
 echo "  ssh -p $SSH_PORT $SSH_HOST_USER@$SSH_HOST -L 8080:localhost:8080"
-ssh -p $SSH_PORT $SSH_HOST_USER@$SSH_HOST "cd  /tmp; mkdir p8;tar -xvf mlpipe.gz.tar && ./install_environment.sh"
+ssh -p $SSH_PORT $SSH_HOST_USER@$SSH_HOST "cd /tmp; mkdir p8;tar -xvf mlpipe.gz.tar && ./install_environment.sh"
 

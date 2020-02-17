@@ -1,6 +1,6 @@
-DESC_INSTANCES=$(vast show instances | tail -n1 | tr -s " ")
-export SSH_HOST=$(echo $DESC_INSTANCES | cut -d' ' -f12)
-export SSH_PORT=$(echo $DESC_INSTANCES | cut -d' ' -f13)
+vast show instances --raw>/tmp/vast.json
+export SSH_HOST=$(cat /tmp/vast.json | json "[0].ssh_host")
+export SSH_PORT=$(cat /tmp/vast.json | json "[0].ssh_port")
 export SSH_HOST_USER=root
 
 if [ -z "$SSH_HOST" ]; then
