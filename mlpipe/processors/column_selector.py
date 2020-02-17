@@ -14,10 +14,19 @@ class ColumnSelector(AbstractProcessor):
             self._columns, enable_regex=self.enable_regex).indexes
         return self._select_columns(processor_input, indexes)
 
+    def _process3d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+        indexes = LabelSelector(elements=processor_input.labels).select(
+            self._columns, enable_regex=self.enable_regex).indexes
+        return self._select_columns(processor_input, indexes, is_3d=True)
+
     @staticmethod
-    def _select_columns(processor_input: StandardDataFormat, indexes: List[int]) -> StandardDataFormat:
+    def _select_columns(processor_input: StandardDataFormat, indexes: List[int], is_3d=False) -> StandardDataFormat:
         columns = indexes
-        data = processor_input.data[:, columns]
+        if is_3d:
+            data = processor_input.data[:, :, columns]
+        else:
+            data = processor_input.data[:, columns]
+
         labels = [processor_input.labels[i] for i in columns]
         return StandardDataFormat(
             labels=labels,

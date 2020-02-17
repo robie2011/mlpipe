@@ -32,7 +32,6 @@ class ModelTrainTestSet(ModelInputOutputSet):
     def get_train_set(self):
         n_test = self._test_size()
         ix_end = self.x.shape[0] - n_test
-        print(ix_end)
         return ModelInputOutputSet(x=self.x[:ix_end], y=self.y[:ix_end])
 
     def get_test_set(self):
@@ -56,5 +55,11 @@ def convert_to_model_input_output_set(
         output_label: str):
     x_set = ColumnSelector(columns=input_labels, enable_regex=True).process(input_data)
     y_set = ColumnSelector(columns=[output_label], enable_regex=True).process(input_data)
+
+    # fix for 3d data
+    if len(y_set.data.shape) == 3:
+        y_set = y_set.modify_copy(
+            data=y_set.data[:, -1, :].reshape(-1, 1)
+        )
 
     return ModelInputOutputSet(x=x_set.data, y=y_set.data.reshape(-1, ))
