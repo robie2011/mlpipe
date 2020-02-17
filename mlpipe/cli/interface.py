@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass
@@ -7,10 +8,8 @@ class ModelLocation:
     session_id: str
     path: str
     sizeBytes: int
-    monitored_value: float
-    accuracy: float
     epochs: int
     batch_size: int
     samples: int
     metrics: str
-    datetime: str
+    datetime: datetime
