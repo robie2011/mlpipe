@@ -1,14 +1,11 @@
-from dataclasses import dataclass
-from typing import List, Union
-import numpy as np
-from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter, Field
-from mlpipe.datasources.empa import EmpaCsvSourceAdapter
-from mlpipe.processors.standard_data_format import StandardDataFormat
 import datetime
 import urllib
+from typing import List
+import pandas as pd
 import requests
 from requests_ntlm import HttpNtlmAuth
-import pandas as pd
+from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter, Field
+from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
 class VisualizerApiAdapter(AbstractDatasourceAdapter):
