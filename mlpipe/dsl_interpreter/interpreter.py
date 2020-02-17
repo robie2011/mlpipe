@@ -1,6 +1,7 @@
 import logging
 from typing import Dict
 from mlpipe.dsl_interpreter.analyze_interpreter import _create_workflow_analyze
+from mlpipe.dsl_interpreter.export_interpreter import _create_workflow_analyze_export
 from mlpipe.dsl_interpreter.descriptions import \
     AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
 from mlpipe.dsl_interpreter.evaluate_interpreter import _create_workflow_evaluate
@@ -37,7 +38,8 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
         "train": _create_workflow_training,
         "analyze": _create_workflow_analyze,
         "evaluate": _create_workflow_evaluate,
-        "integrate": _create_workflow_integrate
+        "integrate": _create_workflow_integrate,
+        "export": _create_workflow_analyze_export
     }
 
     try:

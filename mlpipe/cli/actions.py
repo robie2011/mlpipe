@@ -6,7 +6,6 @@ from typing import List, cast
 from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
-from mlpipe.utils.file_tool import write_text_file
 from mlpipe.workflows.analyze.create_report import generate_html_report
 from mlpipe.workflows.analyze.interface import AnalyticsResult
 from mlpipe.workflows.utils import load_description_file
@@ -181,3 +180,31 @@ def analyze_data(args):
         output_file = pathlib.Path().cwd() / f"{file_basename}.html"
         print(f"writing report: {output_file}")
         generate_html_report(json_str=data, output_path=output_file)
+
+
+def export_data(args):
+    import os
+    import pandas as pd
+
+    overrides = {
+        "@mode": "export",
+        "@pipelinePrimary": True if (args.pipelinePrimary or args.full) else False,
+        "@pipelineSecondary": True if args.full else False
+    }
+
+    suffix = "source"
+
+    if overrides['@pipelinePrimary']:
+        suffix = "primary"
+
+    if overrides['@pipelineSecondary']:
+        suffix = "full"
+
+    for f in args.files:
+        _print_heading("EXPORT")
+        desc_file = f if os.path.isabs(f) else os.path.abspath(f)
+        desc_file = Path(desc_file)
+        result: pd.DataFrame = create_workflow_from_file(desc_file, overrides=overrides).run()
+        output_path = os.path.splitext(desc_file)[0] + f"__{suffix}.csv"
+        module_logger.info(f"writing csv: {output_path}")
+        result.to_csv(output_path)

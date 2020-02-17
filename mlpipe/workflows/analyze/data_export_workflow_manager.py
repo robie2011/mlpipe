@@ -11,3 +11,4 @@ class DataExportWorkflowManager(AbstractWorkflowManager):
         if self.pipeline_executor:
             data = self.pipeline_executor.execute(data)
 
+        return data.to_dataframe()
