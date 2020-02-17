@@ -26,7 +26,17 @@ class TrainWorkflowManager(AbstractWorkflowManager):
             input_labels=model_description['input'],
             output_label=model_description['target'])
 
-        fit_result = fit(model_description=model_description, data=model_input_output)
+        try:
+            fit_result = fit(model_description=model_description, data=model_input_output)
+        except ValueError as e:
+            import re
+            pattern = '^Error when checking target: expected .* to have \d+ dimensions, but got array with shape .*'
+            if e.args and re.search(pattern, e.args[0]):
+                self.get_logger().error(f"Looks like input format do not match. "
+                                        f"Model maybe expect 2D data and receives 3D or, conversely."
+                                        f"Check pipeline.")
+                raise e
+
         evaluation_result = self._evaluate(fit_result)
 
         self.get_logger().info("evaluation result:")
