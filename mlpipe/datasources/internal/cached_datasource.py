@@ -1,9 +1,10 @@
 import hashlib
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
 
 from mlpipe.config import app_settings
 from mlpipe.config.app_settings import AppConfig
+from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter, Field
 from mlpipe.dsl_interpreter.instance_creator import create_source_adapter
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
@@ -19,7 +20,7 @@ class CachedDatasource(InstanceLoggerMixin):
     def _get(self) -> StandardDataFormat:
         return create_source_adapter(source_description=self.source_description).get()
 
-    def get(self):
+    def get(self) -> StandardDataFormat:
         if not AppConfig.get_config_or_default('general.enable_cache', default=True):
             self.get_logger().info("caching disabled")
             return self._get()

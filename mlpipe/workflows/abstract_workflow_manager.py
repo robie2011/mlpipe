@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict
 
+from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
@@ -12,7 +13,7 @@ from mlpipe.workflows.utils import get_qualified_name
 @dataclass
 class AbstractWorkflowManager(ABC, InstanceLoggerMixin):
     description: Dict
-    data_adapter: CachedDatasource
+    data_adapter: [AbstractDatasourceAdapter, CachedDatasource]
     pipeline_executor: PipelineExecutor
 
     @abstractmethod
