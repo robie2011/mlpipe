@@ -61,7 +61,7 @@ class SequenceCreatorTestCase(unittest.TestCase):
         result_expected[0, :, 1] = [50, 51, 52]
         result_expected[1, :, 1] = [51, 52, 53]
 
-        result = Sequence3d(sequence=3).process(StandardDataFormat(timestamps=stamps, data=data, labels=['a', 'b']))
+        result = Sequence3d(sequence=3)._process2d(StandardDataFormat(timestamps=stamps, data=data, labels=['a', 'b']))
         print("result")
         print_3d_array(result.data)
         assert_array_equal(result_expected, result.data)

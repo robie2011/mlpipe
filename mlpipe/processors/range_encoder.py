@@ -34,7 +34,7 @@ class RangeEncoder(AbstractProcessor):
 
         return self.state
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         self.state = cast(skpp.OneHotEncoder, self.state)  # just for ide
         fields_input = [f['inputField'] for f in self.generate]
         fields_output = [f['outputField'] for f in self.generate]

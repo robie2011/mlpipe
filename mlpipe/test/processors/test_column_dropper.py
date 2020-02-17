@@ -31,7 +31,7 @@ class TestColumnDropper(unittest.TestCase):
             data=processor_data.data[:, [0, 2]]
         )
 
-        result = ColumnDropper(columns=["temperatur"]).process(processor_data)
+        result = ColumnDropper(columns=["temperatur"])._process2d(processor_data)
         self.assertListEqual(result_expected.labels, result.labels)
         assert_array_equal(result_expected.timestamps, result.timestamps)
         assert_array_equal(result_expected.data, result.data)

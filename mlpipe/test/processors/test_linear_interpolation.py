@@ -34,7 +34,7 @@ class TestLinearInterpolation(unittest.TestCase):
         ], dtype="float")
         result_expected.flags.writeable = False
 
-        result = LinearInterpolation(max_consecutive_interpolated_value=3).process(
+        result = LinearInterpolation(max_consecutive_interpolated_value=3)._process2d(
             StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(samples=2))
         )
         assert_array_equal(result_expected, result.data)

@@ -19,7 +19,7 @@ class BinaryClassificationEvaluator(PredictionTypeEvaluator):
     def cf_matrix(predictions: np.ndarray, targets: np.ndarray) -> Dict:
         y_pred = np.round(predictions)[:, 0]
         cf = confusion_matrix(y_true=targets, y_pred=y_pred)
-        print(cf)
+
         tn, fp, fn, tp = cf.ravel()
         n = tn + fp + fn + tp
         stats: Dict = {

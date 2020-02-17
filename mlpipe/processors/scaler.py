@@ -14,7 +14,7 @@ class Scaler(AbstractProcessor):
     fields: List[str]
     kwargs: Dict = frozenset()
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         partial_data = ColumnSelector(self.fields).process(processor_input).data
         transformer_restored = self.state
         if transformer_restored:

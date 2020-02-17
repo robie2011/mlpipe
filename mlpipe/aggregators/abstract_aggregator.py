@@ -15,7 +15,7 @@ class AbstractAggregator(AbstractProcessor):
         self.sequence = sequence
         self.generate = generate
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         collector = MultiAggregationResultCollector(data=processor_input.data, labels=processor_input.labels)
         aggregation_data = MultiAggregationDataFormat(data=processor_input, sequence=self.sequence)
 

@@ -17,7 +17,7 @@ class MultiAggregation(AbstractProcessor):
     sequence: int
     instances: List[AbstractAggregator]
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         module_logger.debug("execute multi aggregation with instances of={0}".format(
             list(map(lambda agg: get_qualified_name(agg), self.instances))
         ))

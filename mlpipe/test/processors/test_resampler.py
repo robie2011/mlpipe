@@ -27,7 +27,7 @@ class TestResampler(unittest.TestCase):
             timestamps=timestamps
         )
 
-        result = Resampler(freq="1min").process(processor_data)
+        result = Resampler(freq="1min")._process2d(processor_data)
 
         # expected rows: 0, 1, 2, 3 => 4 rows
         expected_timestamps = np.arange(

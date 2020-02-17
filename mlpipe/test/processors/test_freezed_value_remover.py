@@ -37,5 +37,5 @@ class TestFreezedValueRemover(unittest.TestCase):
             data=data
         )
 
-        processor_data_result = FreezedValueRemover(max_freezed_values=3).process(processor_data)
+        processor_data_result = FreezedValueRemover(max_freezed_values=3)._process2d(processor_data)
         assert_array_equal(result_expected, processor_data_result.data)

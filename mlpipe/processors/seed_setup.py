@@ -8,7 +8,7 @@ class SeedSetup(AbstractProcessor):
         self.np_seed = numpy or random.randint(0, 1000)
         self.tf_seed = tensorflow or random.randint(0, 1000)
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         # only import if instance is created
         import tensorflow
         import numpy

@@ -28,7 +28,7 @@ class PipelineExecutor(InstanceLoggerMixin):
                 self._beforePipeExecution(pipe.__class__.__name__, data)
 
             pipe.state = states[ix]
-            data = pipe.process(data)
+            data = pipe._process2d(data)
 
             if self._afterPipeExecution:
                 self._afterPipeExecution(pipe.__class__.__name__, data)

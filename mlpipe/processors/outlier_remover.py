@@ -11,7 +11,7 @@ class OutlierRemover(AbstractProcessor):
     def __init__(self, generate: List[InputOutputLimits]):
         self.generate = generate
 
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         fields_in = [
             ConfigReader.from_dict(g).get_or_error(key="inputField", context="OutlierRemover Config")
             for g in self.generate]

@@ -9,7 +9,7 @@ module_logger = logging.getLogger(__name__)
 
 
 class NanRemover(AbstractProcessor):
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         # index having zero nan in row
         ix_valid = np.sum(np.isnan(processor_input.data), axis=1) == 0
 

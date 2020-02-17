@@ -14,7 +14,6 @@ pipelinePrimary:
   - name: mlpipe.dsl.processors.NanRemover
 
 pipelineSecondary:
-  - name: mlpipe.dsl.processors.Shuffle
   - name: mlpipe.dsl.processors.Scaler
     scaler: sklearn.preprocessing.MinMaxScaler
     fields:
@@ -26,7 +25,7 @@ pipelineSecondary:
     numpy: 2
     tensorflow: 2
   - name: mlpipe.dsl.processors.Sequence3d
-    sequence: 3
+    sequence: 5
 
 model:
   input:
@@ -40,8 +39,8 @@ model:
   testRatio: .20
 
   sequentialModel:
-    - name: keras.layers.LSTM
-      units: 5
+    - name: keras.layers.GRU
+      units: 15
       activation: tanh
       return_sequences: False
     - name: keras.layers.Dense

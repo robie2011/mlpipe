@@ -8,7 +8,7 @@ from mlpipe.processors.standard_data_format import StandardDataFormat
 
 @dataclass
 class Shuffle(AbstractProcessor):
-    def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
+    def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         ix = np.arange(processor_input.data.shape[0])
         np.random.shuffle(ix)
 

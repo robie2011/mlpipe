@@ -23,7 +23,7 @@ class TestNanRemover(unittest.TestCase):
             data=data,
             labels=['a', 'b'],
             timestamps=helper_data.generate_timestamps(2, samples=4))
-        result = NanRemover().process(process_data)
+        result = NanRemover()._process2d(process_data)
         assert_array_equal(result_excepted, result.data)
 
 

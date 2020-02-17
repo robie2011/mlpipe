@@ -18,7 +18,7 @@ class TestOutlierRemover(unittest.TestCase):
 
         input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
         configs: List[InputOutputLimits] = [InputOutputLimits(inputField="a")]
-        result = OutlierRemover(generate=configs).process(input_data)
+        result = OutlierRemover(generate=configs)._process2d(input_data)
         assert_array_equal(data, result.data)
 
     def test_min_outlier(self):
@@ -36,7 +36,7 @@ class TestOutlierRemover(unittest.TestCase):
         result_expected = data.copy()
         result_expected[1, 1] = np.nan
 
-        result = OutlierRemover(generate=limits).process(input_data)
+        result = OutlierRemover(generate=limits)._process2d(input_data)
         assert_array_equal(result_expected, result.data)
 
     def test_max_outlier(self):
@@ -54,7 +54,7 @@ class TestOutlierRemover(unittest.TestCase):
         result_expected = data.copy()
         result_expected[:, 0] = np.nan
 
-        result = OutlierRemover(generate=limits).process(input_data)
+        result = OutlierRemover(generate=limits)._process2d(input_data)
         assert_array_equal(result_expected, result.data)
 
     def test_min_max_outlier(self):
@@ -74,7 +74,7 @@ class TestOutlierRemover(unittest.TestCase):
         result_expected[0, 0] = np.nan
         result_expected[1, 1] = np.nan
 
-        result = OutlierRemover(generate=limits).process(input_data)
+        result = OutlierRemover(generate=limits)._process2d(input_data)
         assert_array_equal(result_expected, result.data)
 
 
