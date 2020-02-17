@@ -19,6 +19,7 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
             sep=',',
             date_parser=lambda x: datetime.strptime(x, '%d.%m.%Y %H:%M:%S'),
             parse_dates=['_TIMESTAMP'])
+        data.columns = map(lambda s: s.strip(), data.columns.values)
         timestamps = data['_TIMESTAMP'].values
 
         field_names = set([f.name for f in _fields])

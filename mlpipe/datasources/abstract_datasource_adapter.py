@@ -83,6 +83,6 @@ class AbstractDatasourceAdapter(ABC):
         results = []
         for ix, name_and_alias in enumerate(self.fields):
             split = name_and_alias.split(" as ")
-            name, alias = split[0], split[-1]
+            name, alias = split[0].strip(), split[-1].strip()
             results.append(Field(ix=ix, name=name, alias=alias))
         return results
