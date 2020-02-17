@@ -22,6 +22,7 @@ n_sequence = 3
 n_length_new = data.shape[0] - n_sequence + 1
 
 
+# noinspection PyMethodMayBeStatic
 class SequenceCreatorTestCase(unittest.TestCase):
     def test_create_sequence(self):
         # test data:
@@ -41,7 +42,6 @@ class SequenceCreatorTestCase(unittest.TestCase):
         print("result")
         print_2darray(result)
         assert_array_equal(result_expected, result)
-        self.assertTrue(True)
 
     def test_create_sequence_timestamps_hole_before_last_entry(self):
         timedelta(minutes=1)
@@ -65,7 +65,6 @@ class SequenceCreatorTestCase(unittest.TestCase):
         print("result")
         print_3d_array(result.data)
         assert_array_equal(result_expected, result.data)
-        self.assertTrue(True)
 
 
 if __name__ == '__main__':

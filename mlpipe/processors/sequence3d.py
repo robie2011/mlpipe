@@ -63,7 +63,10 @@ class Sequence3d(AbstractProcessor):
         create 3D Sequence for RNN/LSTM
         endpoints are used to filter valid sequence
         """
-        output_size = (features.shape[0] - (n_sequence - 1), n_sequence, features.shape[1])
+        output_size = (
+            features.shape[0] - (n_sequence - 1),
+            n_sequence,
+            features.shape[1])
         output = np.full(output_size, np.nan)
 
         for i in range(n_sequence):

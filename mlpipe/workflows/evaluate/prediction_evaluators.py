@@ -1,5 +1,7 @@
 from mlpipe.workflows.evaluate.binary_classification_evaluator import BinaryClassificationEvaluator
+from mlpipe.workflows.evaluate.regression_evaluator import RegressionEvaluator
 
 prediction_evaluators = {
-    "binary": BinaryClassificationEvaluator()
+    "binary": BinaryClassificationEvaluator(),
+    "regression": RegressionEvaluator()
 }
