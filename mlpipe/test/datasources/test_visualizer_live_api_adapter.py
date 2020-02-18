@@ -1,7 +1,9 @@
-from numpy.testing import assert_array_equal
 import unittest
-from datetime import timedelta, datetime
+from datetime import datetime
+
 import numpy as np
+from numpy.testing import assert_array_equal
+
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_live_api_adapter import VisualizerLiveApiAdapter
 

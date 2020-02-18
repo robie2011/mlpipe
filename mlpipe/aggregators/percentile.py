@@ -2,8 +2,8 @@ from typing import List
 
 import numpy as np
 
-from .abstract_numpy_reduction import AbstractNumpyReduction
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
+from .abstract_numpy_reduction import AbstractNumpyReduction
 
 
 class Percentile(AbstractNumpyReduction):

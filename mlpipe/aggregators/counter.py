@@ -1,5 +1,7 @@
 from typing import List
+
 import numpy as np
+
 from mlpipe.aggregators.abstract_numpy_reduction import AbstractNumpyReduction
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
 

@@ -1,6 +1,8 @@
 import locale
 import unittest
+
 import simplejson
+
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file, create_workflow_from_yaml
 from mlpipe.utils.path_tool import dir_mlpipe
 

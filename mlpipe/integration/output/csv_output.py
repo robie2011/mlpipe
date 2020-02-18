@@ -1,7 +1,8 @@
+from pathlib import Path
+
 from mlpipe.integration import IntegrationResult
 from mlpipe.integration.output.interface import AbstractOutput
 from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
-from pathlib import Path
 
 
 class CsvOutput(AbstractOutput):

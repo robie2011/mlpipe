@@ -1,8 +1,8 @@
 import copy
+import logging
 from importlib import import_module
 from inspect import getmro
 from typing import List, Callable, Optional
-import logging
 
 from mlpipe.exceptions.interface import MLException, MLPipeError
 

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List
+
 import numpy as np
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.groupers import AbstractGrouper
 from mlpipe.workflows.utils import get_qualified_name, get_class_name

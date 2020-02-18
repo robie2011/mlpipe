@@ -1,10 +1,13 @@
 # https://stackoverflow.com/questions/33533148/how-do-i-specify-that-the-return-type-of-a-method-is-the-same-as-the-class-itsel
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import List
+
 import numpy as np
-from mlpipe.config import app_settings
 import pandas as pd
+
+from mlpipe.config import app_settings
 
 
 @dataclass

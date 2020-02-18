@@ -1,9 +1,11 @@
 import unittest
 from datetime import datetime, timedelta
+
 import numpy as np
 from numpy.testing import assert_array_equal
-from mlpipe.aggregators.min import Min
+
 from mlpipe.aggregators.max import Max
+from mlpipe.aggregators.min import Min
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor

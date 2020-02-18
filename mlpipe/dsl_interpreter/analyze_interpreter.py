@@ -1,6 +1,8 @@
-import numpy as np
 import logging
 from typing import Dict
+
+import numpy as np
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter import _get_descriptions_name

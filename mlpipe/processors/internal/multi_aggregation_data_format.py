@@ -1,5 +1,7 @@
 from typing import List
+
 import numpy as np
+
 from mlpipe.processors.internal.multi_aggregation_fields import MissingFields
 from mlpipe.processors.sequence3d import Sequence3d
 from mlpipe.processors.standard_data_format import StandardDataFormat

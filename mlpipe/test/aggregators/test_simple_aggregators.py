@@ -1,14 +1,15 @@
 import unittest
+
 import numpy as np
 from numpy.testing import assert_array_equal
-import mlpipe.helpers.data as helper_data
-from mlpipe.aggregators.nan_counter import NanCounter
-from mlpipe.aggregators.min import Min
-from mlpipe.aggregators.max import Max
-from mlpipe.aggregators.percentile import Percentile
-from mlpipe.aggregators.outlier import Outlier
-from mlpipe.aggregators.mean import Mean
 
+import mlpipe.helpers.data as helper_data
+from mlpipe.aggregators.max import Max
+from mlpipe.aggregators.mean import Mean
+from mlpipe.aggregators.min import Min
+from mlpipe.aggregators.nan_counter import NanCounter
+from mlpipe.aggregators.outlier import Outlier
+from mlpipe.aggregators.percentile import Percentile
 # data = helper_data.generated_3d_data()
 # helpers.print_3d_array
 from mlpipe.aggregators.sum import Sum

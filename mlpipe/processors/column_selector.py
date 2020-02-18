@@ -1,4 +1,5 @@
 from typing import List
+
 from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat
 from ..datautils import LabelSelector

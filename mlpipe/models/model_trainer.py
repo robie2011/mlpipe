@@ -4,9 +4,11 @@ import shutil
 import tempfile
 from dataclasses import dataclass
 from typing import List, Tuple, Dict
+
 import numpy as np
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint, History
+
 from mlpipe.config import app_settings
 from mlpipe.workflows.data_selector import ModelInputOutputSet, ModelTrainTestSet
 from mlpipe.workflows.interface import ClassDescription

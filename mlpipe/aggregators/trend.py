@@ -1,9 +1,10 @@
 from typing import List
 
 import numpy as np
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
-from .aggregator_output import AggregatorOutput
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
+from .aggregator_output import AggregatorOutput
 
 
 class Trend(AbstractAggregator):

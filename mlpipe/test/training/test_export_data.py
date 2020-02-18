@@ -3,6 +3,7 @@ from math import nan
 
 import numpy as np
 import simplejson
+
 from mlpipe.workflows.analyze.interface import AnalyticsResultMeta, AnalyticsResult
 
 

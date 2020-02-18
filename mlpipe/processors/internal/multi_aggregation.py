@@ -1,10 +1,11 @@
 import logging
 from dataclasses import dataclass
 from typing import List, Union
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
-from mlpipe.processors.internal.multi_aggregation_fields import MissingFields, MissingFieldsForLogic
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation_data_format import MultiAggregationDataFormat
+from mlpipe.processors.internal.multi_aggregation_fields import MissingFields, MissingFieldsForLogic
 from mlpipe.processors.internal.multi_aggregation_result_collector import MultiAggregationResultCollector
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_qualified_name

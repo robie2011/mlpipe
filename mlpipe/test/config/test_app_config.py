@@ -1,4 +1,5 @@
 import unittest
+
 from mlpipe.config.app_config_parser import AppConfigParser
 from mlpipe.exceptions.interface import MLMissingConfigurationException
 

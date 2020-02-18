@@ -1,6 +1,7 @@
+import json
 import unittest
 from dataclasses import dataclass
-import json
+
 from typing_extensions import TypedDict
 
 

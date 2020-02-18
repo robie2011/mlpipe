@@ -1,17 +1,19 @@
 import logging
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from time import sleep
 from typing import List
+
 import requests
 from ordered_set import OrderedSet
 from requests_ntlm import HttpNtlmAuth
 from typing_extensions import TypedDict
+
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
 from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
 from mlpipe.utils.path_tool import dir_code
-import sys
 
 module_logger = logging.getLogger(__file__)
 

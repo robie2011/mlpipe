@@ -3,9 +3,8 @@ from typing import Optional, List
 import numpy as np
 
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
-from .aggregator_output import AggregatorOutput
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
-
+from .aggregator_output import AggregatorOutput
 
 # comparing nan throw warning: np.array([1, -1, np.nan]) > 0
 # https://stackoverflow.com/questions/41130138/why-is-invalid-value-encountered-in-greater-warning-thrown-in-python-xarray-fo/41147570

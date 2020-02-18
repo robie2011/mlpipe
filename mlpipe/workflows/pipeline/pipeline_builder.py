@@ -1,5 +1,6 @@
 import logging
-from typing import List, Union, cast
+from typing import List, cast
+
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.api.interface import PipelineDescription
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes

@@ -1,11 +1,11 @@
 import unittest
 
 import numpy as np
+from numpy.testing import assert_array_equal
 
 import mlpipe.helpers.data as helper_data
 from mlpipe.processors.nan_remover import NanRemover
 from mlpipe.processors.standard_data_format import StandardDataFormat
-from numpy.testing import assert_array_equal
 
 
 class TestNanRemover(unittest.TestCase):

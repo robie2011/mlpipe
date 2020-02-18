@@ -1,5 +1,6 @@
 # https://stackoverflow.com/questions/33533148/how-do-i-specify-that-the-return-type-of-a-method-is-the-same-as-the-class-itsel
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Dict
 

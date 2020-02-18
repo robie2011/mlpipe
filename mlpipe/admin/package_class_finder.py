@@ -1,7 +1,7 @@
 import importlib
+import inspect
 import pkgutil
 from typing import Type
-import inspect
 
 
 def create_imports(package_name: str, clazz: Type):
