@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from mlpipe.exceptions.interface import MLException, MLMissingConfigurationException
+from mlpipe.exceptions.interface import MLMissingConfigurationException
 
 
 @dataclass

@@ -1,8 +1,9 @@
 import argparse
+import logging
+
 from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data, integrate_model, \
     export_data
-from mlpipe.exceptions.interface import MLException, MLDslConfigurationException
-import logging
+from mlpipe.exceptions.interface import MLException
 
 module_logger = logging.getLogger(__name__)
 
