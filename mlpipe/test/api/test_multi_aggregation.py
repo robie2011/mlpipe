@@ -44,6 +44,9 @@ class TestMultiAggregation(unittest.TestCase):
             ]
         )
 
+        multi.instances[0].id = "0"
+        multi.instances[1].id = "1"
+
         result = PipelineExecutor(pipeline=[multi]).execute(data=data)
         self.assertEqual(['temp1', 'temp2', 'temp1Max', 'temp1Min'], result.labels)
         assert_array_equal(data.timestamps, result.timestamps)

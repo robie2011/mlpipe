@@ -1,11 +1,12 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import NamedTuple, List, Union
+from typing import NamedTuple, List
 
 import numpy as np
 
 from mlpipe.datautils import LabelSelector
+from mlpipe.exceptions.interface import MLDslConfigurationException
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name, get_qualified_name
 
@@ -47,7 +48,13 @@ class AbstractDatasourceAdapter(ABC):
         required_fields = self._get_fields()
         raw = self._fetch(required_fields)
 
-        AbstractDatasourceAdapter._check_fields_availability(raw, required_fields, using_alias=self.source_returns_alias)
+        try:
+            AbstractDatasourceAdapter._check_fields_availability(
+                raw, required_fields, using_alias=self.source_returns_alias)
+        except MLDslConfigurationException as e:
+            self.logger.error(e.args[0])
+            raise
+
         labels_new = [f.alias for f in required_fields]
 
         if self.source_returns_alias:
@@ -74,7 +81,7 @@ class AbstractDatasourceAdapter(ABC):
             missing_fields = [f.name for f in required_fields if f.name not in raw.labels]
 
         if missing_fields:
-            raise ValueError(
+            raise MLDslConfigurationException(
                 f"source do not contains following fields: {', '.join(missing_fields)}. "
                 + f"Available fields are: {', '.join(raw.labels)}"
             )

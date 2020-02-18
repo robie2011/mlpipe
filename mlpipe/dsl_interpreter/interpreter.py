@@ -3,7 +3,7 @@ from typing import Dict
 from mlpipe.dsl_interpreter.analyze_interpreter import _create_workflow_analyze
 from mlpipe.dsl_interpreter.export_interpreter import _create_workflow_analyze_export
 from mlpipe.dsl_interpreter.descriptions import \
-    AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription
+    AbstractDescription, FileDescription, YamlStringDescription, ObjectDescription, ExecutionModes
 from mlpipe.dsl_interpreter.evaluate_interpreter import _create_workflow_evaluate
 from mlpipe.dsl_interpreter.integrate_interpreter import _create_workflow_integrate
 from mlpipe.dsl_interpreter.train_interpreter import _create_workflow_training
@@ -43,14 +43,14 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
     }
 
     try:
-        execution_mode = description['@mode']
+        execution_mode: ExecutionModes = ExecutionModes[description["@mode"]]
     except KeyError:
         raise ValueError("Configuration file/object need the field '@mode' which specifies execution mode.")
 
     try:
-        action = mode_action[execution_mode]
+        action = mode_action[execution_mode.name]
     except KeyError:
         raise ValueError(f"No workflow manager found for '{execution_mode}'")
 
-    return action(description)
+    return action(description=description, execution_mode=execution_mode)
 

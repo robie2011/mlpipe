@@ -1,7 +1,7 @@
 name: empa_mlp
-session: 2020-02-11_235028
+session: 2020-02-18_123850
 source:
-  name: mlpipe.datasources.DemoLiveData
+  name: mlpipe.dsl.sources.DemoLiveData
   pathToFile: data/meeting_room_sensors_201908_201912.csv
   windowMinutes: 16
   fields:
@@ -15,4 +15,4 @@ source:
 executionFrequencyMinutes: 1
 
 output:
-  name: mlpipe.integration.output.ConsoleOutput
+  name: mlpipe.dsl.sinks.ConsoleOutput

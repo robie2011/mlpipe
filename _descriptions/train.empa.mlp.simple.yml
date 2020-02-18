@@ -49,6 +49,7 @@ pipelinePrimary:
 
 pipelineSecondary:
   - name: mlpipe.dsl.processors.Shuffle
+    _condition: train
   - name: mlpipe.dsl.processors.Scaler
     scaler: sklearn.preprocessing.RobustScaler
     fields:

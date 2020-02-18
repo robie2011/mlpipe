@@ -10,6 +10,7 @@ MODULE_INIT_TIME = np.datetime64('now')
 class DemoLiveData(AbstractDatasourceAdapter):
     def __init__(self, pathToFile: str, fields: List[str], windowMinutes: int, reset_init_time=False):
         super().__init__(fields=fields)
+        self.source_returns_alias = True
 
         global MODULE_INIT_TIME
         if reset_init_time:

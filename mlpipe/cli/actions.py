@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 from pathlib import Path
 from typing import List, cast
 from mlpipe.config import app_settings
@@ -41,7 +40,6 @@ def _get_history(name: str, session_id: str):
 
 # noinspection PyUnusedLocal
 def list_models(args):
-    import numpy as np
     import tabulate
     from mlpipe.cli.interface import ModelLocation
     from datetime import datetime
@@ -116,20 +114,13 @@ def train_model(args):
 
 
 def integrate_model(args):
-    import threading
-    threads = []
-
-    for f in args.files:
-        path = f if os.path.isabs(f) else os.path.abspath(f)
-        description = load_description_file(path)
-        _print_heading(f"INTEGRATE MODEL: {description['name']}/{description['session']}")
-        module_logger.info(f"file: {path}")
-        manager = create_workflow_from_file(path, overrides={"@mode": "integrate"})
-        t = threading.Thread(target=manager.run)
-        threads.append(t)
-        t.start()
-
-    module_logger.info(f"Total threads: {len(threading.enumerate())}")
+    f = args.file
+    path = f if os.path.isabs(f) else os.path.abspath(f)
+    description = load_description_file(path)
+    _print_heading(f"INTEGRATE MODEL: {description['name']}/{description['session']}")
+    module_logger.info(f"file: {path}")
+    manager = create_workflow_from_file(path, overrides={"@mode": "integrate"})
+    manager.run()
 
 
 def test_model(args):

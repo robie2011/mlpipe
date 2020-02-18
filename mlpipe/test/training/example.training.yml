@@ -27,8 +27,8 @@ pipelinePrimary:
     - inputField: temp1
       outputField: tempMin
   - name: mlpipe.dsl.processors.TimeFeatureExtractor
-    extract: hour
-    output_field: hourExtracted
+    extract: weekday
+    output_field: Wochentag
   - name: mlpipe.dsl.processors.NanRemover
 
 pipelineSecondary:
@@ -39,6 +39,13 @@ pipelineSecondary:
       - tempMax
       - temp2Trend
   - name: mlpipe.dsl.processors.Shuffle
+    _condition: train
+  - name: mlpipe.dsl.processors.RangeEncoder
+    value_from: 0
+    value_to: 7
+    generate:
+    - inputField: Wochentag
+      outputField: WochentagOneHot
 
 
 model:

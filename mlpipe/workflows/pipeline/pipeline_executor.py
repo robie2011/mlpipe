@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Callable
+from typing import List, Callable, Dict, cast
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.interfaces import AbstractProcessor
+from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 DataHandler = Callable[[str, StandardDataFormat], None]
@@ -19,16 +20,15 @@ class PipelineExecutor(InstanceLoggerMixin):
     def set_on_pipe_end_handler(self, handler: DataHandler):
         self._afterPipeExecution = handler
 
-    def execute(self, data: StandardDataFormat, states: List[object] = None) -> StandardDataFormat:
+    def execute(self, data: StandardDataFormat, states: Dict = {}) -> StandardDataFormat:
         self.get_logger().debug(f"input fields: {', '.join(data.labels)}")
-        states = states or [None] * len(self.pipeline)
+        self._set_states(states)
 
         for ix, pipe in enumerate(self.pipeline):
             if self._beforePipeExecution:
                 self._beforePipeExecution(pipe.__class__.__name__, data)
 
-            pipe.state = states[ix]
-            data = pipe._process2d(data)
+            data = pipe.process(data)
 
             if self._afterPipeExecution:
                 self._afterPipeExecution(pipe.__class__.__name__, data)
@@ -36,6 +36,26 @@ class PipelineExecutor(InstanceLoggerMixin):
         self.get_logger().debug(f"output fields: {', '.join(data.labels)}")
         return data
 
-    def get_states(self):
-        return list(map(lambda x: x.state, self.pipeline))
+    def get_states(self) -> Dict:
+        states = {}
+        for p in self.pipeline:
+            if isinstance(p, MultiAggregation):
+                p = cast(MultiAggregation, p)
+                for i in p.instances:
+                    states[i.id] = p.state
+            else:
+                states[p.id] = p.state
+        return states
+
+    def _set_states(self, states: Dict = {}):
+        flattend_pipes = []
+
+        for p in self.pipeline:
+            if isinstance(p, MultiAggregation):
+                flattend_pipes += p.instances
+            else:
+                flattend_pipes.append(p)
+
+        for p in flattend_pipes:
+            p.state = states.get(p.id, None)
 

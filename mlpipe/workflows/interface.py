@@ -1,4 +1,8 @@
-from typing import Dict
+from typing import Dict, Optional
+from typing_extensions import TypedDict
 
-ClassDescription = Dict
+
+class ClassDescription(TypedDict):
+    name: str
+    _condition: Optional[str]
 

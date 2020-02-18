@@ -1,14 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 
-
-class MissingConfigurationException(Exception):
-    def __init__(self, args):
-        super().__init__(args)
-        self.nested_key = args
-
-    def __str__(self):
-        return f"Following configuration key is missing: {self.nested_key}"
+from mlpipe.exceptions.interface import MLException, MLMissingConfigurationException
 
 
 @dataclass
@@ -28,13 +21,13 @@ class AppConfigParser:
             if type(d) is dict and k in d:
                 d = d[k]
             else:
-                raise MissingConfigurationException(nested_key)
+                raise MLMissingConfigurationException(nested_key)
         return d
 
     def get_config_or_default(self, nested_key: str, default=None):
         try:
             return self.get_config(nested_key)
-        except MissingConfigurationException:
+        except MLMissingConfigurationException:
             return default
 
     def _find_dir_keys(self, config_dict):

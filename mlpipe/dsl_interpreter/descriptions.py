@@ -1,8 +1,16 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from enum import Enum
 from typing import Dict, Optional
 from typing_extensions import TypedDict
 from mlpipe.workflows.utils import load_description_file
+
+
+class ExecutionModes(Enum):
+    train = "train"
+    integrate = "integrate"
+    evaluate = "evaluate"
+    analyze = "analyze"
 
 
 class InputOutputField(TypedDict):

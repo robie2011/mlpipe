@@ -4,6 +4,7 @@ from typing import Dict
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter import _get_descriptions_name
+from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.groupers import AbstractGrouper
 from mlpipe.workflows.analyze.analyze_workflow_manager import AnalyzeWorkflowManager
 from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
@@ -12,7 +13,7 @@ from mlpipe.workflows.utils import create_instance, get_component_config
 module_logger = logging.getLogger(__name__)
 
 
-def _create_workflow_analyze(description: Dict):
+def _create_workflow_analyze(description: Dict, execution_mode: ExecutionModes):
     source_adapter = CachedDatasource(description['source'])
 
     description_pipeline = []
@@ -20,7 +21,7 @@ def _create_workflow_analyze(description: Dict):
 
     str_pipes = ", ".join(_get_descriptions_name(description_pipeline))
     module_logger.info(f"pipes found {len(description_pipeline)}: {str_pipes}")
-    pipeline_executor = build_pipeline_executor(descriptions=description_pipeline)
+    pipeline_executor = build_pipeline_executor(descriptions=description_pipeline, execution_mode=execution_mode)
 
     groupers_description = description['analyze']['groupBy']
     str_groupers = ', '.join(_get_descriptions_name(groupers_description))

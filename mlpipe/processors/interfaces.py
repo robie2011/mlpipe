@@ -6,6 +6,7 @@ from mlpipe.workflows.utils import get_class_name
 
 class AbstractProcessor(ABC, InstanceLoggerMixin):
     state: object = None
+    id: str
 
     def process(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         dim = len(processor_input.data.shape)

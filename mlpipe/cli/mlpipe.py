@@ -1,7 +1,10 @@
 import argparse
-
 from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data, integrate_model, \
     export_data
+from mlpipe.exceptions.interface import MLException, MLDslConfigurationException
+import logging
+
+module_logger = logging.getLogger(__name__)
 
 
 def action_not_implemented(args):
@@ -22,7 +25,7 @@ def main():
 
     # integrate
     parser_integrate = subparsers.add_parser('integrate')
-    parser_integrate.add_argument("files", metavar="FILES", default=[], nargs='*')
+    parser_integrate.add_argument("file", metavar="FILE")
 
     # list
     subparsers.add_parser('list')
@@ -51,4 +54,11 @@ def main():
         "export": export_data
     }
 
-    action_switcher.get(args.action, action_not_implemented)(args)
+    domain_exception_classes = tuple([MLException] + object.__class__.__subclasses__(MLException))
+
+    try:
+        action_switcher.get(args.action, action_not_implemented)(args)
+    except domain_exception_classes as e:
+        module_logger.error(e)
+        exit(1)
+

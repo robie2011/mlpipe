@@ -2,26 +2,30 @@ import copy
 from importlib import import_module
 from inspect import getmro
 from typing import List, Callable, Optional
+import logging
 
+from mlpipe.exceptions.interface import MLException, MLPipeError
 
 Funcs = Callable[[Optional[object]], object]
 
+module_logger = logging.getLogger(__name__)
+
 
 def get_component_config(key_values: dict):
-    meta_config = ["name"]
+    meta_config = ["name", "_condition", "@id"]
     return {k: v for (k, v) in key_values.items() if k not in meta_config}
 
 
 def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base_classes=()):
-    clazz = load(qualified_name=qualified_name, assert_base_classes=assert_base_classes)
     try:
+        clazz = load(qualified_name=qualified_name, assert_base_classes=assert_base_classes)
         if kwargs:
             return clazz(**kwargs)
         else:
             return clazz()
-    except TypeError as e:
-        raise Exception(
-            "Can not initialize class {0}. \r\n{1}\r\nkwargs:".format(qualified_name, e.args, kwargs))
+    except Exception as e:
+        raise MLPipeError(
+            "Can not initialize class {0}. \r\n{1}\r\nkwargs: {1}. Error: {2}".format(qualified_name, kwargs, e.args))
 
 
 class NotImplementedBaseClass(Exception):
@@ -38,13 +42,10 @@ class NotImplementedBaseClass(Exception):
 def load(qualified_name: str, assert_base_classes=()):
     module_name = '.'.join(qualified_name.split('.')[:-1])
     class_name = qualified_name.split('.')[-1]
-    try:
-        mod = import_module(module_name)
-    except Exception as e:
-        print("can not load: " + qualified_name)
-        raise e
 
+    mod = import_module(module_name)
     clazz = getattr(mod, class_name)
+
     if assert_base_classes:
         base_classes = getmro(clazz)
         missing_base_classes = [c for c in assert_base_classes if c not in base_classes]
@@ -94,6 +95,9 @@ def pick_from_dict_kwargs(obj, *keys):
 def load_description_file(path: str):
     import os
     _, ext = os.path.splitext(path)
+    if not os.path.exists(path):
+        raise MLException(f"Description file not found: {path}")
+
     with open(path, "r") as f:
         if ext == ".json":
             import json
