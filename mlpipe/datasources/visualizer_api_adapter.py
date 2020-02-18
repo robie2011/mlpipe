@@ -65,4 +65,3 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
         ])
 
         return url + urllib.parse.urlencode(params)
-

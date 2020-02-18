@@ -20,31 +20,31 @@ pipeline:
   - name: aggregators.Max
     sequence: 15
     generate:
-    - inputField: CO2
-      outputField: CO2_Max15
-    - inputField: TempInnen
-      outputField: TempInnen_Max15
+      - inputField: CO2
+        outputField: CO2_Max15
+      - inputField: TempInnen
+        outputField: TempInnen_Max15
   - name: aggregators.Mean
     sequence: 15
     generate:
-    - inputField: CO2
-      outputField: CO2_Mean15
-    - inputField: TempInnen
-      outputField: TempInnen_Mean15
+      - inputField: CO2
+        outputField: CO2_Mean15
+      - inputField: TempInnen
+        outputField: TempInnen_Mean15
   - name: aggregators.Min
     sequence: 15
     generate:
-    - inputField: CO2
-      outputField: CO2_Min15
-    - inputField: TempInnen
-      outputField: TempInnen_Min15
+      - inputField: CO2
+        outputField: CO2_Min15
+      - inputField: TempInnen
+        outputField: TempInnen_Min15
   - name: aggregators.Trend
     sequence: 15
     generate:
-    - inputField: CO2
-      outputField: CO2_Trend15
-    - inputField: TempInnen
-      outputField: TempInnen_Trend15
+      - inputField: CO2
+        outputField: CO2_Trend15
+      - inputField: TempInnen
+        outputField: TempInnen_Trend15
   - name: processors.NanRemover
 
 # validation: get sourceField information from pipeline

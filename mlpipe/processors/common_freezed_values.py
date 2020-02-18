@@ -46,4 +46,3 @@ def _get_mask(data_shape: Tuple[int, ...], threshold: int, match: np.ndarray):
         data_mask[_flatten_list(ranges), col] = True
 
     return data_mask
-

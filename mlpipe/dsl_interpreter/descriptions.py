@@ -50,5 +50,3 @@ class ObjectDescription(AbstractDescription):
 
     def load(self) -> Dict:
         return self.obj
-
-

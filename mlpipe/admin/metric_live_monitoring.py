@@ -20,7 +20,6 @@ module_logger = logging.getLogger(__file__)
 username = AppConfig['unit_test.visualizer_api_auth.username']
 password = AppConfig['unit_test.visualizer_api_auth.password']
 
-
 metric = sys.argv[1]
 frequency_seconds = 30
 output_path = dir_code / "output" / f"{metric}.csv"
@@ -30,7 +29,6 @@ module_logger.info(f"choosen frequency (seconds) = {frequency_seconds}")
 module_logger.info(f"output path is = {output_path}")
 
 is_file_exists = output_path.is_file()
-
 
 session = requests.Session()
 session.auth = HttpNtlmAuth(username=username, password=password)

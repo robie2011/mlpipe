@@ -24,4 +24,3 @@ for package, base, group in tasks:
             f.write("# noinspection PyUnresolvedReferences\r\n")
             f.write(i)
             f.write("\r\n")
-

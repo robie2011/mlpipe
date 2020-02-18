@@ -8,4 +8,3 @@ class InputDataSelector:
 
     def select(self):
         pass
-

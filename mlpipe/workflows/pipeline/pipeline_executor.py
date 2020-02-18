@@ -59,4 +59,3 @@ class PipelineExecutor(InstanceLoggerMixin):
 
         for p in flattend_pipes:
             p.state = states.get(p.id, None)
-

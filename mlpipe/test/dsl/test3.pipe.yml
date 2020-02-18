@@ -9,22 +9,22 @@ pipeline:
   - name: aggregators.Max
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempMax
-    - inputField: temp2
-      outputField: temp2Max
+      - inputField: temp1
+        outputField: tempMax
+      - inputField: temp2
+        outputField: temp2Max
   - name: aggregators.Trend
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempTrend
-    - inputField: temp2
-      outputField: temp2Trend
+      - inputField: temp1
+        outputField: tempTrend
+      - inputField: temp2
+        outputField: temp2Trend
   - name: aggregators.Min
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempMin
+      - inputField: temp1
+        outputField: tempMin
   - name: features.TimeFeatureExtractor
     extract: hour
     output_field: hourExtracted

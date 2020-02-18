@@ -53,7 +53,7 @@ def group_by_multi_columns(xxs: np.ndarray) -> Sequence[CombinedGroup]:
         indexes = np.array(group.index, dtype='int')
         indexes.flags.writeable = False
         # ensure our group_id is a list of list
-        group_id = name if len(df.columns) > 1 else (name, )
+        group_id = name if len(df.columns) > 1 else (name,)
 
         groups.append(CombinedGroup(
             group_id=group_id,

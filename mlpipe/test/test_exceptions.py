@@ -29,6 +29,6 @@ class TestExceptions(unittest.TestCase):
         except domain_exception_classes as e:
             print(e)
 
+
 if __name__ == '__main__':
     unittest.main()
-

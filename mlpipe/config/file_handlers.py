@@ -20,4 +20,3 @@ def read_binary(path: str):
     import pickle
     with open(path, "rb") as f:
         return pickle.load(f)
-

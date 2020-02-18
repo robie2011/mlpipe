@@ -10,22 +10,22 @@ pipelinePrimary:
   - name: mlpipe.dsl.aggregators.Max
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempMax
-    - inputField: temp2
-      outputField: temp2Max
+      - inputField: temp1
+        outputField: tempMax
+      - inputField: temp2
+        outputField: temp2Max
   - name: mlpipe.dsl.aggregators.Trend
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempTrend
-    - inputField: temp2
-      outputField: temp2Trend
+      - inputField: temp1
+        outputField: tempTrend
+      - inputField: temp2
+        outputField: temp2Trend
   - name: mlpipe.dsl.aggregators.Min
     sequence: 5
     generate:
-    - inputField: temp1
-      outputField: tempMin
+      - inputField: temp1
+        outputField: tempMin
   - name: mlpipe.dsl.processors.TimeFeatureExtractor
     extract: weekday
     output_field: Wochentag
@@ -44,8 +44,8 @@ pipelineSecondary:
     value_from: 0
     value_to: 7
     generate:
-    - inputField: Wochentag
-      outputField: WochentagOneHot
+      - inputField: Wochentag
+        outputField: WochentagOneHot
 
 
 model:

@@ -34,5 +34,3 @@ def generate_html_reports(json_str: str):
 def generate_html_report(json_str: str, output_path: str):
     html = generate_html_reports(json_str)
     write_text_file(path=output_path, text=html)
-
-

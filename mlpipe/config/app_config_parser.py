@@ -49,4 +49,3 @@ class AppConfigParser:
             path = pathlib.Path(p)
             if not path.is_dir():
                 os.makedirs(path)
-

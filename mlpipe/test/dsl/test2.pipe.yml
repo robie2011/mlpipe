@@ -15,14 +15,14 @@ pipe:
       - name: aggregators.Max
       - name: aggregators.Min
       - name: features.TimeFeatureExtractor
-        config: 
+        config:
           extract: hour
   - name: processor.ColumnDropper
     kind: process
     config:
-        fields:
-          - tste
-          - skdlf
+      fields:
+        - tste
+        - skdlf
   - name: processor.ColumnDropper
     kind: process
     config:

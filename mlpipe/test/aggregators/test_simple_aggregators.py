@@ -82,7 +82,7 @@ class TestSimpleAggregators(unittest.TestCase):
                 result_expected[row, sensor] = np.mean(grouped_data[row, :, sensor])
 
         result = Mean(sequence=np.nan).aggregate(grouped_data)
-        self.assertEqual(result_expected[0, 0], (417+147+397+204+417)/5)
+        self.assertEqual(result_expected[0, 0], (417 + 147 + 397 + 204 + 417) / 5)
         assert_array_equal(result_expected, result)
 
     def test_percentile(self):

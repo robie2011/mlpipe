@@ -24,12 +24,12 @@ class TestVisualizerLiveApiAdapter(unittest.TestCase):
         ts = data.timestamps
         ts1 = ts[1:]
         ts0 = ts[:-1]
-        delta = np.round((ts1-ts0) / np.timedelta64(1, 'm'))
+        delta = np.round((ts1 - ts0) / np.timedelta64(1, 'm'))
         assert_array_equal(np.ones((4,)), delta, err_msg="not all timestamps have one minute difference")
         np_datetime_now = np.datetime64(np.datetime64(datetime.now().isoformat()))
-        recent_entry_timestamp_delta = (np_datetime_now-ts[-1]) / np.timedelta64(1, 'm')
+        recent_entry_timestamp_delta = (np_datetime_now - ts[-1]) / np.timedelta64(1, 'm')
         self.assertLessEqual(np.round(recent_entry_timestamp_delta), 2,
-                         msg="latest timestamp entry should not be older than one minute")
+                             msg="latest timestamp entry should not be older than one minute")
 
 
 if __name__ == '__main__':

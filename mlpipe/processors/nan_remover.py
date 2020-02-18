@@ -18,4 +18,3 @@ class NanRemover(AbstractProcessor):
             timestamps=processor_input.timestamps[ix_valid],
             data=processor_input.data[ix_valid]
         )
-

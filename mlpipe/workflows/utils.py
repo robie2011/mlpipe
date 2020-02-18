@@ -107,5 +107,3 @@ def load_description_file(path: str):
             return yaml.load(f, Loader=yaml.FullLoader)
         else:
             raise ValueError("Description loader for extension '{0}' not found".format(ext))
-
-

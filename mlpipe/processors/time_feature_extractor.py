@@ -12,7 +12,7 @@ allowed_extractions: [(str, _ITimeExtractor)] = [
     # note: numpy round to nearest event value. Rounding 1.5 - 2.5 result in 2
     # see https://docs.scipy.org/doc/numpy/reference/generated/numpy.around.html#numpy.around
     ('hour', (lambda x:
-              np.mod(np.round(x.dt.hour.values + x.dt.minute.values/60), 24)
+              np.mod(np.round(x.dt.hour.values + x.dt.minute.values / 60), 24)
               )),
     ('weekday', (lambda x: x.dt.weekday.values)),
     ('month', (lambda x: x.dt.month.values))

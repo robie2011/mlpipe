@@ -51,7 +51,6 @@ def _create_model_fit_params(
         fit_desc: Dict,
         path_best_model: str,
         test_ratio: float):
-
     checkpoint = ModelCheckpoint(
         path_best_model,
         verbose=0,
@@ -69,7 +68,7 @@ def _create_model_fit_params(
         "x": train_set.x,
         "y": train_set.y,
         "epochs": fit_desc.get('epochs', 50),
-        "batch_size": fit_desc.get('batch_size', 60*4),
+        "batch_size": fit_desc.get('batch_size', 60 * 4),
         "validation_data": test_set.to_tuple(),
         "callbacks": [checkpoint],
         "verbose": fit_desc.get('verbose', 2)
@@ -120,4 +119,3 @@ def fit(model_description: dict, data: ModelInputOutputSet) -> FitResult:
         validation_data=fit_params['validation_data'],
         input_data=(fit_params['x'], fit_params['y'])
     )
-

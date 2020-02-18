@@ -54,4 +54,3 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
         raise ValueError(f"No workflow manager found for '{execution_mode}'")
 
     return action(description=description, execution_mode=execution_mode)
-

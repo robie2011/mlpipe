@@ -21,4 +21,3 @@ class Resampler(AbstractProcessor):
             timestamps=data_resampled.index.values,
             data=data_resampled.values
         )
-

@@ -11,14 +11,14 @@ from mlpipe.processors.standard_data_format import StandardDataFormat
 class TestLinearInterpolation(unittest.TestCase):
     def test_standardcase(self):
         data = np.array([
-            [13,        20],
-            [14,        21],
-            [np.nan,    22],
-            [16,        np.nan],
-            [17,        np.nan],
-            [np.nan,    np.nan],
-            [19,        np.nan],
-            [20,        27],
+            [13, 20],
+            [14, 21],
+            [np.nan, 22],
+            [16, np.nan],
+            [17, np.nan],
+            [np.nan, np.nan],
+            [19, np.nan],
+            [20, 27],
         ], dtype="float")
         data.flags.writeable = False
 

@@ -27,7 +27,7 @@ def generate_timestamps(delta_minutes=2, samples=5):
 
 
 def get_labels(count: int):
-    return [chr(i) for i in range(ord('a'), ord('a')+count)]
+    return [chr(i) for i in range(ord('a'), ord('a') + count)]
 
 
 def generated_3d_data(size=(3, 5, 4)):

@@ -11,8 +11,7 @@ class ColumnDropper(AbstractProcessor):
         self._columns = columns
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-
-        ix = LabelSelector(elements=processor_input.labels)\
+        ix = LabelSelector(elements=processor_input.labels) \
             .without(self._columns).indexes
 
         # noinspection PyProtectedMember

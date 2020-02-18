@@ -44,7 +44,7 @@ class Sequence3d(AbstractProcessor):
         logger = self.get_logger()
         logger.info("create 3D-Sequence with sequence length={0}".format(self.sequence))
         ix_valid_endpoints = _create_sequence_endpoints(timestamps=processor_input.timestamps, n_sequence=self.sequence)
-        ratio_valid_endpoints = ix_valid_endpoints.shape[0]/processor_input.data.shape[0]
+        ratio_valid_endpoints = ix_valid_endpoints.shape[0] / processor_input.data.shape[0]
         if ratio_valid_endpoints < .5:
             logger.warning(f"after filtering valid sequence endpoints only {round(ratio_valid_endpoints * 100, 2)}% " +
                            f"of rows are available for post processing. This looks like you are shuffling rows or "
@@ -89,4 +89,3 @@ class Sequence3d(AbstractProcessor):
             output = np.concatenate((top_part, output), axis=0)
 
         return output
-

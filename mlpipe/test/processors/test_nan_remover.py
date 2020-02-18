@@ -11,10 +11,10 @@ from mlpipe.processors.standard_data_format import StandardDataFormat
 class TestNanRemover(unittest.TestCase):
     def test_standard_case(self):
         data = np.array([
-          [23, 55],
-          [21, 52],
-          [np.nan, 52],
-          [23, np.nan],
+            [23, 55],
+            [21, 52],
+            [np.nan, 52],
+            [23, np.nan],
         ])
         data.flags.writeable = False
 

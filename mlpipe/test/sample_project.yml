@@ -15,49 +15,49 @@ colum_selectors: &temperaturs_selector
   regex_exclude: '.*'
 
 data_sources:
- - name: &ds1
-   adapter: 'EmpaCsvReader'
-   options:
-     path: 'file://sdjflkll/dlsf.csv'
-   columns_alias:
-     1032: 'feuchtigkeit'
-     30192: 'temperatur'
-   check_columns: true
- - name: &ds2
-   adapter: 'Sql'
-   options:
-     query: 'select * from table1 limit 100'
+  - name: &ds1
+    adapter: 'EmpaCsvReader'
+    options:
+      path: 'file://sdjflkll/dlsf.csv'
+    columns_alias:
+      1032: 'feuchtigkeit'
+      30192: 'temperatur'
+    check_columns: true
+  - name: &ds2
+    adapter: 'Sql'
+    options:
+      query: 'select * from table1 limit 100'
 
 
 preprocessor_chains:
   - chain: &my_standard_processors
-    - name: 'processors.NanRemover'
-    - name: 'processors.OutlierRemover'
-      target_columns:
-        - name: 'feuchtigkeit'
-          max: 31
-          min: -15.2
-          replace: None
-        - name: 'temperatur'
-          max: 65
-          min: -10.2
-          replace: None
-    - name: 'processors.OutlierRemover'
-      target_columns:
-        - name: 'feuchtigkeit'
-          max: 21
-          min: None
-          replace: 21
-        - name: 'temperatur'
-          max: 35
-          min: None
-          replace: 35
-    - name: 'processors.LineareInterpolation'
-      options:
-        max_unknown_values: 15
-                  select_columns: '.*' # regex, default '.*'
-        exclude_columns:
-          - 'feuchtigkeit'
+      - name: 'processors.NanRemover'
+      - name: 'processors.OutlierRemover'
+        target_columns:
+          - name: 'feuchtigkeit'
+            max: 31
+            min: -15.2
+            replace: None
+          - name: 'temperatur'
+            max: 65
+            min: -10.2
+            replace: None
+      - name: 'processors.OutlierRemover'
+        target_columns:
+          - name: 'feuchtigkeit'
+            max: 21
+            min: None
+            replace: 21
+          - name: 'temperatur'
+            max: 35
+            min: None
+            replace: 35
+      - name: 'processors.LineareInterpolation'
+        options:
+          max_unknown_values: 15
+            select_columns: '.*' # regex, default '.*'
+          exclude_columns:
+            - 'feuchtigkeit'
 
 
 feature_generators:

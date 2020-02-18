@@ -21,4 +21,3 @@ def get_config() -> AppConfigParser:
 
 
 AppConfig = get_config()
-

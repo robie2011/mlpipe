@@ -92,4 +92,3 @@ def build_pipeline_executor(descriptions: PipelineDescription, execution_mode: E
 def set_pipe_identification(descriptions):
     for ix, d in enumerate(descriptions):
         d['@id'] = str(ix)
-

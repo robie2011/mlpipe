@@ -27,4 +27,3 @@ class TestStandardDataFormat(unittest.TestCase):
         self.assertEqual(self.sdf.labels, df.columns.values.tolist())
         assert_array_equal(self.sdf.timestamps, df.index.values)
         assert_array_equal(self.sdf.data, df.values)
-

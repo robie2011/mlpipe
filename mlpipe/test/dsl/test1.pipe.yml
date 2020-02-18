@@ -13,8 +13,8 @@ pipe:
   - kind: process
     name: processor.ColumnDropper
     config:
-        fields:
-          - abc
+      fields:
+        - abc
   - kind: aggregate
     _minutes: 10
     fields: temp1, temp2
@@ -27,9 +27,9 @@ pipe:
   - name: processor.ColumnDropper
     kind: process
     config:
-        fields:
-          - tste
-          - skdlf
+      fields:
+        - tste
+        - skdlf
   - name: processor.ColumnDropper
     kind: process
     config:

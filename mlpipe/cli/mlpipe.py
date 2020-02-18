@@ -62,4 +62,3 @@ def main():
     except domain_exception_classes as e:
         module_logger.error(e)
         exit(1)
-

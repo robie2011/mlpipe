@@ -53,7 +53,7 @@ class SequenceCreatorTestCase(unittest.TestCase):
         stamps[-1] = stamps[-1] + timedelta(minutes=1)
         print(stamps)
 
-        result_expected = np.zeros((n_length_new-1, n_sequence, n_sensors))
+        result_expected = np.zeros((n_length_new - 1, n_sequence, n_sensors))
 
         result_expected[0, :, 0] = [0, 1, 2]
         result_expected[1, :, 0] = [1, 2, 3]
