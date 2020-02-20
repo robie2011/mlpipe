@@ -35,7 +35,7 @@ class TrainWorkflowManager(AbstractWorkflowManager):
                 self.get_logger().error(f"Looks like input format do not match. "
                                         f"Model maybe expect 2D data and receives 3D or, conversely."
                                         f"Check pipeline.")
-                raise e
+            raise e
 
         evaluation_result = self._evaluate(fit_result)
 
