@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from mlpipe.config import app_settings
+from mlpipe.exceptions.interface import MLException
 
 
 @dataclass
@@ -56,7 +57,7 @@ class StandardDataFormat:
 
         if app_settings.TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK is False \
                 and self.timestamps.shape[0] != self.data.shape[0]:
-            raise ValueError(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
+            raise MLException(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
 
         self.timestamps = self.timestamps.astype('datetime64[ns]')
 

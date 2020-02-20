@@ -1,15 +1,15 @@
 # noinspection PyUnresolvedReferences
-# noinspection PyUnresolvedReferences
-from mlpipe.aggregators.outlier import Outlier
 from mlpipe.processors.column_dropper import ColumnDropper
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.column_selector import ColumnSelector
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.freezed_value_remover import FreezedValueRemover
 # noinspection PyUnresolvedReferences
-from mlpipe.processors.linear_interpolation import LinearInterpolation
+from mlpipe.processors.interpolation import Interpolation
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.nan_remover import NanRemover
+# noinspection PyUnresolvedReferences
+from mlpipe.aggregators.outlier import Outlier
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.outlier_remover import OutlierRemover
 # noinspection PyUnresolvedReferences

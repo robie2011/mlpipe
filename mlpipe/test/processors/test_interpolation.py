@@ -4,11 +4,11 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mlpipe.helpers import data as helper_data
-from mlpipe.processors.linear_interpolation import LinearInterpolation
+from mlpipe.processors.interpolation import Interpolation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 
-class TestLinearInterpolation(unittest.TestCase):
+class TestInterpolation(unittest.TestCase):
     def test_standardcase(self):
         data = np.array([
             [13, 20],
@@ -34,8 +34,8 @@ class TestLinearInterpolation(unittest.TestCase):
         ], dtype="float")
         result_expected.flags.writeable = False
 
-        result = LinearInterpolation(max_consecutive_interpolated_value=3)._process2d(
-            StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(samples=2))
+        result = Interpolation(max_consecutive_interpolated_value=3)._process2d(
+            StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(samples=8))
         )
         assert_array_equal(result_expected, result.data)
 
