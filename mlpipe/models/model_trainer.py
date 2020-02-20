@@ -1,3 +1,4 @@
+import copy
 import logging
 import os
 import shutil
@@ -64,15 +65,33 @@ def _create_model_fit_params(
     module_logger.info(f"Test set ratio is {test_ratio}")
     module_logger.info(f"Train set size is {train_set.x.shape[0]}. Test set size is {test_set.x.shape[0]}")
 
-    return {
-        "x": train_set.x,
-        "y": train_set.y,
-        "epochs": fit_desc.get('epochs', 50),
-        "batch_size": fit_desc.get('batch_size', 60 * 4),
-        "validation_data": test_set.to_tuple(),
-        "callbacks": [checkpoint],
-        "verbose": fit_desc.get('verbose', 2)
-    }
+    fit_desc_merged = copy.deepcopy(fit_desc)
+
+    fit_desc_merged['x'] = train_set.x
+    fit_desc_merged['y'] = train_set.y
+    fit_desc_merged['epochs'] = fit_desc_merged.get('epochs', 50)
+    fit_desc_merged['batch_size'] = fit_desc_merged.get('batch_size', 60 * 4)
+    fit_desc_merged['validation_data'] = test_set.to_tuple()
+    fit_desc_merged['callbacks'] = [checkpoint]
+    fit_desc_merged['verbose'] = fit_desc_merged.get('verbose', 2)
+
+    if 'class_weight' in fit_desc_merged and fit_desc_merged['class_weight'] == 'auto':
+        module_logger.info("auto class_weight choosen")
+        from sklearn.utils.class_weight import compute_class_weight
+        class_names = np.unique(train_set.y)
+
+        weights = compute_class_weight('balanced', classes=class_names, y=train_set.y)
+        fit_desc_merged['class_weight'] = {class_name: weights[ix] for ix, class_name in enumerate(class_names)}
+
+    fit_params_print = {k: v for k, v in fit_desc_merged.items()
+                        if isinstance(v, str)
+                        or isinstance(v, int)
+                        or isinstance(v, float)
+                        or isinstance(v, bool)
+                        }
+    module_logger.info(f"fit params (only non-nested are shown here): {fit_params_print}")
+
+    return fit_desc_merged
 
 
 def _get_best_model(path_to_model: str, model: Sequential) -> Sequential:
