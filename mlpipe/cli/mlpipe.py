@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from mlpipe.cli.actions import list_models, describe_model, train_model, test_model, analyze_data, integrate_model, \
+from mlpipe.cli.actions import list_models, describe_model, train_model, evaluate_model, analyze_data, integrate_model, \
     export_data
 from mlpipe.exceptions.interface import MLException
 
@@ -21,8 +21,8 @@ def main():
     parser_train.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # test
-    parser_test = subparsers.add_parser('test')
-    parser_test.add_argument("files", metavar="FILES", default=[], nargs='*')
+    parser_evaluate = subparsers.add_parser('test')
+    parser_evaluate.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # integrate
     parser_integrate = subparsers.add_parser('integrate')
@@ -49,7 +49,7 @@ def main():
         "train": train_model,
         "list": list_models,
         "describe": describe_model,
-        "test": test_model,
+        "test": evaluate_model,
         "analyze": analyze_data,
         "integrate": integrate_model,
         "export": export_data

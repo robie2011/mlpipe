@@ -124,7 +124,7 @@ def integrate_model(args):
     manager.run()
 
 
-def test_model(args):
+def evaluate_model(args):
     for f in args.files:
         try:
             path = f if os.path.isabs(f) else os.path.abspath(f)
@@ -145,8 +145,13 @@ def test_model(args):
             description['@mode'] = 'evaluate'
             manager = create_workflow_from_file(path, overrides={"@mode": "evaluate"})
             result = manager.run()
-            for k, v in result.items():
-                print(f"     {k}: {v}")
+
+            # NOTE:
+            #   score is evaluation of given loss function
+            #   accuracy is accuracy of given function
+
+            for k, v in result.__dict__.items():
+                module_logger.info(f"{k}: {v}")
 
         except Exception as e:
             module_logger.error(e)
