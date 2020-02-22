@@ -8,10 +8,11 @@ REMOTE_PATH=/tmp
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--skip-packing) ENABLE_PACK=0; shift;;
   -k|--skip-keyscan) ENABLE_KEYSCAN=0;;
+  -i|--id) id="$2"; shift;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
-source ./scripts/get_envars.sh
+source ./scripts/get_envars.sh $id
 if [ -z "$SSH_HOST" ]; then
   echo "no instance found"
   exit
