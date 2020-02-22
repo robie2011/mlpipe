@@ -106,13 +106,13 @@ model:
 
   sequentialModel:
     - name: keras.layers.Dense
-      units: 500
+      units: 64
       activation: relu
     - name: keras.layers.Dense
-      units: 200
+      units: 32
       activation: relu
     - name: keras.layers.Dense
-      units: 50
+      units: 4
       activation: relu
     - name: keras.layers.Dense
       units: 1
@@ -125,7 +125,7 @@ model:
       - accuracy
 
   fit:
-    epochs: 100
+    epochs: 10000
     batch_size: 4320
     class_weight: auto
 #      0: 1.0
