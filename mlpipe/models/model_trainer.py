@@ -111,7 +111,7 @@ class FitResult:
 def fit(model_description: dict, data: ModelInputOutputSet) -> FitResult:
     sequential_model_desc: List[ClassDescription] = model_description['sequentialModel']
     compile_desc = model_description['compile']
-    fit_desc = model_description['fit']
+    fit_desc = model_description.get('fit', {})
     path_tmp_folder = tempfile.mkdtemp()
     path_best_model_weights = os.path.join(path_tmp_folder, 'keras_best_model')
 

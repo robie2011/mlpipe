@@ -1,5 +1,4 @@
 import pandas as pd
-
 from .interfaces import AbstractProcessor
 # frequency:
 #   - 'T' or 'min' for Minute
@@ -9,12 +8,13 @@ from .standard_data_format import StandardDataFormat
 
 
 class Resampler(AbstractProcessor):
-    def __init__(self, freq: str):
-        self._freq = freq
+    def __init__(self, freq: str, method: str = None):
+        self.freq = freq
+        self.method = method
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
         df = pd.DataFrame(data=processor_input.data, index=processor_input.timestamps)
-        data_resampled = df.resample(self._freq).asfreq()
+        data_resampled = df.resample(self.freq, fill_method=self.method).asfreq()
 
         return StandardDataFormat(
             labels=processor_input.labels,
