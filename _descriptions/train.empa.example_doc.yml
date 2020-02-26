@@ -1,0 +1,50 @@
+name: empa_rnn
+source:
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipelinePrimary:
+  - name: mlpipe.dsl.processors.TimeFeatureExtractor
+    extract: hour
+    output_field: Stunden
+  - name: mlpipe.dsl.processors.NanRemover
+  - name: mlpipe.dsl.processors.Shuffle
+
+pipelineSecondary:
+  - name: mlpipe.dsl.processors.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - CO2
+  - name: mlpipe.dsl.processors.RangeEncoder
+    value_from: 0
+    value_to: 24
+    generate:
+      - inputField: Stunden
+        outputField: StundenOneHot
+
+
+model:
+  input:
+    - CO2
+    - REGEX:StundenOneHot\$.*
+
+  target: Präsenz
+  predictionType: binary
+  testRatio: .20
+
+  sequentialModel:
+    - name: keras.layers.Dense
+      units: 100
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 1
+      activation: sigmoid
+
+  compile:
+    loss: binary_crossentropy
+    optimizer: Adam
+    metrics:
+      - accuracy

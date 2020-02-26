@@ -1,0 +1,37 @@
+diff --git a/mlpipe/dsl_interpreter/config_reader.py b/mlpipe/dsl_interpreter/config_reader.py
+index 975a35e..8fc6cac 100644
+--- a/mlpipe/dsl_interpreter/config_reader.py
++++ b/mlpipe/dsl_interpreter/config_reader.py
+@@ -1,5 +1,5 @@
+ # https://stackoverflow.com/questions/33533148/how-do-i-specify-that-the-return-type-of-a-method-is-the-same-as-the-class-itsel
+-from __future__ import annotations
++
+ 
+ from dataclasses import dataclass
+ from typing import Dict
+@@ -25,5 +25,5 @@ class ConfigReader:
+             raise RequiredConfigurationException(key=key, context=context)
+ 
+     @staticmethod
+-    def from_dict(data: Dict) -> ConfigReader:
++    def from_dict(data: Dict):
+         return ConfigReader(config=data)
+diff --git a/mlpipe/processors/standard_data_format.py b/mlpipe/processors/standard_data_format.py
+index d41e9ac..d76df8c 100644
+--- a/mlpipe/processors/standard_data_format.py
++++ b/mlpipe/processors/standard_data_format.py
+@@ -1,5 +1,4 @@
+ # https://stackoverflow.com/questions/33533148/how-do-i-specify-that-the-return-type-of-a-method-is-the-same-as-the-class-itsel
+-from __future__ import annotations
+ 
+ from dataclasses import dataclass
+ from typing import List
+@@ -30,7 +29,7 @@ class StandardDataFormat:
+             data=get_or_default(data, self.data)
+         )
+ 
+-    def add_cols(self, data: StandardDataFormat):
++    def add_cols(self, data):
+         if self.data.size == 0:
+             return data
+         if data.data.size == 0:
