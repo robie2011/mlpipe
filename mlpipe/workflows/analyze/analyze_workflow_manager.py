@@ -25,7 +25,7 @@ class AnalyzeWorkflowManager(AbstractWorkflowManager):
         input_data = self.pipeline_executor.execute(source_data)
 
         data_partitions = np.array([
-            g.group(timestamps=input_data.timestamps, raw_data=input_data.data)
+            g.group(timestamps=input_data.timestamps)
             for g in self.groupers
         ]).T
 

@@ -63,7 +63,7 @@ class AnalyticsChain(unittest.TestCase):
 
         timer = Timer()
         data_partitions = np.array(
-            [grouper().group(timestamps=timestamps, raw_data=np.array([])) for grouper in groupers]).T
+            [grouper().group(timestamps=timestamps) for grouper in groupers]).T
         timer.tock("partitioning")
 
         groups = group_by_multi_columns(data_partitions)

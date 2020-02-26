@@ -45,7 +45,7 @@ empty_array.flags.writeable = False
 
 
 def run_grouper(clazz: Type[AbstractGrouper], timestamps: np.ndarray, raw_data: np.ndarray):
-    return clazz().group(timestamps, raw_data)
+    return clazz().group(timestamps)
 
 
 class TestSimpleGroupers(unittest.TestCase):
@@ -55,7 +55,7 @@ class TestSimpleGroupers(unittest.TestCase):
 
         _stamps = np.arange(datetime(2019, 7, 1), datetime(2019, 7, 2), timedelta(minutes=15)).astype(datetime)
         raw_data[:, 0] = _stamps[:raw_data.shape[0]]
-        result = HourGrouper().group(raw_data=empty_array, timestamps=raw_data[:, 0])
+        result = HourGrouper().group(timestamps=raw_data[:, 0])
         result_expected = np.array([
             0, 0, 0, 0,
             1, 1, 1, 1,
@@ -70,13 +70,13 @@ class TestSimpleGroupers(unittest.TestCase):
         result = DayGrouper().group(timestamps=np.arange(
             datetime(2019, 7, 1),
             datetime(2019, 7, 5),
-            timedelta(days=1)), raw_data=empty_array)
+            timedelta(days=1)))
 
         result_expected = np.arange(1, 5)
         assert_array_equal(result_expected, result)
 
     def test_month_grouper(self):
-        result = MonthGrouper().group(raw_data=empty_array, timestamps=np.array([
+        result = MonthGrouper().group(timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2019, 8, 1, 12, 0),
             datetime(2019, 9, 1, 12, 0),
@@ -88,7 +88,7 @@ class TestSimpleGroupers(unittest.TestCase):
         assert_array_equal(result_expected, result)
 
     def test_year_grouper(self):
-        result = YearGrouper().group(raw_data=empty_array, timestamps=np.array([
+        result = YearGrouper().group(timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2020, 8, 1, 12, 0),
             datetime(2021, 9, 1, 12, 0),
@@ -100,7 +100,7 @@ class TestSimpleGroupers(unittest.TestCase):
         assert_array_equal(result_expected, result)
 
     def test_weekday_grouper(self):
-        result = WeekdayGrouper().group(raw_data=empty_array, timestamps=np.array([
+        result = WeekdayGrouper().group(timestamps=np.array([
             datetime(2019, 7, 1, 12, 0),
             datetime(2019, 7, 2, 12, 0),
             datetime(2019, 7, 3, 12, 0),
