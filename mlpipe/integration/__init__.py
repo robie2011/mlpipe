@@ -6,7 +6,7 @@ import numpy as np
 
 
 @dataclass
-class IntegrationResult:
+class PredictionResult:
     model_name: str
     session_id: str
     time_execution: datetime
