@@ -5,7 +5,7 @@ from typing import List
 
 from keras import Sequential
 
-from mlpipe.integration import IntegrationResult
+from mlpipe.integration import PredictionResult
 from mlpipe.integration.output.interface import AbstractOutput
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_set
@@ -63,7 +63,7 @@ class IntegrationWorkflowManager(AbstractWorkflowManager):
         logger.info("run prediction")
         predictions = self.model.predict(x=model_input.x)
 
-        result = IntegrationResult(
+        result = PredictionResult(
             model_name=self.name,
             session_id=self.session_id,
             time_execution=time_start,

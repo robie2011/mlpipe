@@ -1,13 +1,13 @@
 import logging
 
-from mlpipe.integration import IntegrationResult
+from mlpipe.integration import PredictionResult
 from mlpipe.integration.output.interface import AbstractOutput
 
 module_logger = logging.getLogger(__name__)
 
 
 class ConsoleOutput(AbstractOutput):
-    def write(self, result: IntegrationResult):
+    def write(self, result: PredictionResult):
         msg_meta = f"Integration result meta: name={result.model_name}/{result.session_id}. " \
                    f"Execution Time {result.time_execution}. " \
                    f"Shape init={result.shape_initial}." \

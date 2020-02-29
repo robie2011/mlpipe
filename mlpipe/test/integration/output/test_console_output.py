@@ -3,13 +3,13 @@ from datetime import datetime
 
 import numpy as np
 
-from mlpipe.integration import IntegrationResult
+from mlpipe.integration import PredictionResult
 from mlpipe.integration.output.console import ConsoleOutput
 
 
 class TestConsoleOutput(unittest.TestCase):
     def test_output(self):
-        result = IntegrationResult(
+        result = PredictionResult(
             time_execution=datetime.now(),
             model_name="example",
             session_id="test1",

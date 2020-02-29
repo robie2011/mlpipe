@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from mlpipe.integration import IntegrationResult
+from mlpipe.integration import PredictionResult
 from mlpipe.integration.output.interface import AbstractOutput
 from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
 
@@ -12,7 +12,7 @@ class CsvOutput(AbstractOutput):
             path=Path(output_path))
         self.writer.__enter__()
 
-    def write(self, result: IntegrationResult):
+    def write(self, result: PredictionResult):
         self.logger.info("writing predictions")
         for ix, ts in enumerate(result.timestamps):
             line = [ts] + result.predictions[ix].tolist()
