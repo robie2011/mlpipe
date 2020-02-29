@@ -5,6 +5,7 @@ from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
+from mlpipe.workflows.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer, NullDataFlowAnalyzer
 
 DataHandler = Callable[[str, StandardDataFormat], None]
 
@@ -12,27 +13,16 @@ DataHandler = Callable[[str, StandardDataFormat], None]
 @dataclass
 class PipelineExecutor(InstanceLoggerMixin):
     pipeline: List[AbstractProcessor]
-    _beforePipeExecution: DataHandler = None
-    _afterPipeExecution: DataHandler = None
-
-    def set_on_pipe_start_handler(self, handler: DataHandler):
-        self._beforePipeExecution = handler
-
-    def set_on_pipe_end_handler(self, handler: DataHandler):
-        self._afterPipeExecution = handler
+    flow_analyzer: AbstractDataFlowAnalyzer = NullDataFlowAnalyzer()
 
     def execute(self, data: StandardDataFormat, states: Dict = {}) -> StandardDataFormat:
         self.get_logger().debug(f"input fields: {', '.join(data.labels)}")
         self._set_states(states)
 
         for ix, pipe in enumerate(self.pipeline):
-            if self._beforePipeExecution:
-                self._beforePipeExecution(pipe.__class__.__name__, data)
-
+            self.flow_analyzer.before_pipe_handler(pipe.__class__.__name__, data)
             data = pipe.process(data)
-
-            if self._afterPipeExecution:
-                self._afterPipeExecution(pipe.__class__.__name__, data)
+            self.flow_analyzer.after_pipe_handler(pipe.__class__.__name__, data)
 
         self.get_logger().debug(f"output fields: {', '.join(data.labels)}")
         return data
