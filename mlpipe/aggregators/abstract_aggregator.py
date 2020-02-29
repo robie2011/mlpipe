@@ -56,7 +56,7 @@ class AbstractAggregator(AbstractProcessor):
 
         """
         input: 3D-Numpy Array
-        first axis represents date/time
+        first axis represents sequence id or group id
         second axis represents time steps / group of values
         third axis represents different sensors
 
