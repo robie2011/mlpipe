@@ -41,7 +41,7 @@ class Sequence3d(AbstractProcessor):
     validate = True
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        logger = self.get_logger()
+        logger = self.logger
         logger.info("create 3D-Sequence with sequence length={0}".format(self.sequence))
         ix_valid_endpoints = _create_sequence_endpoints(timestamps=processor_input.timestamps, n_sequence=self.sequence)
         ratio_valid_endpoints = ix_valid_endpoints.shape[0] / processor_input.data.shape[0]

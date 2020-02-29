@@ -32,16 +32,16 @@ class TrainWorkflowManager(AbstractWorkflowManager):
             import re
             pattern = '^Error when checking target: expected .* to have \d+ dimensions, but got array with shape .*'
             if e.args and re.search(pattern, e.args[0]):
-                self.get_logger().error(f"Looks like input format do not match. "
+                self.logger.error(f"Looks like input format do not match. "
                                         f"Model maybe expect 2D data and receives 3D or, conversely."
                                         f"Check pipeline.")
             raise e
 
         evaluation_result = self._evaluate(fit_result)
 
-        self.get_logger().info("evaluation result:")
+        self.logger.info("evaluation result:")
         for k, v in evaluation_result.items():
-            self.get_logger().info(f"    {k}: {v}")
+            self.logger.info(f"    {k}: {v}")
 
         with TrainingProject(name=self.name, session_id=session_id, create=True) as project:
             project.history = fit_result.history

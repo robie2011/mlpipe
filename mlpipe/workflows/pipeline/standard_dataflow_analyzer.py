@@ -33,11 +33,11 @@ class StandardDataflowAnalyzer(AbstractDataFlowAnalyzer, InstanceLoggerMixin):
         if n_rows_added != 0:
             modification = "added" if n_rows_added > 0 else "removed"
             n_rows_added = abs(n_rows_added)
-            self.get_logger().debug(f"step #{self.n_step}: {n_rows_added} row(s) {modification} by {class_name}")
+            self.logger.debug(f"step #{self.n_step}: {n_rows_added} row(s) {modification} by {class_name}")
 
         if n_cols_added != 0:
             modification = "added" if n_cols_added > 0 else "removed"
             n_cols_added = abs(n_cols_added)
-            self.get_logger().debug(f"step #{self.n_step}: {n_cols_added} column(s) {modification} by {class_name}")
+            self.logger.debug(f"step #{self.n_step}: {n_cols_added} column(s) {modification} by {class_name}")
 
-        self.get_logger().debug(f"step #{self.n_step}: data shape after processing by {class_name} is {data.data.shape}")
+        self.logger.debug(f"step #{self.n_step}: data shape after processing by {class_name} is {data.data.shape}")

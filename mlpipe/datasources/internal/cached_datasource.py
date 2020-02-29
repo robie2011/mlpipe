@@ -21,13 +21,13 @@ class CachedDatasource(InstanceLoggerMixin):
 
     def get(self) -> StandardDataFormat:
         if not AppConfig.get_config_or_default('general.enable_cache', default=True):
-            self.get_logger().info("caching disabled")
+            self.logger.info("caching disabled")
             return self._get()
 
         import pickle
         import json
         import os
-        logger = self.get_logger()
+        logger = self.logger
         cache_id = hashlib.sha256(json.dumps(self.source_description, sort_keys=True).encode('utf-8')).hexdigest()
         logger.info("caching source is enabled. Cache-Id is {0}".format(cache_id))
         path_to_cache = os.path.join(app_settings.dir_tmp, "cache_{0}".format(cache_id))

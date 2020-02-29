@@ -18,8 +18,8 @@ class SeedSetup(AbstractProcessor):
         # results are not always reproduciable
         # https://machinelearningmastery.com/reproducible-results-neural-networks-keras/
         # https://www.tensorflow.org/api_docs/python/tf/random/set_seed?version=stable
-        self.get_logger().info("using numpy random seed={0}".format(self.np_seed))
-        self.get_logger().info("using tensorflow random seed={0}".format(self.tf_seed))
+        self.logger.info("using numpy random seed={0}".format(self.np_seed))
+        self.logger.info("using tensorflow random seed={0}".format(self.tf_seed))
         numpy.random.seed(self.np_seed)
 
         tensorflow.random.set_seed(self.tf_seed)

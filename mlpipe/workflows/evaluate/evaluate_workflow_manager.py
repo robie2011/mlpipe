@@ -21,7 +21,7 @@ class EvaluateWorkflowManager(AbstractWorkflowManager):
 
     def run(self):
         time_start = time()
-        logger = self.get_logger()
+        logger = self.logger
         model_description = self.description['model']
         logger.info("download data from source")
         source_data = self.data_adapter.get()

@@ -16,7 +16,7 @@ class PipelineExecutor(InstanceLoggerMixin):
     flow_analyzer: AbstractDataFlowAnalyzer = NullDataFlowAnalyzer()
 
     def execute(self, data: StandardDataFormat, states: Dict = {}) -> StandardDataFormat:
-        self.get_logger().debug(f"input fields: {', '.join(data.labels)}")
+        self.logger.debug(f"input fields: {', '.join(data.labels)}")
         self._set_states(states)
 
         for ix, pipe in enumerate(self.pipeline):
@@ -24,7 +24,7 @@ class PipelineExecutor(InstanceLoggerMixin):
             data = pipe.process(data)
             self.flow_analyzer.after_pipe_handler(pipe.__class__.__name__, data)
 
-        self.get_logger().debug(f"output fields: {', '.join(data.labels)}")
+        self.logger.debug(f"output fields: {', '.join(data.labels)}")
         return data
 
     def get_states(self) -> Dict:

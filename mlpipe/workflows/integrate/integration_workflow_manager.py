@@ -25,7 +25,7 @@ class IntegrationWorkflowManager(AbstractWorkflowManager):
     limit_execution: int
 
     def run(self):
-        logger = self.get_logger()
+        logger = self.logger
         iteration = 0
         next_execution = datetime.now()
 
@@ -41,7 +41,7 @@ class IntegrationWorkflowManager(AbstractWorkflowManager):
         logger.info("maximum execution count reached. terminating integration")
 
     def _run_prediction(self, iteration: int):
-        logger = self.get_logger()
+        logger = self.logger
         logger.info(f"Executing integration #{iteration} for {self.name}/{self.session_id}")
 
         time_start = datetime.now()

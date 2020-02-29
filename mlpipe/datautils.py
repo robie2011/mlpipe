@@ -18,7 +18,7 @@ class LabelSelector(InstanceLoggerMixin):
     elements: List[str]
 
     def select(self, selection: List[str], enable_regex=False) -> LabelSelection:
-        logger = self.get_logger()
+        logger = self.logger
         ix_selection = []
         for name in selection:
             if enable_regex and name.startswith("REGEX:"):

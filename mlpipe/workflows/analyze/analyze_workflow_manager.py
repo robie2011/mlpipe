@@ -17,7 +17,7 @@ class AnalyzeWorkflowManager(AbstractWorkflowManager):
     metrics: List[AbstractAggregator]
 
     def run(self):
-        logger = self.get_logger()
+        logger = self.logger
         logger.info(f"groupers: {','.join(map(get_qualified_name, self.groupers))}")
         logger.info(f"metrics: {','.join(map(get_qualified_name, self.metrics))}")
 
