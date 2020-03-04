@@ -11,7 +11,7 @@ def generate_html_reports(json_str: str):
 
     soup = BeautifulSoup(html_string, "html.parser")
 
-    url_prefix = AppConfig["hosting_url_prefix"]
+    url_prefix = AppConfig["reporting.hosting_url_prefix"]
     # setup script remote links
     for tag in soup.find_all(lambda t: t.name == "script" and not t.attrs['src'].startswith("http")):
         tag.attrs['src'] = url_prefix + tag.attrs['src']
@@ -21,7 +21,7 @@ def generate_html_reports(json_str: str):
         tag.attrs['href'] = url_prefix + tag.attrs['href']
 
     # setup base href
-    soup.find('base').attrs['href'] = AppConfig["base_href"]
+    soup.find('base').attrs['href'] = AppConfig["reporting.base_href"]
 
     # embed data
     script_tag = soup.new_tag(name="script", type="text/javascript")
