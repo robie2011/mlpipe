@@ -6,7 +6,7 @@ from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.dsl_interpreter.instance_creator import create_output_adapter, create_source_adapter
 from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 from mlpipe.workflows.integrate.integration_workflow_manager import IntegrationWorkflowManager
-from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
+from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 
 module_logger = logging.getLogger(__name__)
 

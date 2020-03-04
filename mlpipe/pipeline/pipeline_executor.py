@@ -5,7 +5,7 @@ from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
-from mlpipe.workflows.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer, NullDataFlowAnalyzer
+from mlpipe.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer, NullDataFlowAnalyzer
 
 DataHandler = Callable[[str, StandardDataFormat], None]
 

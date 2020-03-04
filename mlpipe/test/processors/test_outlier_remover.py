@@ -19,6 +19,7 @@ class TestOutlierRemover(unittest.TestCase):
         data.flags.writeable = False
 
         input_data = StandardDataFormat(labels=['a', 'b'], data=data, timestamps=helper_data.generate_timestamps(2, 2))
+        # noinspection PyArgumentList
         configs: List[InputOutputLimits] = [InputOutputLimits(inputField="a")]
         result = OutlierRemover(generate=configs)._process2d(input_data)
         assert_array_equal(data, result.data)

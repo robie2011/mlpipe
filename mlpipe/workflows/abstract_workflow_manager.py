@@ -5,8 +5,8 @@ from typing import Dict
 from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
-from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
-from mlpipe.workflows.pipeline.standard_dataflow_analyzer import StandardDataflowAnalyzer
+from mlpipe.pipeline.pipeline_executor import PipelineExecutor
+from mlpipe.pipeline.standard_dataflow_analyzer import StandardDataflowAnalyzer
 from mlpipe.workflows.utils import get_qualified_name
 
 

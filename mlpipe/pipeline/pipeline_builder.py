@@ -7,7 +7,7 @@ from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.exceptions.interface import MLPipeError
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
-from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
+from mlpipe.pipeline.pipeline_executor import PipelineExecutor
 from mlpipe.workflows.utils import get_component_config, create_instance
 
 module_logger = logging.getLogger(__name__)

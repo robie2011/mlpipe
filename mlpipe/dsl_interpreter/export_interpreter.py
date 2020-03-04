@@ -3,7 +3,7 @@ from typing import Dict
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.workflows.analyze.data_export_workflow_manager import DataExportWorkflowManager
-from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
+from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 
 
 def _create_workflow_analyze_export(description: Dict, execution_mode: ExecutionModes):

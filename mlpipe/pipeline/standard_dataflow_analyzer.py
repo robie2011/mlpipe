@@ -2,7 +2,7 @@ from typing import Dict
 
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
-from mlpipe.workflows.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer
+from mlpipe.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer
 
 
 class StandardDataflowAnalyzer(AbstractDataFlowAnalyzer, InstanceLoggerMixin):

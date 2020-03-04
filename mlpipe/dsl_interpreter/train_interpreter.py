@@ -3,7 +3,7 @@ from typing import Dict
 
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
-from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
+from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 from mlpipe.workflows.train.train_workflow_manager import TrainWorkflowManager
 
 module_logger = logging.getLogger(__name__)

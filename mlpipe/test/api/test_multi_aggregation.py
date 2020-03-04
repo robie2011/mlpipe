@@ -8,7 +8,7 @@ from mlpipe.aggregators.max import Max
 from mlpipe.aggregators.min import Min
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat
-from mlpipe.workflows.pipeline.pipeline_executor import PipelineExecutor
+from mlpipe.pipeline.pipeline_executor import PipelineExecutor
 
 
 class TestMultiAggregation(unittest.TestCase):

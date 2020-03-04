@@ -6,7 +6,7 @@ from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.workflows.evaluate.evaluate_workflow_manager import EvaluateWorkflowManager
 from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
-from mlpipe.workflows.pipeline.pipeline_builder import build_pipeline_executor
+from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 
 module_logger = logging.getLogger(__name__)
 
