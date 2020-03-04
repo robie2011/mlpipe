@@ -10,7 +10,7 @@ from keras.engine.saving import load_model
 
 from mlpipe.api.interface import PredictionTypes
 from mlpipe.config import app_settings
-from mlpipe.config import file_handlers
+from mlpipe.utils import file_handlers
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
 
 
