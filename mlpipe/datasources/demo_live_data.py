@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from mlpipe.datasources.abstract_datasource_adapter import Field, AbstractDatasourceAdapter
-from mlpipe.datasources.empa import EmpaCsvSourceAdapter
+from mlpipe.datasources.empa_csv_source_adapter import EmpaCsvSourceAdapter
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 MODULE_INIT_TIME = np.datetime64('now')

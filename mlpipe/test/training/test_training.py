@@ -14,7 +14,7 @@ def _get_evaluation_config(model_name: str, session_id: str):
     name: {model_name}
     session: {session_id}
     source:
-      name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+      name: mlpipe.datasources.empa_csv_source_adapter.EmpaCsvSourceAdapter
       pathToFile: /Users/robert.rajakone/repos/2019_p9/code/mlpipe/test/dsl/testinput.csv
       fields:
         - abc1 as temp1
