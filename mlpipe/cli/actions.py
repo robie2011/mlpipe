@@ -1,11 +1,13 @@
 import logging
 import os
+from os.path import basename
 from pathlib import Path
 from typing import List, cast
 
 from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
+from mlpipe.utils.file_tool import write_text_file
 from mlpipe.workflows.analyze.create_report import generate_html_report
 from mlpipe.workflows.analyze.interface import AnalyticsResult
 from mlpipe.workflows.utils import load_description_file
@@ -160,17 +162,19 @@ def evaluate_model(args):
 def analyze_data(args):
     import simplejson
     import os
-    import pathlib
 
     for f in args.files:
         _print_heading("ANALYZE")
         desc_file = f if os.path.isabs(f) else os.path.abspath(f)
         result: AnalyticsResult = create_workflow_from_file(desc_file, overrides={"@mode": "analyze"}).run()
         data = simplejson.dumps(result, ignore_nan=True, default=lambda o: o.__dict__)
-        file_basename = '.'.join(desc_file.split('.')[:-1])
-        output_file = pathlib.Path().cwd() / f"{file_basename}.html"
+        file_basename = '.'.join(basename(desc_file).split('.')[:-1])
+        output_folder = Path(os.path.dirname(desc_file))
+        output_file = output_folder / f"report_{file_basename}.html"
+        output_file_json = output_folder / f"report_{file_basename}.json"
         print(f"writing report: {output_file}")
         generate_html_report(json_str=data, output_path=output_file)
+        write_text_file(output_file_json, data)
 
 
 def export_data(args):
