@@ -12,8 +12,7 @@ source:
     - 40210013 as CO2
     - 40210148 as Präsenz
 
-executionFrequencyMinutes: 1
-
-output:
-  name: mlpipe.dsl.sinks.CsvOutput
-  output_path: output/4021001_predictions.csv
+integrate:
+  output:
+    name: mlpipe.dsl.sinks.CsvOutput
+    output_path: output/4021001_predictions.csv

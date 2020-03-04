@@ -128,5 +128,3 @@ model:
     epochs: 10000
     batch_size: 4320
     class_weight: auto
-#      0: 1.0
-#      1: 5.1

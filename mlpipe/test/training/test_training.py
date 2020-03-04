@@ -50,8 +50,10 @@ class TestWorkflows(unittest.TestCase):
         manager = create_workflow_from_yaml(config_str, {
             "limitExecution": 1,
             "@mode": "integrate",
-            "output": {"name": "mlpipe.integration.output.ConsoleOutput"},
-            "executionFrequencyMinutes": 1
+            "integrate": {
+                "output": {"name": "mlpipe.integration.output.ConsoleOutput"},
+                "executionFrequencyMinutes": 1
+            }
         })
 
         print(manager.run())

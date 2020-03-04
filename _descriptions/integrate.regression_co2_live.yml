@@ -12,8 +12,8 @@ source:
     - 40210005 as Abluft
     - 40210148 as Präsenz
 
-executionFrequencyMinutes: 1
 
-output:
-  name: mlpipe.dsl.sinks.CsvOutput
-  output_path: output/40210013_co2_predictions.csv
+integrate:
+  output:
+    name: mlpipe.dsl.sinks.CsvOutput
+    output_path: output/40210013_co2_predictions.csv

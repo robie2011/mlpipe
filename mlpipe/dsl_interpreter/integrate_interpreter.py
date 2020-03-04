@@ -27,7 +27,7 @@ def _create_workflow_integrate(description: Dict, execution_mode: ExecutionModes
         raise ValueError(f"Prediction type '{prediction_type}' not implemented!")
 
     source_adapter = create_source_adapter(desc_merged['source'])
-    output_adapter = create_output_adapter(description['output'])
+    output_adapter = create_output_adapter(description['integrate']['output'])
 
     description_pipeline = []
     description_pipeline += desc_merged.get('pipelinePrimary', [])
@@ -45,7 +45,7 @@ def _create_workflow_integrate(description: Dict, execution_mode: ExecutionModes
         pipeline_states=project.states,
         name=name,
         session_id=session_id,
-        frequency_minutes=description['executionFrequencyMinutes'],
+        frequency_minutes=description['integrate'].get('frequencyMin', 1),
         output_adapter=output_adapter,
         limit_execution=execution_limit
     )
