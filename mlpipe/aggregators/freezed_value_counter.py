@@ -1,3 +1,4 @@
+import itertools
 from typing import List
 
 import numpy as np
@@ -19,50 +20,91 @@ class FreezedValueCounter(AbstractAggregator):
         self.max_freezed_values = max_freezed_values
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
-        is_index_freezed3d = np.full(shape=grouped_data.shape, fill_value=False)
+        n_groups, max_members, n_sensors = grouped_data.shape
 
-        # calculate for each sensor ...
-        for sensor_id in range(grouped_data.shape[2]):
-            # data structure:
-            # 2D data: axis0 contains different groups,
-            # axis1 contains samples of specific group.
-            # We check each row for freezed values.
+        output = np.full((n_groups, n_sensors), np.nan)
+        for group_id in range(n_groups):
+            partition = grouped_data[group_id]
+            output[group_id, :] = np.sum(get_freezed_value_mask(partition, threshold=self.max_freezed_values), axis=0)
 
-            # Algorithm:
-            #   For each 2D matrix with sensor values:
-            #   We create sub-matrix with different time offset (axis1 offset). E.g. for t-1, t-2, ...
-            #   We compare sub-matrix with original whether they have same value `
-            #   and write these booleans to matrix called `snapshot_comparision_result3d`.
-            #   snapshot_comparision_result3d is composition of comparision result
-            #   of 2d matrices (original with different time steps).
-            #   We sum up all booleans in snapshot_comparision_result3d along axis=3.
-            #   Freezed value is found if sum >= max_freezed_values.
-            sensor: np.ndarray = grouped_data[:, :, sensor_id]
-            n_comparison = self.max_freezed_values
-
-            rows, cols = sensor.shape
-            cols -= n_comparison
-            snapshot_comparision_result3d = np.full((rows, cols, n_comparison), fill_value=np.nan)
-            snapshot_last_timestep = sensor[:, n_comparison:]  # last time step
-
-            # for one comparison we need data from two time slices
-            n_time_slices = n_comparison + 1
-            n_cols = sensor.shape[1]
-            for compare_step in range(1, n_time_slices):
-                col_start = n_comparison - compare_step
-                col_end = n_cols - compare_step
-                snapshot_before = sensor[:, col_start:col_end]
-                snapshot_comparision_result3d[:, :, compare_step - 1] = snapshot_last_timestep == snapshot_before
-
-            # first n_comparison values are always not freezed
-            # because have nothing to compare
-            is_index_freezed3d[:, n_comparison:, sensor_id] = snapshot_comparision_result3d.sum(axis=2) >= n_comparison
-
-            # fix: Because not every group has equal length we use numpy mask to track invalid data.
-            # In our calculation we have drop such invalid values
-            is_index_freezed3d[:, :, sensor_id][sensor.mask] = False
-
-        return is_index_freezed3d.sum(axis=1)
+        return output
 
     def javascript_group_aggregation(self):
         return "(a,b) => a+b"
+
+
+def _get_range_exceeding_maximum_length(ix_start: np.ndarray, ix_end: np.ndarray, threshold: int):
+    size = ix_end - ix_start
+    indexes = np.arange(size.size)
+    out = [np.arange(
+        ix_start[i] + threshold,
+        ix_end[i] + 1).tolist() for i in indexes[size > threshold - 1]]
+
+    return out
+
+
+def _flatten_list(data):
+    return list(itertools.chain(*data))
+
+
+def get_freezed_value_mask(data: np.ndarray, threshold: int):
+
+    """
+    Algorithm is explained by exampel below:
+
+        Given is 1D-Variable called value.
+        We create an array called next_equal which gives TRUE if next value is equal.
+        We create an array called freeze_change which represents points on which
+            freezed value has started or stopped.
+        By getting only TRUE values from freeze_change-array we have all change points (array ix_change_col).
+        Every 2nd point of ix_change_col represents starting point of freezed value.
+        Every 2nd point starting from index=1 represents end point of freezd value.
+        Now we can calculate difference between start and endpoint and handle difference more than threshold.
+
+
+    Note:
+        - freez_change on table below needs offset: -1
+        - (d) is a dummy value on top and bottom of array
+
+    | Index | Value | next_equal | freeze_change |
+    |-------|-------|------------|---------------|
+    |     0 |    20 | FALSE (d)  |               |
+    |     1 |    21 | FALSE      | FALSE         |
+    |     2 |    22 | FALSE      | FALSE         |
+    |     3 |    20 | FALSE      | FALSE         |
+    |     4 |    20 | TRUE       | TRUE          |
+    |     5 |    20 | TRUE       | FALSE         |
+    |     6 |    20 | TRUE       | FALSE         |
+    |     7 |    20 | TRUE       | FALSE         |
+    |     8 |    22 | FALSE      | TRUE          |
+    |     9 |    23 | FALSE      | FALSE         |
+    |       |       | FALSE (d)  | FALSE         |
+
+
+    """
+
+    n_rows, n_cols = data.shape
+    data_mask = np.zeros(data.shape, dtype='bool')
+
+    # next_equal: boolean shows whether following measurement has same value
+    # dummy data on top and bottom of match-array for counting freed values
+    dummy_data = [[False] * n_cols]
+    next_equal = np.r_[
+        dummy_data,
+        data[1:] == data[:-1],
+        dummy_data]
+
+    freeze_change = next_equal[1:] != next_equal[:-1]
+    indexes = np.arange(freeze_change.shape[0])
+
+    for col in range(n_cols):
+        ix_change_col = indexes[freeze_change[:, col]]
+        ix_start = ix_change_col[::2]
+        ix_end = ix_change_col[1::2]
+        ranges = _get_range_exceeding_maximum_length(ix_start, ix_end, threshold)
+        data_mask[_flatten_list(ranges), col] = True
+
+    if isinstance(data, np.ma.MaskedArray):
+        data_mask[data.mask] = False
+
+    return data_mask
