@@ -48,7 +48,7 @@
       ]
     },
     {
-      "name": "features.TimeFeatureExtractor",
+      "name": "features.TimeExtractor",
       "extract": "hour",
       "output_field": "hourExtracted"
     }

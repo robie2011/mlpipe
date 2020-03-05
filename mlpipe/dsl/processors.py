@@ -25,4 +25,4 @@ from mlpipe.processors.sequence3d import Sequence3d
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.shuffle import Shuffle
 # noinspection PyUnresolvedReferences
-from mlpipe.processors.time_feature_extractor import TimeFeatureExtractor
+from mlpipe.processors.time_extractor import TimeExtractor

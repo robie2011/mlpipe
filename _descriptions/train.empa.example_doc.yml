@@ -7,7 +7,7 @@ source:
     - 40210148 as Präsenz
 
 pipelinePrimary:
-  - name: mlpipe.dsl.processors.TimeFeatureExtractor
+  - name: mlpipe.dsl.processors.TimeExtractor
     extract: hour
     output_field: Stunden
   - name: mlpipe.dsl.processors.NanRemover

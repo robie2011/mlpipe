@@ -14,7 +14,7 @@ pipe:
     aggregations:
       - name: aggregators.Max
       - name: aggregators.Min
-      - name: features.TimeFeatureExtractor
+      - name: features.TimeExtractor
         config:
           extract: hour
   - name: processor.ColumnDropper

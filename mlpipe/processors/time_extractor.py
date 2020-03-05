@@ -19,7 +19,7 @@ allowed_extractions: [(str, _ITimeExtractor)] = [
 ]
 
 
-class TimeFeatureExtractor(AbstractProcessor):
+class TimeExtractor(AbstractProcessor):
     def __init__(self, extract: str, output_field: str):
         search = [func for name, func in allowed_extractions if name == extract]
         if len(search) == 0:

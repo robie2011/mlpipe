@@ -25,7 +25,7 @@ pipeline:
     generate:
       - inputField: temp1
         outputField: tempMin
-  - name: features.TimeFeatureExtractor
+  - name: features.TimeExtractor
     extract: hour
     output_field: hourExtracted
 
