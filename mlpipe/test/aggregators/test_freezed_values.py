@@ -50,8 +50,8 @@ class TestFreezedValues(unittest.TestCase):
         # print_3d_array(group_matrix)
 
         result_expected = np.array([
-            [2, 0],
-            [1, 7]
+            [2, 0],  # sensor0: first part / second part
+            [1, 7]   # sensor1: first part / second part
         ])
 
         result = FreezedValueCounter(max_freezed_values=3, sequence=np.nan).aggregate(grouped_data=group_matrix)
