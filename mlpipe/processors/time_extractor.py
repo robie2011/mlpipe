@@ -14,6 +14,7 @@ allowed_extractions: [(str, _ITimeExtractor)] = [
     ('hour', (lambda x:
               np.mod(np.round(x.dt.hour.values + x.dt.minute.values / 60), 24)
               )),
+    # see: https://pandas.pydata.org/pandas-docs/stable/reference/series.html#datetimelike-properties
     ('weekday', (lambda x: x.dt.weekday.values)),
     ('month', (lambda x: x.dt.month.values))
 ]
