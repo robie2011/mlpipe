@@ -1,7 +1,7 @@
 name: empa_mlp
 session: 2020-02-11_235028
 source:
-  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields:
     - 3200000 as TempAussen

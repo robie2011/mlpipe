@@ -18,6 +18,6 @@ fields: &fields_room2
 name: empa_mlp_weighted
 session: 2020-02-20_133846
 source:
-  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields: *fields_room1

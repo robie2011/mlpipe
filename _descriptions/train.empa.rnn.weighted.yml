@@ -1,6 +1,6 @@
 name: empa_rnn_weighted
 source:
-  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields:
     - 3200000 as TempAussen
@@ -79,6 +79,6 @@ model:
       - accuracy
 
   fit:
-    epochs: 10000
+    epochs: 10
     batch_size: 4320
     class_weight: auto

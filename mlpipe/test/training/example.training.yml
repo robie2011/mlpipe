@@ -1,6 +1,6 @@
 name: unit_test
 source:
-  name: mlpipe.datasources.empa.EmpaCsvSourceAdapter
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
   pathToFile: /Users/robert.rajakone/repos/2019_p9/code/mlpipe/test/dsl/testinput.csv
   fields:
     - abc1 as temp1
