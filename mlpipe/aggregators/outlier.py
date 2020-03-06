@@ -39,10 +39,12 @@ class Outlier(AbstractAggregator):
         max_matrix = np.zeros(grouped_data.shape, dtype='float')
 
         for i, config in enumerate(self.generate):
-            min_matrix[:, :, i] = config['min'] if 'min' in config else np.nan
-            max_matrix[:, :, i] = config['max'] if 'max' in config else np.nan
+            min_matrix[:, :, i] = config.get('min', np.nan)
+            max_matrix[:, :, i] = config.get('max', np.nan)
 
-        mask_filter = np.invert(grouped_data.mask) if _is_ma(grouped_data) else True
+        mask_filter = True
+        if _is_ma(grouped_data):
+            mask_filter = np.invert(grouped_data.mask)
 
         min_filter = np.logical_and(mask_filter, grouped_data < min_matrix)
         max_filter = np.logical_and(mask_filter, grouped_data > max_matrix)
