@@ -19,10 +19,11 @@ class OutlierRemover(AbstractProcessor):
             for g in self.generate]
         cols_selected = LabelSelector(elements=processor_input.labels).select(selection=fields_in).indexes
 
-        # our group has only one member
+        # we expend feature-array to have a 3D-array with only one entry (of 2D-Array)
         grouped_data = np.ma.array(np.expand_dims(processor_input.data[:, cols_selected], axis=0))
 
-        affected_index = Outlier(sequence=np.nan, generate=self.generate).affected_index(grouped_data=grouped_data)
+        affected_index = Outlier(sequence=np.nan, generate=self.generate)\
+            .affected_index(grouped_data=grouped_data)
         affected_index = np.squeeze(affected_index, axis=0)
 
         data = processor_input.data.copy()

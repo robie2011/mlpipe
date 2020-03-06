@@ -25,7 +25,8 @@ class FreezedValueCounter(AbstractAggregator):
         output = np.full((n_groups, n_sensors), np.nan)
         for group_id in range(n_groups):
             partition = grouped_data[group_id]
-            output[group_id, :] = np.sum(get_freezed_value_mask(partition, threshold=self.max_freezed_values), axis=0)
+            boolean_mask = get_freezed_value_mask(partition, threshold=self.max_freezed_values)
+            output[group_id, :] = np.sum(boolean_mask, axis=0)
 
         return output
 
@@ -48,7 +49,6 @@ def _flatten_list(data):
 
 
 def get_freezed_value_mask(data: np.ndarray, threshold: int):
-
     """
     Algorithm is explained by exampel below:
 
@@ -86,8 +86,6 @@ def get_freezed_value_mask(data: np.ndarray, threshold: int):
     n_rows, n_cols = data.shape
     data_mask = np.zeros(data.shape, dtype='bool')
 
-    # next_equal: boolean shows whether following measurement has same value
-    # dummy data on top and bottom of match-array for counting freed values
     dummy_data = [[False] * n_cols]
     next_equal = np.r_[
         dummy_data,
