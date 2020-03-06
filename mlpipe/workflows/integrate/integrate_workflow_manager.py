@@ -14,7 +14,7 @@ from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEv
 
 
 @dataclass
-class IntegrationWorkflowManager(AbstractWorkflowManager):
+class IntegrateWorkflowManager(AbstractWorkflowManager):
     name: str
     session_id: str
     model: Sequential
