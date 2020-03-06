@@ -9,7 +9,7 @@ from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEv
 
 @dataclass
 class EvaluationResult:
-    score: float
+    loss: float
     accuracy: float
 
 
@@ -36,8 +36,8 @@ class EvaluateWorkflowManager(AbstractWorkflowManager):
             output_label=model_description['target'])
 
         logger.info("run prediction")
-        score, acc = self.model.evaluate(x=model_input_output.x, y=model_input_output.y)
+        loss, acc = self.model.evaluate(x=model_input_output.x, y=model_input_output.y)
 
         seconds = round(time() - time_start, 3)
         logger.info(f"Finish. Took {seconds} Seconds")
-        return EvaluationResult(score=score, accuracy=acc)
+        return EvaluationResult(loss=loss, accuracy=acc)
