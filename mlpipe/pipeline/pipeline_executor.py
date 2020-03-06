@@ -33,7 +33,7 @@ class PipelineExecutor(InstanceLoggerMixin):
             if isinstance(p, MultiAggregation):
                 p = cast(MultiAggregation, p)
                 for i in p.instances:
-                    states[i.id] = p.state
+                    states[i.id] = i.state
             else:
                 states[p.id] = p.state
         return states
