@@ -1,6 +1,6 @@
-name: empa_mlp_avg
-session: 2020-01-13_110502
-testSource:
+name: empa_mlp_weighted
+session: 2020-03-06_233841
+source:
   name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
   pathToFile: data/meeting_room_sensors_201807_201907.csv
   fields:

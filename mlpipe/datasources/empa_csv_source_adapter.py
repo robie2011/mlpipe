@@ -6,6 +6,8 @@ import pandas as pd
 from .abstract_datasource_adapter import AbstractDatasourceAdapter, Field
 from ..processors.standard_data_format import StandardDataFormat
 
+nrows = None
+
 
 class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
     def __init__(self, fields: List[str], pathToFile: str):
@@ -17,7 +19,8 @@ class EmpaCsvSourceAdapter(AbstractDatasourceAdapter):
             self.pathToFile,
             sep=',',
             date_parser=lambda x: datetime.strptime(x, '%d.%m.%Y %H:%M:%S'),
-            parse_dates=['_TIMESTAMP'])
+            parse_dates=['_TIMESTAMP'],
+            nrows=nrows)
         data.columns = map(lambda s: s.strip(), data.columns.values)
         timestamps = data['_TIMESTAMP'].values
 

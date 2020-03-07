@@ -33,8 +33,8 @@ class TrainWorkflowManager(AbstractWorkflowManager):
             pattern = '^Error when checking target: expected .* to have \d+ dimensions, but got array with shape .*'
             if e.args and re.search(pattern, e.args[0]):
                 self.logger.error(f"Looks like input format do not match. "
-                                        f"Model maybe expect 2D data and receives 3D or, conversely."
-                                        f"Check pipeline.")
+                                  f"Model maybe expect 2D data and receives 3D or, conversely."
+                                  f"Check pipeline.")
             raise e
 
         evaluation_result = self._evaluate(fit_result)
@@ -43,13 +43,13 @@ class TrainWorkflowManager(AbstractWorkflowManager):
         for k, v in evaluation_result.items():
             self.logger.info(f"    {k}: {v}")
 
-        with TrainingProject(name=self.name, session_id=session_id, create=True) as project:
-            project.history = fit_result.history
-            project.model = fit_result.model
-            project.states = processor_states
-            project.evaluation = evaluation_result
-            project.description = self.description
-            return project.path_training_dir, fit_result.model
+        project = TrainingProject(name=self.name, session_id=session_id, create=True)
+        project.history = fit_result.history
+        project.model = fit_result.model
+        project.states = processor_states
+        project.evaluation = evaluation_result
+        project.description = self.description
+        return project.path_training_dir, fit_result.model
 
     def _evaluate(self, result: FitResult) -> Dict:
         pred_type = self.description['model']['predictionType']

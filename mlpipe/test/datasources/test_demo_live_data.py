@@ -2,6 +2,7 @@ import unittest
 
 from mlpipe.datasources.demo_live_data import DemoLiveData
 from mlpipe.utils.path_tool import dir_code
+from mlpipe.datasources import empa_csv_source_adapter as empa
 
 """
 11:23:55 ~/repos/2019_p9/code[master] > head data/meeting_room_sensors_201908_201912.csv
@@ -22,6 +23,8 @@ class TestDemoLiveData(unittest.TestCase):
     def test_fetch(self):
         path_test_csv_file = dir_code / "data" / "meeting_room_sensors_201908_201912.csv"
         window_size = 3
+
+        empa.nrows = 100
 
         source = DemoLiveData(
             pathToFile=path_test_csv_file,

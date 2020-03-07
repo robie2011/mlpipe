@@ -31,9 +31,13 @@ class VisualizerLiveApiAdapter(AbstractDatasourceAdapter):
         )
         self.source_returns_alias = True
 
+    def _setup_datetime(self):
+        date_to = datetime.datetime.now()
+        date_from = date_to - datetime.timedelta(minutes=self.duration_minutes + EXTRA_MINUTES)
+        return date_from, date_to
+
     def _fetch(self, _fields: List[Field]) -> StandardDataFormat:
-        self.source.date_to = datetime.datetime.now()
-        self.source.date_from = self.source.date_to - datetime.timedelta(minutes=self.duration_minutes + EXTRA_MINUTES)
+        self.source.date_from, self.source.date_to = self._setup_datetime()
         data = self.source.get()
         if self.print_output:
             print(data.to_dataframe())
