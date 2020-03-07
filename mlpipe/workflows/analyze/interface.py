@@ -14,7 +14,7 @@ class AnalyticsResultMeta:
     metrics: List[str]
     groupers: List[str]
     groupToPartitionerToPartition: List[List[int]]
-    prettyGroupnames: List[str]
+    prettyGroupnames: List[List[str]]
     metricsAggregationFunc: List[str]
 
 

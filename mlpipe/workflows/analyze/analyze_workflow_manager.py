@@ -29,31 +29,26 @@ class AnalyzeWorkflowManager(AbstractWorkflowManager):
             for g in self.groupers
         ]).T
 
-        groups = group_by_multi_columns(data_partitions)
-        n_groups = len(groups)
+        features = input_data.data
+
+        # combigroup
+        cgroups = group_by_multi_columns(data_partitions)
 
         # note: groups can have different size
-        n_max_group_members = np.max(np.fromiter(map(lambda x: x.indexes.shape[0], groups), dtype='int'))
-        grouped_data = create_np_group_data(groups, n_groups, n_max_group_members, input_data.data)
+        n_max_group_members = np.max(np.fromiter(map(lambda x: x.indexes.shape[0], cgroups), dtype='int'))
+        grouped_data = create_np_group_data(cgroups, n_max_group_members, features)
 
-        # (groups, aggregators, signals)
         output = np.full(
-            (n_groups, len(self.metrics), input_data.data.shape[1]),
+            (len(cgroups), len(self.metrics), features.shape[1]),
             fill_value=np.nan,
             dtype='float64'
         )
 
-        for i in range(len(self.metrics)):
-            aggreagtor = self.metrics[i]
+        for i, aggreagtor in enumerate(self.metrics):
             logger.debug("aggregate using: {0}".format(get_qualified_name(aggreagtor)))
-            # todo:
-            #   if in some cases like with "outlier" aggregator can return a smaller output
-            #   which only contains metrics for affected sensors.
-            #   To fix that we need to fillup empty sensors.
-            #   Anyway now we need to iterate over output labels and push it to final result.
             output[:, i, :] = aggreagtor.aggregate(grouped_data=grouped_data)
 
-        group_ids = np.array(list(map(lambda x: x.group_id, groups))).tolist()
+        group_ids = np.array(list(map(lambda x: x.group_id, cgroups))).tolist()
 
         meta = AnalyticsResultMeta(
             sensors=input_data.labels,

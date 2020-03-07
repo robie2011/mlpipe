@@ -11,42 +11,10 @@ from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.percentile import Percentile
 from mlpipe.groupers import YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper
 from mlpipe.helpers.test_helper import Timer
-from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup
+from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup, create_np_group_data
 
 tdata.DEBUG = True
 DISABLE_EXPORT = True
-
-
-def create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer):
-    # note: numpy currently do not support NaN for integer type array
-    # instead of nan we will get a very big negative value
-    # therefore we need to drop negative integers later
-    # see also: https://stackoverflow.com/questions/12708807/numpy-integer-nan
-
-    # note: true values for masked array means block that value
-    grouped_indexes = np.ma.zeros((n_groups, n_max_group_members), dtype='int')
-    grouped_indexes.mask = np.ones((n_groups, n_max_group_members), dtype='int')
-    for i in range(len(groups)):
-        g: CombinedGroup = groups[i]
-        n_current_group_size = g.indexes.shape[0]
-        grouped_indexes[i, :n_current_group_size] = g.indexes
-        grouped_indexes.mask[i, :n_current_group_size] = False
-    timer.tock("create grouped indexes")
-
-    n_sensors = raw_data_only.shape[1]
-    grouped_data = np.ma.zeros(
-        (n_groups, n_max_group_members, n_sensors),
-        fill_value=np.nan,
-        dtype='float64')
-    grouped_data.mask = grouped_indexes.mask
-
-    for group_id in range(n_groups):
-        _mask = np.invert(grouped_indexes.mask[group_id, :])
-        indexes = grouped_indexes[group_id][_mask]
-        n_samples = len(indexes)
-        grouped_data[group_id, :n_samples] = raw_data_only[indexes, :]
-    timer.tock("grouping indexes/data")
-    return grouped_data
 
 
 class AnalyticsChain(unittest.TestCase):
@@ -74,7 +42,8 @@ class AnalyticsChain(unittest.TestCase):
         timer.tock("calc max group size")
 
         n_sensors = raw_data_only.shape[1]
-        grouped_data = create_np_group_data(groups, n_groups, n_max_group_members, raw_data_only, timer)
+        grouped_data = create_np_group_data(groups, n_max_group_members, raw_data_only)
+        grouped_data = create_np_group_data(groups, n_max_group_members, raw_data_only)
 
         analyzers = [Min(sequence=np.nan), Max(sequence=np.nan), Mean(sequence=np.nan), NanCounter(sequence=np.nan),
                      Percentile(percentile=.25, sequence=np.nan),
