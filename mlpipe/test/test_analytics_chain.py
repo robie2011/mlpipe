@@ -11,7 +11,7 @@ from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.percentile import Percentile
 from mlpipe.groupers import YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper
 from mlpipe.helpers.test_helper import Timer
-from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup, create_np_group_data
+from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup, create_grouped_data
 
 tdata.DEBUG = True
 DISABLE_EXPORT = True
@@ -42,8 +42,8 @@ class AnalyticsChain(unittest.TestCase):
         timer.tock("calc max group size")
 
         n_sensors = raw_data_only.shape[1]
-        grouped_data = create_np_group_data(groups, n_max_group_members, raw_data_only)
-        grouped_data = create_np_group_data(groups, n_max_group_members, raw_data_only)
+        grouped_data = create_grouped_data(groups, n_max_group_members, raw_data_only)
+        grouped_data = create_grouped_data(groups, n_max_group_members, raw_data_only)
 
         analyzers = [Min(sequence=np.nan), Max(sequence=np.nan), Mean(sequence=np.nan), NanCounter(sequence=np.nan),
                      Percentile(percentile=.25, sequence=np.nan),

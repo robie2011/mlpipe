@@ -6,7 +6,7 @@ import numpy as np
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.groupers import AbstractGrouper
 from mlpipe.workflows.utils import get_qualified_name, get_class_name
-from .helper import create_np_group_data, group_by_multi_columns
+from .helper import create_grouped_data, group_by_multi_columns
 from .interface import AnalyticsResultMeta, AnalyticsResult
 from ..abstract_workflow_manager import AbstractWorkflowManager
 
@@ -36,7 +36,7 @@ class AnalyzeWorkflowManager(AbstractWorkflowManager):
 
         # note: groups can have different size
         n_max_group_members = np.max(np.fromiter(map(lambda x: x.indexes.shape[0], cgroups), dtype='int'))
-        grouped_data = create_np_group_data(cgroups, n_max_group_members, features)
+        grouped_data = create_grouped_data(cgroups, n_max_group_members, features)
 
         output = np.full(
             (len(cgroups), len(self.metrics), features.shape[1]),

@@ -7,7 +7,7 @@ import pandas as pd
 module_logger = logging.getLogger(__name__)
 
 
-def create_np_group_data(cgroups, n_max_group_members, features):
+def create_grouped_data(cgroups, n_max_group_members, features):
     n_groups = len(cgroups)
 
     module_logger.debug("create grouped indexes")
