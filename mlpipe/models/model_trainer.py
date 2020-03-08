@@ -48,7 +48,7 @@ def _create_model(
 
 
 def _create_model_fit_params(
-        data: ModelInputOutputSet,
+        data: ModelTrainTestSet,
         fit_desc: Dict,
         path_best_model: str,
         test_ratio: float):
@@ -59,9 +59,8 @@ def _create_model_fit_params(
         save_best_only=True,
         mode='auto')
 
-    splitter = ModelTrainTestSet.from_model_input_output(data, test_ratio=test_ratio)
-    train_set = splitter.get_train_set()
-    test_set = splitter.get_test_set()
+    train_set = data.get_train_set()
+    test_set = data.get_test_set()
     module_logger.info(f"Test set ratio is {test_ratio}")
     module_logger.info(f"Train set size is {train_set.x.shape[0]}. Test set size is {test_set.x.shape[0]}")
 
@@ -108,7 +107,7 @@ class FitResult:
     input_data: (np.ndarray, np.ndarray)
 
 
-def fit(model_description: dict, data: ModelInputOutputSet) -> FitResult:
+def fit(model_description: dict, data: ModelTrainTestSet) -> FitResult:
     sequential_model_desc: List[ClassDescription] = model_description['sequentialModel']
     compile_desc = model_description['compile']
     fit_desc = model_description.get('fit', {})

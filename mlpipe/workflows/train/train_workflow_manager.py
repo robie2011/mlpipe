@@ -21,9 +21,12 @@ class TrainWorkflowManager(AbstractWorkflowManager):
             input_data=pipeline_data,
             input_labels=self.model_description['input'],
             output_label=self.model_description['target'])
+        data = ModelTrainTestSet.from_model_input_output(
+            model_input_output,
+            test_ratio=self.model_description['testRatio'])
 
         try:
-            fit_result = fit(model_description=self.model_description, data=model_input_output)
+            fit_result = fit(model_description=self.model_description, data=data)
         except ValueError as e:
             import re
             pattern = '^Error when checking target: expected .* to have \d+ dimensions, but got array with shape .*'
