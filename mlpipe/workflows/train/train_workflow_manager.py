@@ -5,7 +5,7 @@ from typing import Dict
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.models.model_trainer import fit, FitResult
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
-from mlpipe.workflows.data_selector import convert_to_model_input_output_set
+from mlpipe.workflows.data_selector import convert_to_model_input_output_set, ModelTrainTestSet
 
 
 @dataclass
@@ -33,11 +33,7 @@ class TrainWorkflowManager(AbstractWorkflowManager):
                                   f"Check pipeline.")
             raise e
 
-        loss, acc = self._evaluate(fit_result)
-        evaluation_result = {
-            "loss": loss,
-            "acc": acc
-        }
+        evaluation_result = TrainWorkflowManager.evaluation(fit_result)
 
         self.logger.info("evaluation result:")
         for k, v in evaluation_result.items():
@@ -52,6 +48,15 @@ class TrainWorkflowManager(AbstractWorkflowManager):
         project.description = self.description
         return project.path_training_dir, fit_result.model
 
-    def _evaluate(self, result: FitResult) -> Dict:
-        return result.model.evaluate(x=result.validation_data[0], y=result.validation_data[1])
+    @staticmethod
+    def evaluation(fit_result):
+        x, y = fit_result.validation_data
+        loss, acc = fit_result.model.evaluate(x=x, y=y)
+        evaluation_result = {
+            "loss": loss,
+            "acc": acc
+        }
+        return evaluation_result
+
+
 
