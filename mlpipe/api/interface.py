@@ -33,7 +33,3 @@ class AnalyzeRequest(CreatePipelineRequest):
 
 CreateOrAnalyzePipeline = Union[AnalyzeRequest, CreatePipelineRequest]
 
-
-class PredictionTypes(Enum):
-    BINARY = "binary"
-    REGRESSION = "regression"

@@ -5,7 +5,6 @@ from mlpipe.config.training_project import TrainingProject
 from mlpipe.datasources.internal.cached_datasource import CachedDatasource
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.workflows.evaluate.evaluate_workflow_manager import EvaluateWorkflowManager
-from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 
 module_logger = logging.getLogger(__name__)
@@ -18,12 +17,6 @@ def _create_workflow_evaluate(description: Dict, execution_mode: ExecutionModes)
 
     desc_merged = project.description.copy()
     desc_merged['source'] = description['source']
-    prediction_type = desc_merged['model']['predictionType']
-
-    try:
-        evaluator = prediction_evaluators.get(prediction_type)
-    except KeyError:
-        raise ValueError(f"Prediction type '{prediction_type}' not implemented!")
 
     source_adapter = CachedDatasource(desc_merged['source'])
 
@@ -39,6 +32,5 @@ def _create_workflow_evaluate(description: Dict, execution_mode: ExecutionModes)
         data_adapter=source_adapter,
         pipeline_executor=pipeline_executor,
         model=model,
-        evaluator=evaluator,
         pipeline_states=project.states
     )

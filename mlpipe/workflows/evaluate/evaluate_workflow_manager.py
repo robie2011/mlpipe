@@ -4,7 +4,6 @@ from typing import List
 from keras import Sequential
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_output_set
-from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEvaluator
 
 
 @dataclass
@@ -17,7 +16,6 @@ class EvaluationResult:
 class EvaluateWorkflowManager(AbstractWorkflowManager):
     pipeline_states: List[object]
     model: Sequential
-    evaluator: PredictionTypeEvaluator
 
     def run(self):
         time_start = time()

@@ -4,7 +4,6 @@ from typing import Dict
 from mlpipe.config.training_project import TrainingProject
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.dsl_interpreter.instance_creator import create_output_adapter, create_source_adapter
-from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 from mlpipe.workflows.integrate.integrate_workflow_manager import IntegrateWorkflowManager
 from mlpipe.pipeline.pipeline_builder import build_pipeline_executor
 
@@ -21,11 +20,6 @@ def _create_workflow_integrate(description: Dict, execution_mode: ExecutionModes
     prediction_type = desc_merged['model']['predictionType']
     execution_limit = description.get("limitExecution", -1)
 
-    try:
-        evaluator = prediction_evaluators.get(prediction_type)
-    except KeyError:
-        raise ValueError(f"Prediction type '{prediction_type}' not implemented!")
-
     source_adapter = create_source_adapter(desc_merged['source'])
     output_adapter = create_output_adapter(description['integrate']['output'])
 
@@ -41,7 +35,6 @@ def _create_workflow_integrate(description: Dict, execution_mode: ExecutionModes
         data_adapter=source_adapter,
         pipeline_executor=pipeline_executor,
         model=model,
-        evaluator=evaluator,
         pipeline_states=project.states,
         name=name,
         session_id=session_id,

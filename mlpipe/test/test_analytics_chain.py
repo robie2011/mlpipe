@@ -11,7 +11,7 @@ from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.percentile import Percentile
 from mlpipe.groupers import YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper
 from mlpipe.helpers.test_helper import Timer
-from mlpipe.workflows.analyze.helper import group_by_multi_columns, CombinedGroup, create_grouped_data
+from mlpipe.workflows.analyze.helper import group_by_multi_columns, create_grouped_data
 
 tdata.DEBUG = True
 DISABLE_EXPORT = True

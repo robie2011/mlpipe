@@ -9,8 +9,6 @@ from mlpipe.integration import PredictionResult
 from mlpipe.integration.output.interface import AbstractOutput
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_set
-from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
-from mlpipe.workflows.evaluate.prediction_type_evaluator import PredictionTypeEvaluator
 
 
 @dataclass
@@ -18,7 +16,6 @@ class IntegrateWorkflowManager(AbstractWorkflowManager):
     name: str
     session_id: str
     model: Sequential
-    evaluator: PredictionTypeEvaluator
     pipeline_states: List[object]
     frequency_minutes: int
     output_adapter: AbstractOutput
@@ -46,8 +43,6 @@ class IntegrateWorkflowManager(AbstractWorkflowManager):
 
         time_start = datetime.now()
         model_description = self.description['model']
-        prediction_type = model_description['predictionType']
-        func_prediction_formatter = prediction_evaluators[prediction_type].prediction_formatter
 
         logger.info("download data from source")
         source_data = self.data_adapter.get()
@@ -70,7 +65,7 @@ class IntegrateWorkflowManager(AbstractWorkflowManager):
             shape_initial=source_data.data.shape,
             shape_pipeline=pipeline_data.data.shape,
             timestamps=pipeline_data.timestamps,
-            predictions=func_prediction_formatter(predictions)
+            predictions=predictions
         )
         self.output_adapter.write(result)
         elapsed_seconds = (datetime.now() - time_start).total_seconds()

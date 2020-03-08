@@ -6,7 +6,6 @@ from mlpipe.config.training_project import TrainingProject
 from mlpipe.models.model_trainer import fit, FitResult
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_output_set
-from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluators
 
 
 @dataclass
@@ -34,7 +33,11 @@ class TrainWorkflowManager(AbstractWorkflowManager):
                                   f"Check pipeline.")
             raise e
 
-        evaluation_result = self._evaluate(fit_result)
+        loss, acc = self._evaluate(fit_result)
+        evaluation_result = {
+            "loss": loss,
+            "acc": acc
+        }
 
         self.logger.info("evaluation result:")
         for k, v in evaluation_result.items():
@@ -50,8 +53,5 @@ class TrainWorkflowManager(AbstractWorkflowManager):
         return project.path_training_dir, fit_result.model
 
     def _evaluate(self, result: FitResult) -> Dict:
-        pred_type = self.description['model']['predictionType']
-        evaluator = prediction_evaluators[pred_type]
-        predictions = result.model.predict(x=result.validation_data[0])
-        targets = result.validation_data[1]
-        return evaluator.evaluate(predictions=predictions, targets=targets)
+        return result.model.evaluate(x=result.validation_data[0], y=result.validation_data[1])
+
