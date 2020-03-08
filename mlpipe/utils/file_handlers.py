@@ -10,6 +10,11 @@ def read_json(path: str):
         return json.load(f)
 
 
+def read_text(path: str):
+    with open(path, "r") as f:
+        return f.read()
+
+
 def write_binary(path: str, data: object):
     import pickle
     with open(path, "wb") as f:
