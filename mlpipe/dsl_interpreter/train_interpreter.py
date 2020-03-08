@@ -22,4 +22,5 @@ def _create_workflow_training(description: Dict, execution_mode: ExecutionModes)
         description=description,
         name=description['name'],
         data_adapter=source_adapter,
-        pipeline_executor=pipeline_executor)
+        pipeline_executor=pipeline_executor,
+        model_description=description['model'])

@@ -12,22 +12,19 @@ from mlpipe.workflows.evaluate.prediction_evaluators import prediction_evaluator
 @dataclass
 class TrainWorkflowManager(AbstractWorkflowManager):
     name: str
+    model_description: Dict
 
     def run(self):
-        model_description = self.description['model']
-
-        session_id = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         source_data = self.data_adapter.get()
         pipeline_data = self.pipeline_executor.execute(source_data)
-        processor_states = self.pipeline_executor.get_states()
 
         model_input_output = convert_to_model_input_output_set(
             input_data=pipeline_data,
-            input_labels=model_description['input'],
-            output_label=model_description['target'])
+            input_labels=self.model_description['input'],
+            output_label=self.model_description['target'])
 
         try:
-            fit_result = fit(model_description=model_description, data=model_input_output)
+            fit_result = fit(model_description=self.model_description, data=model_input_output)
         except ValueError as e:
             import re
             pattern = '^Error when checking target: expected .* to have \d+ dimensions, but got array with shape .*'
@@ -43,10 +40,11 @@ class TrainWorkflowManager(AbstractWorkflowManager):
         for k, v in evaluation_result.items():
             self.logger.info(f"    {k}: {v}")
 
+        session_id = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         project = TrainingProject(name=self.name, session_id=session_id, create=True)
         project.history = fit_result.history
         project.model = fit_result.model
-        project.states = processor_states
+        project.states = self.pipeline_executor.get_states()
         project.evaluation = evaluation_result
         project.description = self.description
         return project.path_training_dir, fit_result.model
