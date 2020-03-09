@@ -13,7 +13,7 @@ source:
     - 40210148 as Präsenz
 
 
-integrate:
+integrate: 
   output:
     name: mlpipe.dsl.sinks.CsvOutput
     output_path: output/40210013_co2_predictions.csv

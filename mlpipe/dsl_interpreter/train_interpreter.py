@@ -15,7 +15,7 @@ def _create_workflow_training(description: Dict, execution_mode: ExecutionModes)
     description_pipeline = []
     description_pipeline += description.get('pipelinePrimary', [])
     description_pipeline += description.get('pipelineSecondary', [])
-    module_logger.info(f"pipes found: {len(description_pipeline)}")
+    module_logger.info(f"filters found: {len(description_pipeline)}")
     pipeline_executor = build_pipeline_executor(descriptions=description_pipeline, execution_mode=execution_mode)
 
     return TrainWorkflowManager(

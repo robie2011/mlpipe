@@ -22,7 +22,7 @@ def _create_workflow_analyze(description: Dict, execution_mode: ExecutionModes):
     description_pipeline += description.get('pipelinePrimary', [])
 
     str_pipes = ", ".join(_get_descriptions_name(description_pipeline))
-    module_logger.info(f"pipes found {len(description_pipeline)}: {str_pipes}")
+    module_logger.info(f"filters found {len(description_pipeline)}: {str_pipes}")
     pipeline_executor = build_pipeline_executor(descriptions=description_pipeline, execution_mode=execution_mode)
 
     groupers_description = description['analyze']['groupBy']

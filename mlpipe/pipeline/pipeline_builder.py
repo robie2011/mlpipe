@@ -30,7 +30,7 @@ def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
             module_logger.error(e)
             raise
 
-    module_logger.debug("extracted pipes: {0}".format(len(pipeline)))
+    module_logger.debug("extracted filters: {0}".format(len(pipeline)))
     return pipeline
 
 
@@ -67,7 +67,7 @@ def _reduce_pipeline(pipeline: List[AbstractProcessor]) -> List[AbstractProcesso
         # - multi aggregation has the same sequence length
         cast(MultiAggregation, reduced_pipeline[-1]).instances.append(agg)
 
-    module_logger.debug("reduced pipes: {0}".format(len(reduced_pipeline)))
+    module_logger.debug("reduced filters: {0}".format(len(reduced_pipeline)))
     return reduced_pipeline
 
 

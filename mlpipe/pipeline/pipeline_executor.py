@@ -39,13 +39,13 @@ class PipelineExecutor(InstanceLoggerMixin):
         return states
 
     def _set_states(self, states: Dict = {}):
-        flattend_pipes = []
+        flattend_filters = []
 
         for p in self.pipeline:
             if isinstance(p, MultiAggregation):
-                flattend_pipes += p.instances
+                flattend_filters += p.instances
             else:
-                flattend_pipes.append(p)
+                flattend_filters.append(p)
 
-        for p in flattend_pipes:
+        for p in flattend_filters:
             p.state = states.get(p.id, None)

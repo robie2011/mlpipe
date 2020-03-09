@@ -23,7 +23,7 @@ def _create_workflow_evaluate(description: Dict, execution_mode: ExecutionModes)
     description_pipeline = []
     description_pipeline += desc_merged.get('pipelinePrimary', [])
     description_pipeline += desc_merged.get('pipelineSecondary', [])
-    module_logger.info(f"pipes found: {len(description_pipeline)}")
+    module_logger.info(f"filters found: {len(description_pipeline)}")
 
     pipeline_executor = build_pipeline_executor(descriptions=description_pipeline, execution_mode=execution_mode)
 
