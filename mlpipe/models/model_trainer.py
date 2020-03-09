@@ -10,7 +10,7 @@ import numpy as np
 from keras import Sequential
 from keras.callbacks import ModelCheckpoint, History
 
-from mlpipe.config import app_settings
+from mlpipe.config.app_settings import AppConfig
 from mlpipe.workflows.data_selector import ModelInputOutputSet, ModelTrainTestSet
 from mlpipe.workflows.interface import ClassDescription
 from mlpipe.workflows.utils import pick_from_dict_kwargs, create_instance
@@ -55,7 +55,7 @@ def _create_model_fit_params(
     checkpoint = ModelCheckpoint(
         path_best_model,
         verbose=0,
-        monitor=app_settings.training_monitor,
+        monitor=AppConfig['training.model_checkpoint_monitor'],
         save_best_only=True,
         mode='auto')
 

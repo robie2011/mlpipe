@@ -55,8 +55,7 @@ class StandardDataFormat:
         if n_sensors != len(self.labels):
             raise ValueError(f"Labels ({len(self.labels)}) do not match. Data shape is {self.data.shape}")
 
-        if app_settings.TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK is False \
-                and self.timestamps.shape[0] != self.data.shape[0]:
+        if self.timestamps.shape[0] != self.data.shape[0]:
             raise MLException(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
 
         self.timestamps = self.timestamps.astype('datetime64[ns]')

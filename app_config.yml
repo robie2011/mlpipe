@@ -15,3 +15,4 @@ unit_test:
 
 training:
   dir_data: /tmp/mlpipe/training
+  model_checkpoint_monitor: 'val_loss'

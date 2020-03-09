@@ -4,8 +4,8 @@ from os.path import basename
 from pathlib import Path
 from typing import List, cast
 
-from mlpipe.config import app_settings
 # some imports are done withing functions for performance improvements
+from mlpipe.config.app_settings import AppConfig
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
 from mlpipe.utils.file_tool import write_text_file
 from mlpipe.workflows.analyze.create_report import generate_html_report
@@ -32,8 +32,9 @@ def _get_history(name: str, session_id: str):
     # todo: check
     # code duplication: (TrainingProject)
     # because TrainingProject requires loading tensorflow lib
+
     path_history = os.path.join(
-        app_settings.dir_training, name, session_id, TrainingProjectFileNames.HISTORY_SUMMARY.value)
+        AppConfig['training.dir_data'], name, session_id, TrainingProjectFileNames.HISTORY_SUMMARY.value)
     if not os.path.isfile(path_history):
         return None
 
@@ -49,10 +50,10 @@ def list_models(args):
     _print_heading("LIST")
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     result: List[ModelLocation] = []
-    names = os.listdir(app_settings.dir_training)
+    names = os.listdir(AppConfig['training.dir_data'])
     for name in names:
-        for session_id in os.listdir(os.path.join(app_settings.dir_training, name)):
-            model_path = os.path.join(app_settings.dir_training, name, session_id)
+        for session_id in os.listdir(os.path.join(AppConfig['training.dir_data'], name)):
+            model_path = os.path.join(AppConfig['training.dir_data'], name, session_id)
             history = _get_history(name=name, session_id=session_id)
             if history is None:
                 print("history not found in training folder: {0}".format(model_path))

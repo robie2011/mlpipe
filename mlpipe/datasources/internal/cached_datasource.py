@@ -2,7 +2,6 @@ import hashlib
 from dataclasses import dataclass
 from typing import Dict
 
-from mlpipe.config import app_settings
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.dsl_interpreter.instance_creator import create_source_adapter
 from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
@@ -30,7 +29,7 @@ class CachedDatasource(InstanceLoggerMixin):
         logger = self.logger
         cache_id = hashlib.sha256(json.dumps(self.source_description, sort_keys=True).encode('utf-8')).hexdigest()
         logger.info("caching source is enabled. Cache-Id is {0}".format(cache_id))
-        path_to_cache = os.path.join(app_settings.dir_tmp, "cache_{0}".format(cache_id))
+        path_to_cache = os.path.join(AppConfig['general.dir_cache'], "cache_{0}".format(cache_id))
         logger.info(f"path for cache is: {path_to_cache}")
         if os.path.isfile(path_to_cache):
             logger.info(MSG_CACHED_VERSION_FOUND.format(path_to_cache))

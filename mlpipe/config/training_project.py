@@ -5,7 +5,7 @@ from keras import Sequential
 from keras.callbacks import History
 from keras.engine.saving import load_model
 
-from mlpipe.config import app_settings
+from mlpipe.config.app_settings import AppConfig
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
 from mlpipe.utils import file_handlers
 
@@ -15,7 +15,7 @@ class TrainingProject(object):
         self.name = name
         self.session_id = session_id
         self.path_training_dir = os.path.join(
-            app_settings.dir_training,
+            AppConfig['training.dir_data'],
             name,
             session_id)
         if not create and not os.path.isdir(self.path_training_dir):

@@ -4,11 +4,9 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mlpipe.config import app_settings
-from mlpipe.helpers import transform_to_2d_matrix
+from mlpipe.helpers import transform_to_2d_matrix, generate_timestamps
 from mlpipe.processors.range_encoder import RangeEncoder
 from mlpipe.processors.standard_data_format import StandardDataFormat
-
-app_settings.TEST_STANDARD_FORMAT_DISALBE_TIMESTAMP_CHECK = True
 
 
 class TestOneHotEncoding(unittest.TestCase):
@@ -26,7 +24,8 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[2, 1] = 1
         result_expected[3, 2] = 1
 
-        result = encoder._process2d(StandardDataFormat(data=data, labels=['hour'], timestamps=np.array([])))
+        result = encoder._process2d(StandardDataFormat(
+            data=data, labels=['hour'], timestamps=generate_timestamps(samples=result_expected.shape[0])))
         assert_array_equal(result_expected, result.data)
 
     def test_range_encoder_two_cols(self):
@@ -48,7 +47,8 @@ class TestOneHotEncoding(unittest.TestCase):
         result_expected[3, 1 + 2] = 1
         result_expected[:, 0] = np.array([1, 2, 3, 4])
 
-        result = encoder._process2d(StandardDataFormat(data=data, labels=['hour', 'abc'], timestamps=np.array([])))
+        result = encoder._process2d(StandardDataFormat(
+            data=data, labels=['hour', 'abc'], timestamps=generate_timestamps(samples=result_expected.shape[0])))
         assert_array_equal(result_expected, result.data)
         self.assertEqual("abc", result.labels[0])
         self.assertEqual("hourOneHot$0", result.labels[1])
