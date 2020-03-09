@@ -69,11 +69,3 @@ class TrainingProject(object):
 
         file_handlers.write_binary(self._get_project_file(TrainingProjectFileNames.HISTORY_SUMMARY), history_summary)
 
-    @property
-    def evaluation(self) -> Dict:
-        return file_handlers.read_binary(self._get_project_file(TrainingProjectFileNames.EVALUATION))
-
-    @evaluation.setter
-    def evaluation(self, data: Dict):
-        file_handlers.write_binary(self._get_project_file(TrainingProjectFileNames.EVALUATION), data)
-

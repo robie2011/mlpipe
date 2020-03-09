@@ -36,30 +36,12 @@ class TrainWorkflowManager(AbstractWorkflowManager):
                                   f"Check pipeline.")
             raise e
 
-        evaluation_result = TrainWorkflowManager.evaluation(fit_result)
-
-        self.logger.info("evaluation result:")
-        for k, v in evaluation_result.items():
-            self.logger.info(f"    {k}: {v}")
-
         session_id = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         project = TrainingProject(name=self.name, session_id=session_id, create=True)
         project.history = fit_result.history
         project.model = fit_result.model
         project.states = self.pipeline_executor.get_states()
-        project.evaluation = evaluation_result
         project.description = self.description
         return project.path_training_dir, fit_result.model
-
-    @staticmethod
-    def evaluation(fit_result):
-        x, y = fit_result.validation_data
-        loss, acc = fit_result.model.evaluate(x=x, y=y)
-        evaluation_result = {
-            "loss": loss,
-            "acc": acc
-        }
-        return evaluation_result
-
 
 
