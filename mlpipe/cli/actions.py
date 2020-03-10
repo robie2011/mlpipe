@@ -170,7 +170,9 @@ def analyze_data(args):
         output_file_json = output_folder / f"report_{file_basename}.json"
         print(f"writing report: {output_file}")
         generate_html_report(json_str=data, output_path=output_file)
-        write_text_file(output_file_json, data)
+
+        if args.json:
+            write_text_file(output_file_json, data)
 
 
 def export_data(args):

@@ -37,6 +37,7 @@ def main():
 
     # analyze
     parser_analyze = subparsers.add_parser("analyze")
+    parser_analyze.add_argument("--json", "-j", action='store_true')
     parser_analyze.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     parser_export = subparsers.add_parser("export")
@@ -62,3 +63,8 @@ def main():
     except domain_exception_classes as e:
         module_logger.error(e)
         exit(1)
+
+
+if __name__ == "__main__":
+    main()
+
