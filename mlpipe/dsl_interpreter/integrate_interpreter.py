@@ -17,7 +17,6 @@ def _create_workflow_integrate(description: Dict, execution_mode: ExecutionModes
 
     desc_merged = project.description.copy()
     desc_merged['source'] = description['source']
-    prediction_type = desc_merged['model']['predictionType']
     execution_limit = description.get("limitExecution", -1)
 
     source_adapter = create_source_adapter(desc_merged['source'])

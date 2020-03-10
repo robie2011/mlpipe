@@ -21,7 +21,7 @@ def main():
     parser_train.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # test
-    parser_evaluate = subparsers.add_parser('test')
+    parser_evaluate = subparsers.add_parser('evaluate')
     parser_evaluate.add_argument("files", metavar="FILES", default=[], nargs='*')
 
     # integrate
@@ -49,7 +49,7 @@ def main():
         "train": train_model,
         "list": list_models,
         "describe": describe_model,
-        "test": evaluate_model,
+        "evaluate": evaluate_model,
         "analyze": analyze_data,
         "integrate": integrate_model,
         "export": export_data
