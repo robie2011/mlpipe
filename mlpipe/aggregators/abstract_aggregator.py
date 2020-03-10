@@ -42,7 +42,7 @@ class AbstractAggregator(AbstractProcessor):
             fields_in, fields_out = [], []
             for f in self.generate:
                 fields_in.append(f['inputField'])
-                fields_out.append(f.get('outputField', f"{f['inputField']}${self.__name__}"))
+                fields_out.append(f.get('outputField', f"{f['inputField']}${self.__class__}"))
 
         try:
             grouped_data = aggregation_data.get_partial_data(fields=fields_in)
