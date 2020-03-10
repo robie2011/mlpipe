@@ -8,8 +8,8 @@ from mlpipe.datasources.visualizer_live_api_adapter import VisualizerLiveApiAdap
 class TestVisualizerLiveApiAdapter(unittest.TestCase):
     def test_adapter(self):
         adapter = VisualizerLiveApiAdapter(
-            username=AppConfig['unit_test.visualizer_api_auth.username'],
-            password=AppConfig['unit_test.visualizer_api_auth.password'],
+            username="n/a",
+            password="n/a",
             duration_minutes=5,
             fields=["40210033 as CO2", "40210032 as InnenTemperatur"]
         )

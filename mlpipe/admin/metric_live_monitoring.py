@@ -10,15 +10,18 @@ from ordered_set import OrderedSet
 from requests_ntlm import HttpNtlmAuth
 from typing_extensions import TypedDict
 
+from mlpipe.config.app_config_parser import AppConfigParser
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
 from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
+from mlpipe.utils.file_handlers import read_yaml
 from mlpipe.utils.path_tool import dir_code
 
 module_logger = logging.getLogger(__file__)
 
-username = AppConfig['unit_test.visualizer_api_auth.username']
-password = AppConfig['unit_test.visualizer_api_auth.password']
+secret_config = AppConfigParser(read_yaml("/Users/robert.rajakone/.credentials_empa"))
+username = secret_config['visualizer_api_auth.username']
+password = secret_config['visualizer_api_auth.password']
 
 metric = sys.argv[1]
 frequency_seconds = 30

@@ -12,8 +12,8 @@ class TestVisualizerApiAdapter(unittest.TestCase):
     def test_standard_case(self):
         adapter = VisualizerApiAdapter(
             fields=["40210033 as CO2", "40210032 as InnenTemperatur"],
-            username=AppConfig['unit_test.visualizer_api_auth.username'],
-            password=AppConfig['unit_test.visualizer_api_auth.password'],
+            username="dummy_value",
+            password="dummy_value",
             date_from='2020-02-15T12:00',
             date_to='2020-02-15T13:00')
 
