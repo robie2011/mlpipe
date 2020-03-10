@@ -7,7 +7,7 @@ from typing import List, cast
 # some imports are done withing functions for performance improvements
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.dsl_interpreter.interpreter import create_workflow_from_file
-from mlpipe.utils.file_tool import write_text_file
+from mlpipe.utils.file_handlers import write_text_file
 from mlpipe.workflows.analyze.create_report import generate_html_report
 from mlpipe.workflows.analyze.interface import AnalyticsResult
 from mlpipe.workflows.utils import load_description_file

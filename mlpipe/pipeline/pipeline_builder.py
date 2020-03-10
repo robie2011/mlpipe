@@ -1,8 +1,7 @@
 import logging
-from typing import List, cast
+from typing import List, cast, Dict
 
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
-from mlpipe.api.interface import PipelineDescription
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
 from mlpipe.exceptions.interface import MLPipeError
 from mlpipe.processors.interfaces import AbstractProcessor
@@ -13,7 +12,7 @@ from mlpipe.workflows.utils import get_component_config, create_instance
 module_logger = logging.getLogger(__name__)
 
 
-def _initialize_processors_and_aggregators(descriptions: PipelineDescription):
+def _initialize_processors_and_aggregators(descriptions: Dict):
     pipeline: List[AbstractProcessor] = []
     for definition in descriptions:
         try:
@@ -71,7 +70,7 @@ def _reduce_pipeline(pipeline: List[AbstractProcessor]) -> List[AbstractProcesso
     return reduced_pipeline
 
 
-def _filter_execution_mode(descriptions: PipelineDescription, execution_mode: ExecutionModes) -> PipelineDescription:
+def _filter_execution_mode(descriptions: Dict, execution_mode: ExecutionModes) -> Dict:
     description_filtered = []
     for d in descriptions:
         if '_condition' not in d or d['_condition'] == execution_mode.name:
@@ -81,7 +80,7 @@ def _filter_execution_mode(descriptions: PipelineDescription, execution_mode: Ex
     return description_filtered
 
 
-def build_pipeline_executor(descriptions: PipelineDescription, execution_mode: ExecutionModes) -> PipelineExecutor:
+def build_pipeline_executor(descriptions: Dict, execution_mode: ExecutionModes) -> PipelineExecutor:
     set_pipe_identification(descriptions)
     description_filtered = _filter_execution_mode(descriptions, execution_mode)
     flatten_pipeline = _initialize_processors_and_aggregators(description_filtered)

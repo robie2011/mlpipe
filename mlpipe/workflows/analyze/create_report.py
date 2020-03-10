@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 from mlpipe.config.app_settings import AppConfig
-from mlpipe.utils.file_tool import read_text_file_lines, write_text_file
+from mlpipe.utils.file_handlers import write_text_file, read_text_file_lines
 from mlpipe.utils.path_tool import get_abspath_or_relpath
 
 
