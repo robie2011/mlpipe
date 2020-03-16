@@ -5,7 +5,7 @@ general:
 reporting:
   hosting_url_prefix: "https://cdn.jsdelivr.net/gh/robie2011/test2020@master/"
   base_href: "#"
-  html_template_path: "./static/index.html"
+  html_template_path: "./templates/index.html"
 
 training:
   dir_data: /tmp/mlpipe/training
