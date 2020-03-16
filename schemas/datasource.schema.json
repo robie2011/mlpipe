@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "datasource definition",
+    "definitions": {
+        "fields": {
+            "type": "array",
+            "description": "record existing fields for check your statement for valid fields",
+            "examples": ["field40284 as temperature13"],
+            "items": {
+                "type": "string"
+            }
+        },
+
+        "datasources": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": ["existingSource", "fields"],
+                    "properties": {
+                        "existingSource": {
+                            "type": "string"
+                        },
+                        "fields": { "$ref": "#definitions/fields"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "config", "fields"],
+                    "properties": {
+                        "name": {
+                            "const": "EmpaCsvAdapter"
+                        },
+                        "fields": { "$ref": "#definitions/fields"},
+                        "config": {
+                            "type": "object",
+                            "required": ["pathToFile"],
+                            "properties": {
+                                "pathToFile": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "Aggregators",
+    "description": "aggregator interface",
+    "definitions": {
+        "anyAggregator": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "const": "aggregators.Min"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "const": "aggregators.Max"
+                            
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name",
+                        "config"
+                    ],
+                    "properties": {
+                        "name": {
+                            "const":"feature_engineering.TimeFeatureExtractor"
+                        },
+                        "config": {
+                            "type": "object",
+                            "required": [
+                                "extract"
+                            ],
+                            "properties": {
+                                "extract": {
+                                    "enum": [
+                                        "hour",
+                                        "weekday",
+                                        "month"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

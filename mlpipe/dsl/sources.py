@@ -1,6 +1,4 @@
 # noinspection PyUnresolvedReferences
-from mlpipe.datasources.demo_live_data import DemoLiveData
-# noinspection PyUnresolvedReferences
 from mlpipe.datasources.empa_csv_source_adapter import EmpaCsvSourceAdapter
 # noinspection PyUnresolvedReferences
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter

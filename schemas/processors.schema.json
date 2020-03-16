@@ -1,0 +1,99 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "test01",
+    "title": "Test",
+    "definitions": {
+        "arrayOfStrings": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "anyProcessor": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "name",
+                        "config"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "process"
+                        },
+                        "name": {
+                            "const": "processor.ColumnDropper"
+                        },
+                        "config": {
+                            "type": "object",
+                            "properties": {
+                                "fields": {
+                                    "$ref": "#definitions/arrayOfStrings"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "name",
+                        "config"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "process"
+                        },
+                        "name": {
+                            "const": "processor.OutlierRemover"
+                        },
+                        "config": {
+                            "type": "array",
+                            "required": [
+                                "field"
+                            ],
+                            "items": {
+                                "properties": {
+                                    "field": {
+                                        "type": "string"
+                                    },
+                                    "min": {
+                                        "type": "number"
+                                    },
+                                    "max": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "minutes",
+                        "aggregations"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "aggregate"
+                        },
+                        "minutes": {
+                            "type": "number",
+                            "minimum": 2
+                        },
+                        "aggregations": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "aggregators.schema.json#definitions/anyAggregator"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
