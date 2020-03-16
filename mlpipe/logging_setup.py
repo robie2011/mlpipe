@@ -6,6 +6,7 @@ import coloredlogs
 import yaml
 
 from mlpipe.utils.dictionary_parser import DictionaryParser
+from mlpipe.utils.path_tool import dir_code
 
 
 def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_key='LOG_CFG'):
@@ -18,7 +19,8 @@ def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_k
     value = os.getenv(env_key, None)
     if value:
         path = value
-    path = os.path.realpath(path)
+
+    path = dir_code / path
     if os.path.exists(path):
         with open(path, 'rt') as f:
             try:
