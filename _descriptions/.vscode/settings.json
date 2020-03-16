@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        "schemas/pipe.schema.json": ["/train.*.yml", "/train.*.yaml"],
+        "schemas/example.schema.json": ["example.yml"]
+    }
+}

@@ -1,5 +1,5 @@
-FROM python:3.6
-# python 3.7 is not yet compatible with PyYAML
-# python 3.8 is not yet compatible with tensorflow
-ADD *:wq
-RUN pip install dataclass && python setup.py install
+FROM robie2011/mlpipe-base
+ADD ./ /opt/mlpipe/
+RUN /bin/bash -c "ln -s /opt/mlpipe/mlpipe.cli.sh /usr/bin/mlpipe && mkdir /data"
+WORKDIR /data
+ENTRYPOINT [ "/opt/mlpipe/mlpipe.cli.sh"]

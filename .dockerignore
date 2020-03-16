@@ -1,0 +1,10 @@
+*
+!mlpipe/*
+!static/*
+!scripts/*
+!*.txt
+!*.py
+!*.yaml
+!*.yml
+!*.cfg
+!*.sh

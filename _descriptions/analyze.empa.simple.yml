@@ -20,5 +20,8 @@ analyze:
     - name: mlpipe.dsl.aggregators.Min
     - name: mlpipe.dsl.aggregators.NanCounter
     - name: mlpipe.dsl.aggregators.Counter
+    - name: mlpipe.dsl.aggregators.Sum
+    - name: mlpipe.dsl.aggregators.FreezedValueCounter
+      max_freezed_values: 180
     - name: mlpipe.dsl.aggregators.Percentile
       percentile: 75

@@ -168,10 +168,11 @@ def analyze_data(args):
         output_folder = Path(os.path.dirname(desc_file))
         output_file = output_folder / f"report_{file_basename}.html"
         output_file_json = output_folder / f"report_{file_basename}.json"
-        print(f"writing report: {output_file}")
+        print(f"report written: {output_file}")
         generate_html_report(json_str=data, output_path=output_file)
 
         if args.json:
+            print(f"json file written: {output_file_json}")
             write_text_file(output_file_json, data)
 
 
