@@ -1,6 +1,5 @@
 import unittest
 from typing import List
-from unittest.mock import MagicMock
 
 import numpy as np
 from numpy.testing import assert_array_equal
@@ -10,7 +9,7 @@ from mlpipe.aggregators.aggregator_output import AggregatorOutput
 from mlpipe.aggregators.counter import Counter
 from mlpipe.dsl_interpreter.descriptions import InputOutputField
 from mlpipe.processors.standard_data_format import StandardDataFormat
-import mlpipe.helpers.data as helper_data
+import mlpipe.test.helpers.data as helper_data
 
 
 class DummyAggreagor(AbstractAggregator):

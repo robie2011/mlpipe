@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-import mlpipe.helpers.data as helper_data
+import mlpipe.test.helpers.data as helper_data
 from mlpipe.aggregators.max import Max
 from mlpipe.aggregators.mean import Mean
 from mlpipe.aggregators.min import Min

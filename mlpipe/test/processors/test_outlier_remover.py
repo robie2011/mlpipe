@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from numpy.testing import assert_array_equal
 
-import mlpipe.helpers.data as helper_data
+import mlpipe.test.helpers.data as helper_data
 from mlpipe.aggregators.outlier import InputOutputLimits
 from mlpipe.processors.outlier_remover import OutlierRemover
 from mlpipe.processors.standard_data_format import StandardDataFormat

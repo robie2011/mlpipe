@@ -8,7 +8,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from mlpipe.groupers import HourGrouper, MonthGrouper, YearGrouper, WeekdayGrouper, DayGrouper, AbstractGrouper
-from mlpipe.helpers.test_data import load_empa_data
+from mlpipe.test.helpers.test_data import load_empa_data
 from mlpipe.workflows.analyze.helper import CombinedGroup, group_by_multi_columns
 
 sequences = np.array([

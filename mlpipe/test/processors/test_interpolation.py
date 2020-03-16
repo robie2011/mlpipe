@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mlpipe.helpers import data as helper_data
+from mlpipe.test.helpers import data as helper_data
 from mlpipe.processors.interpolation import Interpolation
 from mlpipe.processors.standard_data_format import StandardDataFormat
 

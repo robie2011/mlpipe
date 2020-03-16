@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-import mlpipe.helpers.test_data as tdata
+import mlpipe.test.helpers.test_data as tdata
 from mlpipe.aggregators.freezed_value_counter import FreezedValueCounter
 from mlpipe.aggregators.max import Max
 from mlpipe.aggregators.mean import Mean
@@ -10,7 +10,7 @@ from mlpipe.aggregators.min import Min
 from mlpipe.aggregators.nan_counter import NanCounter
 from mlpipe.aggregators.percentile import Percentile
 from mlpipe.groupers import YearGrouper, MonthGrouper, WeekdayGrouper, HourGrouper
-from mlpipe.helpers.test_helper import Timer
+from mlpipe.test.helpers.test_helper import Timer
 from mlpipe.workflows.analyze.helper import group_by_multi_columns, create_grouped_data
 
 tdata.DEBUG = True

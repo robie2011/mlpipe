@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mlpipe.helpers import print_3d_array
+from mlpipe.test.helpers import print_3d_array
 from mlpipe.processors.sequence3d import Sequence3d
 from mlpipe.processors.standard_data_format import StandardDataFormat
 

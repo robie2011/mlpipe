@@ -5,7 +5,7 @@ import numpy as np
 from mlpipe.aggregators.mean import Mean
 from mlpipe.aggregators.sum import Sum
 from mlpipe.aggregators.trend import Trend
-from mlpipe.helpers import print_3d_array
+from mlpipe.test.helpers import print_3d_array
 from mlpipe.processors.sequence3d import Sequence3d
 
 

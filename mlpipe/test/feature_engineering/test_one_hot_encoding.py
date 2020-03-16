@@ -3,8 +3,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from mlpipe.config import app_settings
-from mlpipe.helpers import transform_to_2d_matrix, generate_timestamps
+from mlpipe.test.helpers import transform_to_2d_matrix, generate_timestamps
 from mlpipe.processors.range_encoder import RangeEncoder
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
