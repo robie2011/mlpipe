@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from mlpipe.aggregators.outlier import Outlier, InputOutputLimits
-from mlpipe.datautils import LabelSelector
+from mlpipe.utils.datautils import LabelSelector
 from mlpipe.dsl_interpreter.config_reader import ConfigReader
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.standard_data_format import StandardDataFormat

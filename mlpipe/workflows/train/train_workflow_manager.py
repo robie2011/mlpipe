@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Dict
 
 from mlpipe.config.training_project import TrainingProject
-from mlpipe.models.model_trainer import fit, FitResult
+from mlpipe.workflows.train.model_trainer import fit
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_output_set, ModelTrainTestSet
 

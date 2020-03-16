@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name
 

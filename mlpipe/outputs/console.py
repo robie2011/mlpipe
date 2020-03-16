@@ -1,7 +1,6 @@
 import logging
 
-from mlpipe.integration import PredictionResult
-from mlpipe.integration.output.interface import AbstractOutput
+from mlpipe.outputs.interface import AbstractOutput, PredictionResult
 
 module_logger = logging.getLogger(__name__)
 

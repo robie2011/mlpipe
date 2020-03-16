@@ -3,8 +3,8 @@ from datetime import datetime
 
 import numpy as np
 
-from mlpipe.integration import PredictionResult
-from mlpipe.integration.output.console import ConsoleOutput
+from mlpipe.outputs.interface import PredictionResult
+from mlpipe.outputs.console import ConsoleOutput
 
 
 class TestConsoleOutput(unittest.TestCase):

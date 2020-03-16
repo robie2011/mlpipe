@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import List
 
-from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 
 
 @dataclass

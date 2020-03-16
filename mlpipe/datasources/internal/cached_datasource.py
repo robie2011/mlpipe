@@ -4,7 +4,7 @@ from typing import Dict
 
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.dsl_interpreter.instance_creator import create_source_adapter
-from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
 
 MSG_CACHED_VERSION_FOUND = "cached version found. loading {0}. NOTE: CSV-Cache returns parsed CSV if filename match"

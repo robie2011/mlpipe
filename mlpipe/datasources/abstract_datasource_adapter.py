@@ -5,7 +5,7 @@ from typing import NamedTuple, List
 
 import numpy as np
 
-from mlpipe.datautils import LabelSelector
+from mlpipe.utils.datautils import LabelSelector
 from mlpipe.exceptions.interface import MLDslConfigurationException
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name, get_qualified_name

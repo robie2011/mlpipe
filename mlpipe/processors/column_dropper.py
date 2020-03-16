@@ -3,7 +3,7 @@ from typing import List
 from .column_selector import ColumnSelector
 from .interfaces import AbstractProcessor
 from .standard_data_format import StandardDataFormat
-from ..datautils import LabelSelector
+from mlpipe.utils.datautils import LabelSelector
 
 
 class ColumnDropper(AbstractProcessor):

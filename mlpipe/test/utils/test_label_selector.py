@@ -1,6 +1,6 @@
 import unittest
 
-from mlpipe.datautils import LabelSelector
+from mlpipe.utils.datautils import LabelSelector
 
 
 class TestLabelSelector(unittest.TestCase):

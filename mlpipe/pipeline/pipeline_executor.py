@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Callable, Dict, cast
 
-from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.processors.standard_data_format import StandardDataFormat

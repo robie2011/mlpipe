@@ -1,9 +1,14 @@
+import logging
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Tuple
 
 import numpy as np
 
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
+
+module_logger = logging.getLogger(__name__)
 
 @dataclass
 class PredictionResult:
@@ -14,3 +19,10 @@ class PredictionResult:
     shape_pipeline: Tuple[int, ...]
     timestamps: np.ndarray
     predictions: np.ndarray
+
+
+class AbstractOutput(ABC, InstanceLoggerMixin):
+    @abstractmethod
+    def write(self, result: PredictionResult):
+        pass
+

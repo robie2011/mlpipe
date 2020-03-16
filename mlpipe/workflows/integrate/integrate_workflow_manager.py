@@ -5,8 +5,7 @@ from typing import List
 
 from keras import Sequential
 
-from mlpipe.integration import PredictionResult
-from mlpipe.integration.output.interface import AbstractOutput
+from mlpipe.outputs.interface import AbstractOutput, PredictionResult
 from mlpipe.workflows.abstract_workflow_manager import AbstractWorkflowManager
 from mlpipe.workflows.data_selector import convert_to_model_input_set
 

@@ -51,7 +51,7 @@ class TestWorkflows(unittest.TestCase):
             "limitExecution": 1,
             "@mode": "integrate",
             "integrate": {
-                "output": {"name": "mlpipe.integration.output.ConsoleOutput"},
+                "output": {"name": "mlpipe.outputs.ConsoleOutput"},
                 "executionFrequencyMinutes": 1
             }
         })

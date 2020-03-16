@@ -1,8 +1,7 @@
 from pathlib import Path
 
-from mlpipe.integration import PredictionResult
-from mlpipe.integration.output.interface import AbstractOutput
-from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
+from mlpipe.outputs.interface import AbstractOutput, PredictionResult
+from mlpipe.outputs.internal.csv_stream_writer import CsvStreamWriter
 
 
 class CsvOutput(AbstractOutput):

@@ -13,7 +13,7 @@ from typing_extensions import TypedDict
 from mlpipe.config.app_config_parser import AppConfigParser
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
-from mlpipe.integration.output.internal.csv_stream_writer import CsvStreamWriter
+from mlpipe.outputs.internal.csv_stream_writer import CsvStreamWriter
 from mlpipe.utils.file_handlers import read_yaml
 from mlpipe.utils.path_tool import dir_code
 

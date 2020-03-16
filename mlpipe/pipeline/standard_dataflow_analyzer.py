@@ -1,6 +1,6 @@
 from typing import Dict
 
-from mlpipe.mixins.logger_mixin import InstanceLoggerMixin
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.pipeline.abstract_data_flow_analyzer import AbstractDataFlowAnalyzer
 

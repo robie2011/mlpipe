@@ -2,7 +2,7 @@ from mlpipe.admin.package_class_finder import create_imports
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.datasources.abstract_datasource_adapter import AbstractDatasourceAdapter
 from mlpipe.groupers.abstract_grouper import AbstractGrouper
-from mlpipe.integration.output.interface import AbstractOutput
+from mlpipe.outputs.interface import AbstractOutput
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.utils.path_tool import dir_mlpipe
 
@@ -11,7 +11,7 @@ tasks = (
     ("mlpipe.datasources", AbstractDatasourceAdapter, "sources"),
     ("mlpipe.groupers", AbstractGrouper, "groupers"),
     ("mlpipe.aggregators", AbstractAggregator, "aggregators"),
-    ("mlpipe.integration.output", AbstractOutput, "sinks"),
+    ("mlpipe.outputs", AbstractOutput, "sinks"),
 )
 
 for package, base, group in tasks:
