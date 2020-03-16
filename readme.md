@@ -4,14 +4,17 @@
 
 TODO
 
-## Entwicklungssprache
+## Technologien
 
-Dieses Projekt verwendet die Entwicklungssprache Python v3.7. 
+Dieses Projekt verwendet die Entwicklungssprache Python v3.7. Für die Datenmanipulation werden die Libraries
+NumPy, Pandas und Scikit-Learn eingesetzt. 
+Als Machine Learning Framework verwenden wir 
+Keras mit Tensorflow Backend.
 Die erforderlichen Libraries sind im `requirements.txt` zu finden.
 Eine Installationsanleitung für die virtuelle 
 Umgebung von Python ist [hier](https://gist.github.com/Geoyi/d9fab4f609e9f75941946be45000632b) zufinden.
 
-Nach der bereitstellung der virutellen Umgebung, 
+Nach Bereitstellung der virtuellen Umgebung, 
 können die erforderlichen Pakete mit folgendem Befehl installiert werden:
 
     pip install -r requirements.txt
@@ -54,9 +57,8 @@ Der Sourcecode von MLPIPE ist im Ordner `mlpipe` zu finden und ist wie folgt str
 
 
 
-Bemerkung:
 
-  * Dateien im Ordner `dsl` werden lediglich verwendet, 
+Dateien im Ordner `dsl` werden lediglich verwendet, 
     um die implementierten Klassen für die DSL hervorzuheben. 
     Das erlaubt uns in der DSL den Präfix `mlpipe.dsl.*` 
     für den Auswahl der Klassen zu verwenden.
@@ -72,7 +74,7 @@ Wir haben den Framework [Nose](https://nose.readthedocs.io/en/latest/index.html)
 
 Wir haben die Softwarelösung für einfache 
 Installation als Docker Image 
-auf https://hub.docker.com bereit gestellt.
+auf der öffentlichen Docker Registry (image: `robie2011/mlpipe`) bereit gestellt.
 Nach der erfolgreichen 
 [Installation von Docker Engine](https://docs.docker.com/install/)
 können wir ein Skript für den einfachen 
