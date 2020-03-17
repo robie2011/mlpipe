@@ -48,12 +48,8 @@ class AbstractDatasourceAdapter(ABC):
         required_fields = self._get_fields()
         raw = self._fetch(required_fields)
 
-        try:
-            AbstractDatasourceAdapter._check_fields_availability(
-                raw, required_fields, using_alias=self.source_returns_alias)
-        except MLDslConfigurationException as e:
-            self.logger.error(e.args[0])
-            raise
+        AbstractDatasourceAdapter._check_fields_availability(
+            raw, required_fields, using_alias=self.source_returns_alias)
 
         labels_new = [f.alias for f in required_fields]
 

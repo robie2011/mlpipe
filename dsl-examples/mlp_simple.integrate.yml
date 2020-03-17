@@ -1,8 +1,10 @@
-name: simple_mlp
-session: TODO
+name: mlp_simple
+session: 2020-03-17_215248
 source: 
-  name: dsl.sources.EmpaCsvSourceAdapter
-  pathToFile: meeting_room_sensors_201807_201907.csv
+  name: mlpipe.dsl.sources.VisualizerLiveApiAdapter
+  username: NEST\TODO
+  password: TODO
+  duration_minutes: 15
   fields:
     - 3200000 as TempAussen
     - 40210012 as TempInnen
@@ -14,5 +16,5 @@ source:
 integrate:
   frequencyMin: 1
   output: 
-    name: dsl.outputs.CsvOutput
+    name: mlpipe.dsl.outputs.CsvOutput
     outputPath: /tmp/predictions.csv

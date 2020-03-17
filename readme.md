@@ -1,26 +1,52 @@
 # MLPIPE
 
+Dieses Dokument beschreibt den MLPIPE Projekt, 
+die verwendeten Softwareversionen, 
+die Ordnerstruktur dieser Repository,
+die Verwendung von Docker Image 
+sowie Beispiel DSL Instanzen.
+
 ## Projektbeschreibung
 
-TODO
+Die Entwicklung von Machine-Learning-Modellen besteht aus mehreren Prozessschritten. 
+Viele dieser Prozessschritte werden von einem Framework bzw. einer Library bereits implementiert. 
+Andere müssen selbst programmiert werden. Auswahl, Initialisierung und 
+Zusammenführung dieser Prozessschritte werden in der Regel 
+mit einer General Purpose Language wie Python, Java oder einer anderen beschrieben. 
+Infolge der vielen Ausdrucksmöglichkeiten in General Purpose Languages 
+haben die entwickelten Skripte bzw. Programme keine oder unterschiedliche Strukturen. 
+Deshalb müssen für das Verständnis und die Weiterentwicklung 
+nicht selbstentwickelter Modelle z. T. komplexe Quellcodes gelesen werden.
 
-## Technologien
+In dieser Masterarbeit wurden die Prozessschritte eines Deep-Learning-Projekts 
+generalisiert und es wurde eine domänenspezifische Sprache (DSL) 
+für die Beschreibung der Workflows entwickelt. Die entwickelte DSL 
+definiert klare Strukturen und bietet eine vereinfachte, 
+aussagekräftige und prägnante Sprache zur Beschreibung der 
+einzelnen Prozessschritte im Workflow. Als Gegenstück zur DSL 
+wurde eine Softwarelösung für die Ausführung der DSL-Instanzen entwickelt. 
+Die Gesamtlösung beschleunigt die Entwicklung von Machine-Learning-Modellen 
+und ermöglicht es, die einzelnen Prozessschritte im bestehenden Workflow besser zu verstehen.
 
-Dieses Projekt verwendet die Entwicklungssprache Python v3.7. Für die Datenmanipulation werden die Libraries
+
+Keywords: Machine Learning, Deep Learning, ANN, KNN, Keras, DSL, Domain Specific Language, Python
+
+## Softwareversionen
+
+Dieses Projekt verwendet die Programmiersprache Python v3.7. Für die Datenmanipulation werden die Libraries
 NumPy, Pandas und Scikit-Learn eingesetzt. 
 Als Machine Learning Framework verwenden wir 
 Keras mit Tensorflow Backend.
-Die erforderlichen Libraries sind im `requirements.txt` zu finden.
+Die erforderlichen Libraries sind im [requirements.txt](./requirements.txt) definiert.
 Eine Installationsanleitung für die virtuelle 
-Umgebung von Python ist [hier](https://gist.github.com/Geoyi/d9fab4f609e9f75941946be45000632b) zufinden.
-
+Umgebung von Python ist [hier](https://gist.github.com/Geoyi/d9fab4f609e9f75941946be45000632b) zufinden. 
 Nach Bereitstellung der virtuellen Umgebung, 
 können die erforderlichen Pakete mit folgendem Befehl installiert werden:
 
     pip install -r requirements.txt
 
 
-## Ornderstruktur: Stammverzeichnis
+## Ordnerstruktur: Stammverzeichnis
 
 Dies ist die Beschreibung der Ordner im Stammverzeichnis:
 
@@ -72,22 +98,23 @@ Wir haben den Framework [Nose](https://nose.readthedocs.io/en/latest/index.html)
 
 ## Docker Image
 
-Wir haben die Softwarelösung für einfache 
+Die Softwarelösung wurde für einfache 
 Installation als Docker Image 
-auf der öffentlichen Docker Registry (image: `robie2011/mlpipe`) bereit gestellt.
+auf der [öffentlichen Docker Registry](https://hub.docker.com/robie2011/mlpipe) bereit gestellt.
 Nach der erfolgreichen 
 [Installation von Docker Engine](https://docs.docker.com/install/)
-können wir ein Skript für den einfachen 
-Aufruf des *MLPIPE*-Containers erstellen.
+kann ein Skript für den einfachen 
+Aufruf des *MLPIPE*-Containers erstellt werden.
 Nachfolgend sehen wir ein Beispiel:
 
 ```bash
 # File: mlpipe-cli-docker.sh
 args="$@"
 DSL_INSTANCES=$(pwd)
-MLPIPE_TRAIN_DATA=/tmp/mlpipe_train_data
+FALLBACK="/tmp/mlpipe/training"
+MLPIPE_TRAIN_DATA=${MLPIPE_TRAIN_DATA:-$FALLBACK}
 
-docker run --rm -it --name=mlpipe \
+docker run --rm -it \
     -v$MLPIPE_TRAIN_DATA:/tmp/mlpipe/training \
     -v$DSL_INSTANCES:/data \
     robie2011/mlpipe $args
@@ -117,3 +144,6 @@ Bemerkung: Werden Dateien als Datenquelle verwendet,
 so wird diese am besten in einem Unterordner von `$DSL_INSTANCES` abgelegt
 und in der DSL Instanz als relativer Pfad angegeben.
 
+## Beispiel DSL Instanzen
+
+Im Unterordner [dsl-examples](dsl-examples) können Beispiel DSL Instanzen gefunden werden.

@@ -9,9 +9,7 @@ if [ -f $ACTIVATE ]; then
    source $ACTIVATE
 fi
 
-echo $DIRECTORY
 
-python --version
-#python -m mlpipe.admin.generate_dsl_imports
+python -m mlpipe.admin.generate_dsl_imports
 cd -
 

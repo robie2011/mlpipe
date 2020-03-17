@@ -118,8 +118,10 @@ def train_model(args):
         module_logger.info(f"file: {path}")
         manager = create_workflow_from_file(path, overrides={"@mode": "train"})
         path_training_dir, model = manager.run()
+        p = Path(path_training_dir)
+        model_name, session_id = p.parent.name, p.name
+        module_logger.info(f"model/session_id: {model_name}/{session_id}")
         module_logger.info(f"trained model: {path_training_dir}")
-
 
 
 def integrate_model(args):

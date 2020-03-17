@@ -1,6 +1,7 @@
 args="$@"
 DSL_INSTANCES=$(pwd)
-MLPIPE_TRAIN_DATA=/tmp/mlpipe_train_data
+FALLBACK="/tmp/mlpipe/training"
+MLPIPE_TRAIN_DATA=${MLPIPE_TRAIN_DATA:-$FALLBACK}
 
 docker run --rm -it \
     -v$MLPIPE_TRAIN_DATA:/tmp/mlpipe/training \

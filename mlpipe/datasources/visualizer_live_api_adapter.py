@@ -15,7 +15,7 @@ class VisualizerLiveApiAdapter(AbstractDatasourceAdapter):
                  duration_minutes: int,
                  fields: List[str],
                  nrows: int = None,
-                 print_output: bool = True):
+                 print_output: bool = False):
         super().__init__(fields=fields)
         self.duration_minutes = duration_minutes
         self.nrows = nrows or duration_minutes

@@ -39,14 +39,12 @@
                 },
                 {
                     "type": "object",
-                    "required": ["name", "fields", "username", "password", "date_from", "date_to", "duration_minutes"],
+                    "required": ["name", "fields", "username", "password", "duration_minutes"],
                     "properties": {
                         "name":  { "const": "mlpipe.dsl.sources.VisualizerLiveApiAdapter" },
                         "fields": { "$ref": "#definitions/fields"},
                         "username": { "type": "string", "description": "Windows Username like 'NEST\\exampleUser'" },
                         "password": { "type": "string"},
-                        "date_from": { "type": "string", "description": "Date formatted in yyyy-mm-ddTHH:MM. Example: Example: 2020-02-15T12:00"},
-                        "date_to": { "type": "string", "description": "Date formatted in yyyy-mm-ddTHH:MM. Example: 2020-02-15T13:00"},
                         "duration_minutes": {"type": "number", "description": "Window size in minutes."},
                         "nrows": {"type": "number", "description": "Rows to keep. Default value is 'duration_minutes'"},
                         "print_output": {"type": "boolean", "description": "Print data received to console output. Default: False"}
