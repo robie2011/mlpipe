@@ -11,7 +11,7 @@ tasks = (
     ("mlpipe.datasources", AbstractDatasourceAdapter, "sources"),
     ("mlpipe.groupers", AbstractGrouper, "groupers"),
     ("mlpipe.aggregators", AbstractAggregator, "aggregators"),
-    ("mlpipe.outputs", AbstractOutput, "sinks"),
+    ("mlpipe.outputs", AbstractOutput, "outputs"),
 )
 
 for package, base, group in tasks:

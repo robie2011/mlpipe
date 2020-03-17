@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "MLPIPE Train Schema",
+    "description": "Describes DSL Instance for MLPIPE train workflow",
+    "type": "object",
+    "required": ["name", "source", "model"],
+    "properties": {
+        "name": {"type": "string"},
+        "source": {
+            "$ref": "datasource.schema.json#definitions/datasources"
+        },
+        "pipelinePrimary": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {"$ref": "processors.schema.json#/definitions/processors"},
+                    {"$ref": "aggregators.schema.json#/definitions/aggregators"}
+                ]
+            }
+        },
+        "pipelineSecondary": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {"$ref": "processors.schema.json#/definitions/processors"},
+                    {"$ref": "aggregators.schema.json#/definitions/aggregators"}
+                ]
+            }
+        },
+        "model": {
+            "required": ["input", "target", "testRatio", "sequentialModel", "compile", "fit"],
+            "properties": {
+                "input": {"$ref": "#definitions/stringList"},
+                "target": {"type": "string"},
+                "testRatio": {"type": "number"},
+                "sequentialModel": {
+                    "type": "array",
+                    "properties": {
+                        "name": {"type": "string"}
+                    }
+                },
+                "compile": {
+                    "required": ["optimizer", "loss", "metrics"],
+                    "type": "object",
+                    "properties": {
+                        "optimizer": {"type": "string"},
+                        "loss": {"type": "string"},
+                        "metrics": {"$ref": "#definitions/stringList", "default": ["accuracy"]}
+                    },
+                    "description": "See: https://keras.io/models/sequential/"
+                },
+                "fit": {
+                    "required": ["batch_size", "epochs"],
+                    "type": "object",
+                    "properties": {
+                        "batch_size": {"type": "number"},
+                        "epochs": {"type": "number"},
+                        "verbose": {"type": "number", "minimum": 0, "maximum": 2},
+                        "class_weight": { "oneOf": [
+                            {"const": "auto"},
+                            {"type": "object"}
+                        ], 
+                        "default": "auto"}
+                    },
+                    "description": "See: https://keras.io/models/sequential/"
+                }
+            }
+        }
+    },
+
+    "definitions": {
+        "stringList": {"type": "array", "items": { "type": "string"}}
+    }
+}

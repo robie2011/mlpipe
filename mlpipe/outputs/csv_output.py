@@ -5,10 +5,10 @@ from mlpipe.outputs.internal.csv_stream_writer import CsvStreamWriter
 
 
 class CsvOutput(AbstractOutput):
-    def __init__(self, output_path: str):
+    def __init__(self, outputPath: str):
         self.writer = CsvStreamWriter(
             headers=["timestamp", "value"],
-            path=Path(output_path))
+            path=Path(outputPath))
         self.writer.__enter__()
 
     def write(self, result: PredictionResult):

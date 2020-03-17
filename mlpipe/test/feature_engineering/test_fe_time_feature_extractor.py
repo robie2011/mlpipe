@@ -19,20 +19,20 @@ class TestTimeExtractor(unittest.TestCase):
     def test_extract_hours(self):
         result_expected = np.hstack(
             (test_data.data, np.array([12, 21]).reshape(-1, 1)))
-        result = TimeExtractor(extract="hour", output_field="example_hour")._process2d(test_data)
+        result = TimeExtractor(extract="hour", outputField="example_hour")._process2d(test_data)
         assert_array_equal(result_expected, result.data)
 
     def test_extract_weekday(self):
         # note weekday start from monday. 0 = monday
         result_expected = np.hstack(
             (test_data.data, np.array([1, 5]).reshape(-1, 1)))
-        result = TimeExtractor(extract="weekday", output_field="example_weekday")._process2d(test_data)
+        result = TimeExtractor(extract="weekday", outputField="example_weekday")._process2d(test_data)
         assert_array_equal(result_expected, result.data)
 
     def test_extract_month(self):
         result_expected = np.hstack(
             (test_data.data, np.array([7, 8]).reshape(-1, 1)))
-        result = TimeExtractor(extract="month", output_field="example_month")._process2d(test_data)
+        result = TimeExtractor(extract="month", outputField="example_month")._process2d(test_data)
         assert_array_equal(result_expected, result.data)
 
 

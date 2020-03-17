@@ -1,0 +1,23 @@
+fields: &fields_room1
+  - 3200000 as TempAussen
+  - 40210012 as TempInnen
+  - 40210002 as Zuluft
+  - 40210005 as Abluft
+  - 40210013 as CO2
+  - 40210148 as Präsenz
+
+fields: &fields_room2
+   - 3200000 as TempAussen
+   - 40210022 as Zuluft
+   - 40210025 as Abluft
+   - 40210032 as TempInnen
+   - 40210033 as CO2
+   - 40210149 as Präsenz
+
+
+name: empa_mlp_weighted
+session: 2020-02-20_133846
+source:
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields: *fields_room1

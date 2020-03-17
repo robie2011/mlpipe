@@ -7,3 +7,6 @@ jsonref.load(f, base_uri="file:///Users/robert.rajakone/repos/2019_p9/code/_desc
 
 # Visualizer
 https://navneethg.github.io/jsonschemaviewer/
+
+
+Restart Vscode require after Schema change

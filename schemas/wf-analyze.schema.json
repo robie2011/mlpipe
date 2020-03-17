@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "MLPIPE Analyze Schema",
+    "description": "Describes DSL Instance for MLPIPE analyze workflow",
+    "type": "object",
+    "required": ["source", "analyze"],
+    "properties": {
+        "source": {
+            "$ref": "datasource.schema.json#definitions/datasources"
+        },
+        "pipelinePrimary": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {"$ref": "processors.schema.json#/definitions/processors"},
+                    {"$ref": "aggregators.schema.json#/definitions/aggregators"}
+                ]
+            }
+        },
+        "analyze": {
+            "type": "object",
+            "required": ["groupBy", "metrics"],
+            "properties": {
+                "groupBy": {
+                    "type": "array",
+                    "items": {
+                        "required": ["name"],
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "oneOf": [{
+                                    "enum": [
+                                        "mlpipe.dsl.groupers.YearGrouper", 
+                                        "mlpipe.dsl.groupers.MonthGrouper", 
+                                        "mlpipe.dsl.groupers.DayGrouper",
+                                        "mlpipe.dsl.groupers.WeekdayGrouper",
+                                        "mlpipe.dsl.groupers.HourGrouper"]
+                                }]
+                            }
+                        }
+                    }
+                },
+                "metrics": {
+                    "type": "array",
+                    "items": {"$ref": "metrics.schema.json#definitions/metrics"} 
+                }
+            }
+        }
+    }
+}

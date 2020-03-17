@@ -3,56 +3,135 @@
     "title": "Aggregators",
     "description": "aggregator interface",
     "definitions": {
-        "anyAggregator": {
+        "generateRequiredInputOutput": {
+            "type": "array",
+            "items": {
+                "required": ["inputField", "outputField"],
+                "type": "object",
+                "properties": {
+                    "inputField": {"type":"string", "description": "Feature to use as input"},
+                    "outputField": {"type":"string", "description": "Name for generated feature"}
+                }
+            }
+
+        },
+        "generateRequiredInputOutputLimits": {
+            "type": "array",
+            "items": {
+                "required": ["inputField", "outputField"],
+                "type": "object",
+                "properties": {
+                    "inputField": {"type":"string", "description": "Feature to use as input"},
+                    "outputField": {"type":"string", "description": "Name for generated feature"},
+                    "min": {"type":"number", "description": "Minimum acceptable value"},
+                    "max": {"type":"number", "description": "Maximum acceptable value (exclusive)"}
+                }
+            }
+        },
+
+        "aggregators": {
             "oneOf": [
                 {
                     "type": "object",
-                    "required": [
-                        "name"
-                    ],
+                    "required": ["name", "sequence", "generate"],
                     "properties": {
-                        "name": {
-                            "const": "aggregators.Min"
-                        }
+                        "name": {"const": "mlpipe.dsl.aggregators.Counter"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
                     }
                 },
                 {
                     "type": "object",
-                    "required": [
-                        "name"
-                    ],
+                    "required": ["name", "sequence", "generate", "max_freezed_values"],
                     "properties": {
-                        "name": {
-                            "const": "aggregators.Max"
-                            
-                        }
+                        "name": {"const": "mlpipe.dsl.aggregators.FreezedValueCounter"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "max_freezed_values": {"type": "number", "description": "Max. acceptable sequence length"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
                     }
                 },
                 {
                     "type": "object",
-                    "required": [
-                        "name",
-                        "config"
-                    ],
+                    "required": ["name", "sequence", "generate"],
                     "properties": {
-                        "name": {
-                            "const":"feature_engineering.TimeFeatureExtractor"
-                        },
-                        "config": {
-                            "type": "object",
-                            "required": [
-                                "extract"
-                            ],
-                            "properties": {
-                                "extract": {
-                                    "enum": [
-                                        "hour",
-                                        "weekday",
-                                        "month"
-                                    ]
-                                }
-                            }
-                        }
+                        "name": {"const": "mlpipe.dsl.aggregators.Max"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Mean"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Min"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.NanCounter"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Outlier"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutputLimits"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate", "percentile"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Percentile"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "percentile": {"type": "number", "description": "Value between 0 and 1 representing percentile"},
+                        "interpolation": {"type": "string", "description": "See attribute interpolation in https://numpy.org/devdocs/reference/generated/numpy.percentile.html?highlight=percentile#numpy.percentile"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Sum"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.Trend"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
                     }
                 }
             ]

@@ -27,7 +27,7 @@ pipeline:
         outputField: tempMin
   - name: features.TimeExtractor
     extract: hour
-    output_field: hourExtracted
+    outputField: hourExtracted
 
 
 analyze:

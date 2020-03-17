@@ -90,6 +90,9 @@ def describe_model(args):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     name, session_id = cast(str, args.model_session).split("/")
     from mlpipe.config.training_project import TrainingProject
+    import tabulate
+    import itertools
+    import pandas as pd
     project = TrainingProject(name=name, session_id=session_id)
     _print_heading("DESCRIBE MODEL")
     title = "Model Architecture: {0}".format(project.path_training_dir)
@@ -97,6 +100,12 @@ def describe_model(args):
     print("_" * len(title))
     print()
     print(project.model.summary())
+    print()
+    print("#Epoch/Metrics")
+
+    n_epochs = 20
+    df = pd.DataFrame(project.history.history)
+    print(df[-n_epochs:])
 
 
 def train_model(args):
@@ -110,6 +119,7 @@ def train_model(args):
         manager = create_workflow_from_file(path, overrides={"@mode": "train"})
         path_training_dir, model = manager.run()
         module_logger.info(f"trained model: {path_training_dir}")
+
 
 
 def integrate_model(args):

@@ -1,0 +1,17 @@
+name: empa_mlp
+session: 2020-02-18_123850
+source:
+  name: mlpipe.dsl.sources.DemoLiveData
+  pathToFile: data/meeting_room_sensors_201908_201912.csv
+  windowMinutes: 16
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+integrate:
+  output:
+    name: mlpipe.dsl.sinks.ConsoleOutput

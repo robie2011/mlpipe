@@ -8,7 +8,7 @@ from .standard_data_format import StandardDataFormat
 
 
 class Resampler(AbstractProcessor):
-    def __init__(self, freq: str, method: str = None):
+    def __init__(self, freq: str):
         self.freq = freq
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:

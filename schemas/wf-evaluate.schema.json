@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "MLPIPE Evaluate Schema",
+    "description": "Describes DSL Instance for MLPIPE evaluate workflow",
+    "type": "object",
+    "required": ["name", "session", "source"],
+    "properties": {
+        "name": {"type": "string"},
+        "session": {"type": "string"},
+        "source": {"$ref": "datasource.schema.json#definitions/datasources"}
+    }
+}

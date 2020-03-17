@@ -1,0 +1,8 @@
+{
+    "yaml.schemas": {
+        "../schemas/wf-train.schema.json": ["*.train.yml"],
+        "../schemas/wf-analyze.schema.json": ["*.analyze.yml"],
+        "../schemas/wf-evaluate.schema.json": ["*.evaluate.yml"],
+        "../schemas/wf-integrate.schema.json": ["*.integrate.yml"],
+    }
+}

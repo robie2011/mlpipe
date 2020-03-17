@@ -1,0 +1,61 @@
+name: regerssion_co2
+source:
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipelinePrimary:
+  - name: mlpipe.dsl.processors.NanRemover
+
+pipelineSecondary:
+  - name: mlpipe.dsl.processors.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - TempAussen
+      - TempInnen
+      - Zuluft
+      - Abluft
+  - name: mlpipe.dsl.processors.SeedSetup
+    numpy: 2
+    tensorflow: 2
+
+
+model:
+  input:
+    - TempAussen
+    - TempInnen
+    - Zuluft
+    - Abluft
+    - Präsenz
+
+  target: CO2
+  predictionType: regression
+  testRatio: .20
+
+  sequentialModel:
+    - name: keras.layers.Dense
+      units: 100
+      activation: relu
+    - name: keras.layers.Dense
+      units: 20
+      activation: relu
+    - name: keras.layers.Dense
+      units: 1
+      activation: linear
+
+  compile:
+    loss: mse
+    optimizer: Adam
+    metrics:
+      - mean_absolute_percentage_error
+      - mae
+
+  fit:
+    epochs: 50
+    batch_size: 4320

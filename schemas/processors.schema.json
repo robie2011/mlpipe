@@ -9,88 +9,138 @@
                 "type": "string"
             }
         },
-        "anyProcessor": {
+
+        "conditions": {
+            "enum": ["train", "evaluate", "integrate", "analyze"]
+        },
+
+        "processors": {
             "oneOf": [
                 {
                     "type": "object",
-                    "required": [
-                        "kind",
-                        "name",
-                        "config"
-                    ],
+                    "required": ["name", "columns"],
                     "properties": {
-                        "kind": {
-                            "const": "process"
-                        },
-                        "name": {
-                            "const": "processor.ColumnDropper"
-                        },
-                        "config": {
-                            "type": "object",
-                            "properties": {
-                                "fields": {
-                                    "$ref": "#definitions/arrayOfStrings"
-                                }
-                            }
-                        }
+                        "name": { "const": "mlpipe.dsl.processors.ColumnDropper" },
+                        "columns": { "$ref": "#definitions/arrayOfStrings" },
+                        "_condition": {"$ref": "#definitions/conditions"}
                     }
                 },
                 {
                     "type": "object",
-                    "required": [
-                        "kind",
-                        "name",
-                        "config"
-                    ],
+                    "required": ["name", "columns"],
                     "properties": {
-                        "kind": {
-                            "const": "process"
-                        },
-                        "name": {
-                            "const": "processor.OutlierRemover"
-                        },
-                        "config": {
-                            "type": "array",
-                            "required": [
-                                "field"
-                            ],
-                            "items": {
-                                "properties": {
-                                    "field": {
-                                        "type": "string"
-                                    },
-                                    "min": {
-                                        "type": "number"
-                                    },
-                                    "max": {
-                                        "type": "number"
-                                    }
-                                }
-                            }
-                        }
+                        "name": { "const": "mlpipe.dsl.processors.ColumnSelector" },
+                        "columns": { "$ref": "#definitions/arrayOfStrings" },
+                        "enable_regex": {"type": "boolean"},
+                        "_condition": {"$ref": "#definitions/conditions"}
                     }
                 },
                 {
                     "type": "object",
-                    "required": [
-                        "kind",
-                        "minutes",
-                        "aggregations"
-                    ],
+                    "required": ["name", "max_freezed_values"],
                     "properties": {
-                        "kind": {
-                            "const": "aggregate"
-                        },
-                        "minutes": {
-                            "type": "number",
-                            "minimum": 2
-                        },
-                        "aggregations": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "aggregators.schema.json#definitions/anyAggregator"
-                            }
-                        }
+                        "name": { "const": "mlpipe.dsl.processors.FreezedValueRemover" },
+                        "max_freezed_values": {"type": "number", "description": "Max. acceptable sequence length"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "max_consecutive_interpolated_value"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.Interpolation" },
+                        "max_consecutive_interpolated_value": {"type": "number", "description": "Maximum number of consecutives values to interpolate"},
+                        "method": {"type": "string", "description": "See https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.interpolate.html"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.NanRemover" },
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "generate"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.OutlierRemover" },
+                        "generate": { "$ref": "aggregators.schema.json#definitions/generateRequiredInputOutputLimits"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "generate", "value_from", "value_to"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.RangeEncoder" },
+                        "generate": { "$ref": "aggregators.schema.json#definitions/generateRequiredInputOutput"},
+                        "value_from": { "type": "number", "description": "Range start"},
+                        "value_to": {"type": "number", "description": "Range end (exclusive)"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "freq"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.Resampler" },
+                        "freq": {"type": "string", "description": "See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#dateoffset-objects"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "scaler", "fields"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.Scaler" },
+                        "scaler": {"type": "string", "description": "See https://scikit-learn.org/stable/modules/classes.html#module-sklearn.preprocessing"},
+                        "fields": { "$ref": "#definitions/arrayOfStrings"},
+                        "kwargs": { "type": "object", "description": "Additional parameters for scaler"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.SeedSetup" },
+                        "numpy": {"type": "number", "description": "Seed setup for numpy"},
+                        "tensorflow": {"type": "number", "description": "Seed setup for tensorflow"},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    },
+                    "description": "Use this as first processor in chain"
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.Sequence3d" },
+                        "sequence": {"type": "number", "description": "Sequence length definition"},
+                        "validate": {"type": "boolean", "description": "Default: True. Drop invalid sequence. Consecutive elements of a valid sequence have one-minute time difference."},
+                        "_condition": {"$ref": "#definitions/conditions"}
+
+                    },
+                    "description": "Use this as last processor in chain"
+                },
+                {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.Shuffle" },
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "outputField", "extract"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.TimeExtractor" },
+                        "outputField": {"type": "string", "description": "Name for generated feature"},
+                        "extract": { "enum": ["hour", "weekday", "month"]},
+                        "_condition": {"$ref": "#definitions/conditions"}
                     }
                 }
             ]

@@ -1,0 +1,84 @@
+name: empa_rnn_weighted
+source:
+  name: mlpipe.dsl.sources.EmpaCsvSourceAdapter
+  pathToFile: data/meeting_room_sensors_201807_201907.csv
+  fields:
+    - 3200000 as TempAussen
+    - 40210012 as TempInnen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+pipelinePrimary:
+  - name: mlpipe.dsl.processors.TimeExtractor
+    extract: hour
+    output_field: Stunden
+  - name: mlpipe.dsl.processors.TimeExtractor
+    extract: weekday
+    output_field: Wochentag
+  - name: mlpipe.dsl.processors.NanRemover
+
+pipelineSecondary:
+  - name: mlpipe.dsl.processors.SeedSetup
+    numpy: 2
+    tensorflow: 2
+  - name: mlpipe.dsl.processors.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - TempAussen
+      - Zuluft
+      - Abluft
+      - CO2
+      - TempInnen
+  - name: mlpipe.dsl.processors.RangeEncoder
+    value_from: 0
+    value_to: 24
+    generate:
+    - inputField: Stunden
+      outputField: StundenOneHot
+  - name: mlpipe.dsl.processors.RangeEncoder
+    value_from: 0
+    value_to: 7
+    generate:
+    - inputField: Wochentag
+      outputField: WochentagOneHot
+
+model:
+  input:
+    - TempAussen
+    - TempInnen
+    - Zuluft
+    - Abluft
+    - CO2
+    - REGEX:StundenOneHot\$.*
+    - REGEX:WochentagOneHot\$.*
+
+
+  target: Präsenz
+  predictionType: binary
+  testRatio: .20
+
+  sequentialModel:
+    - name: keras.layers.LSTM
+      units: 15
+      activation: tanh
+      return_sequences: True
+    - name: keras.layers.LSTM
+      units: 5
+      activation: tanh
+      return_sequences: False
+    - name: keras.layers.Dense
+      units: 1
+      activation: sigmoid
+
+  compile:
+    loss: binary_crossentropy
+    optimizer: Adam
+    metrics:
+      - accuracy
+
+  fit:
+    epochs: 10
+    batch_size: 4320
+    class_weight: auto

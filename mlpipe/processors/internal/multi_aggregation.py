@@ -8,24 +8,27 @@ from mlpipe.processors.internal.multi_aggregation_data_format import MultiAggreg
 from mlpipe.processors.internal.multi_aggregation_fields import MissingFields, MissingFieldsForLogic
 from mlpipe.processors.internal.multi_aggregation_result_collector import MultiAggregationResultCollector
 from mlpipe.processors.standard_data_format import StandardDataFormat
+from mlpipe.utils.logger_mixin import InstanceLoggerMixin
 from mlpipe.workflows.utils import get_qualified_name
 
 module_logger = logging.getLogger(__name__)
 
 
 @dataclass
-class MultiAggregation(AbstractProcessor):
+class MultiAggregation(AbstractProcessor, InstanceLoggerMixin):
     sequence: int
     instances: List[AbstractAggregator]
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:
-        module_logger.debug("execute multi aggregation with instances of={0}".format(
+        self.logger.debug("execute multi aggregation with instances of={0}".format(
             list(map(lambda agg: get_qualified_name(agg), self.instances))
         ))
 
+        self.logger.debug("create 3D data")
         aggregation_data = MultiAggregationDataFormat(data=processor_input, sequence=self.sequence)
         collector = MultiAggregationResultCollector(data=processor_input.data, labels=processor_input.labels)
         for aggregator in self.instances:
+            self.logger.debug("create aggregation with " + aggregator.__class__.__name__)
             MultiAggregation.run_aggregator(aggregation_data, aggregator, collector)
 
         return processor_input.modify_copy(

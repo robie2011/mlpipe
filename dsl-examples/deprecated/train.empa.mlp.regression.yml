@@ -1,0 +1,62 @@
+name: empa_mlp
+source:
+  name: mlpipe.dsl.sources.VisualizerApiAdapter
+  username: 'NEST\raro'
+  password: 'W3lc0me!2018$'
+  date_from: "2019-07-01"
+  date_to: "2020-01-25"
+  fields:
+    - 400000 as LuftEinn
+    - 400008 as LuftAusn
+    - 400002 as LuftHausEin
+    - 400006 as LuftHausAus
+
+pipelinePrimary:
+  - name: mlpipe.dsl.processors.NanRemover
+
+pipelineSecondary:
+  - name: mlpipe.dsl.processors.Shuffle
+  - name: mlpipe.dsl.processors.Scaler
+    scaler: sklearn.preprocessing.RobustScaler
+    fields:
+      - LuftEinn
+      - LuftAusn
+      - LuftHausEin
+      - LuftHausAus
+  - name: mlpipe.dsl.processors.SeedSetup
+    numpy: 2
+    tensorflow: 2
+
+model:
+  input:
+    - LuftEinn
+    - LuftAusn
+    - LuftHausEin
+
+  target: LuftHausAus
+  predictionType: regression
+  testRatio: .20
+
+  sequentialModel:
+    - name: keras.layers.Dense
+      units: 500
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 200
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 100
+      activation: tanh
+    - name: keras.layers.Dense
+      units: 1
+      activation: sigmoid
+
+  compile:
+    loss: mean_squared_error
+    optimizer: Adam
+    metrics:
+      - accuracy
+
+  fit:
+    epochs: 100
+    batch_size: 4320

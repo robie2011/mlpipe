@@ -21,12 +21,12 @@ allowed_extractions: [(str, _ITimeExtractor)] = [
 
 
 class TimeExtractor(AbstractProcessor):
-    def __init__(self, extract: str, output_field: str):
+    def __init__(self, extract: str, outputField: str):
         search = [func for name, func in allowed_extractions if name == extract]
         if len(search) == 0:
             raise Exception("extract parameter unknown: " + extract)
 
-        self.output_field = output_field
+        self.output_field = outputField
         self._extractor: _ITimeExtractor = search[0]
 
     def _process2d(self, processor_input: StandardDataFormat) -> StandardDataFormat:

@@ -15,8 +15,7 @@ class VisualizerLiveApiAdapter(AbstractDatasourceAdapter):
                  duration_minutes: int,
                  fields: List[str],
                  nrows: int = None,
-                 print_output: bool = True,
-                 timestamp_round_minute: int = True):
+                 print_output: bool = True):
         super().__init__(fields=fields)
         self.duration_minutes = duration_minutes
         self.nrows = nrows or duration_minutes
@@ -26,8 +25,7 @@ class VisualizerLiveApiAdapter(AbstractDatasourceAdapter):
             password=password,
             fields=fields,
             date_from=datetime.datetime.now().isoformat(),
-            date_to=datetime.datetime.now().isoformat(),
-            timestamp_round_minute=timestamp_round_minute
+            date_to=datetime.datetime.now().isoformat()
         )
         self.source_returns_alias = True
 

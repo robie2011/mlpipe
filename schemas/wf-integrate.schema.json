@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "MLPIPE Integrate Schema",
+    "description": "Describes DSL Instance for MLPIPE integrate workflow",
+    "type": "object",
+    "required": ["name", "session", "source", "integrate"],
+    "properties": {
+        "name": {"type": "string"},
+        "session": {"type": "string"},
+        "source": {"$ref": "datasource.schema.json#definitions/datasources"},
+        "integrate": {
+            "properties": {
+                "frequencyMin": {"type": "number"},
+                "output": {"$ref": "outputs.schema.json#definitions/outputs"}
+            }
+        }
+    }
+}

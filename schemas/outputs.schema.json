@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "Outputs",
+    "description": "",
+    "definitions": {
+        "outputs": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.outputs.ConsoleOutput"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "outputPath"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.outputs.CsvOutput"},
+                        "outputPath": {"type": "string"}
+                    }
+                }
+            ]
+        }
+    }
+}

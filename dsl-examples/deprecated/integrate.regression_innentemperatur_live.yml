@@ -1,0 +1,18 @@
+name: empa_mlp_regression_abluft
+session: 2020-02-17_141300
+source:
+  name: mlpipe.dsl.sources.VisualizerLiveApiAdapter
+  username: 'NEST\raro'
+  password: 'W3lc0me!2018$'
+  duration_minutes: 1
+  fields:
+    - 3200000 as TempAussen
+    - 40210002 as Zuluft
+    - 40210005 as Abluft
+    - 40210013 as CO2
+    - 40210148 as Präsenz
+
+integrate:
+  output:
+    name: mlpipe.dsl.sinks.CsvOutput
+    output_path: output/4021001_predictions.csv
