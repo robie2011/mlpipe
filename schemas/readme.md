@@ -19,7 +19,7 @@ wir Aggregatoren für die Generierung der Metriken.
 In diesem Kontext benötigen wir keine Sequenzlänge 
 und der `fields`-Parameter für die Aggregatoren ist auch irrelevant.
 Deshalb haben wir die Datei `aggregators.schema.json` 
-zusätzlich in einer reduzierten Variante als `metrics.schema.json` publiziert.
+ohne die beiden Parameter (Sequenzlänge, fields) als `metrics.schema.json` publiziert.
 Für die Generierung dieser reduzierten Variante verwenden wir 
 den Skript [generate_metrics_schema.js](generate_metrics_schema.js).
 
@@ -34,7 +34,8 @@ den Skript [generate_metrics_schema.js](generate_metrics_schema.js).
 
 
 Für die Verwendung der Schemen muss das IDE eingerichtet werden. 
-Eine Beispielkonfiguration für Visual Studio Code ist bereits für die Beispiele im Ordner [dsl-examples](../dsl-examples) erstellt worden. [Die Konfigurationsdatei](../dsl-examples/.vscode/settings.json) beschreibt die Schemen für DSL Instanzen in YAML-Format. 
+Eine Konfiguration für Visual Studio Code ist bereits für die Beispiele im Ordner [dsl-examples](../dsl-examples) definiert. 
+[Die Konfigurationsdatei](../dsl-examples/.vscode/settings.json) beschreibt die Schemen für DSL Instanzen in YAML-Format. 
 Für die Verwendung der Konfiguration muss Visual Studio Code den Ordner `dsl-examples` als Stammordner öffnen und die Namenskonvention gemäss nachfolgender Tabelle einhalten.
 
 | Workflow | Muster für Dateinamen |
