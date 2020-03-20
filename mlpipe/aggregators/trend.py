@@ -11,6 +11,9 @@ class Trend(AbstractAggregator):
     def __init__(self, sequence: int, generate: List[InputOutputField] = ()):
         super().__init__(generate=generate, sequence=sequence)
 
+    # code only work during workflow 2 (training)
+    # for analytics this (calculating trend) do not make any sense
+    # because we can have different timeslices in one partition
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
         last_values = grouped_data[:, -1]
         first_values = grouped_data[:, 0]
