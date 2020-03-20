@@ -109,7 +109,7 @@
                         "name": {"const": "mlpipe.dsl.aggregators.Percentile"},
                         "sequence": {"type": "number", "description": "Window Size"},
                         "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
-                        "percentile": {"type": "number", "description": "Value between 0 and 1 representing percentile"},
+                        "percentile": {"type": "number", "description": "Value between (0, 100) representing percentile"},
                         "interpolation": {"type": "string", "description": "See attribute interpolation in https://numpy.org/devdocs/reference/generated/numpy.percentile.html?highlight=percentile#numpy.percentile"},
                         "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
                     }

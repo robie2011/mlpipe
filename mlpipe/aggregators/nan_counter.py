@@ -12,13 +12,13 @@ class NanCounter(AbstractAggregator):
         super().__init__(generate=generate, sequence=sequence)
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
-        # todo:
-        # use raw input and calculate where nan is found (index)
-        # use intersection with indexes in group
-        nan_values = np.isnan(grouped_data)
+        if not np.any(grouped_data.mask):
+            print("1: no True / Mask value!")
+        isnan = np.isnan(grouped_data)
+        if isinstance(grouped_data, np.ma.MaskedArray):
+            isnan[grouped_data.mask] = False
 
-        # todo: this code is probably correct because we are using masked array. VERIFY.
-        return np.add.reduce(nan_values, axis=1)
+        return np.sum(isnan, axis=1)
 
     def javascript_group_aggregation(self):
         return "(a,b) => a + b"

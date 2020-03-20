@@ -99,7 +99,7 @@
                         },
                         "percentile": {
                             "type": "number",
-                            "description": "Value between 0 and 1 representing percentile"
+                            "description": "Value between (0, 100) representing percentile"
                         },
                         "interpolation": {
                             "type": "string",
