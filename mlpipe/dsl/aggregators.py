@@ -17,6 +17,8 @@ from mlpipe.aggregators.outlier import Outlier
 # noinspection PyUnresolvedReferences
 from mlpipe.aggregators.percentile import Percentile
 # noinspection PyUnresolvedReferences
+from mlpipe.aggregators.standard_deviation import StandardDeviation
+# noinspection PyUnresolvedReferences
 from mlpipe.aggregators.sum import Sum
 # noinspection PyUnresolvedReferences
 from mlpipe.aggregators.trend import Trend

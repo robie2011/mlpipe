@@ -72,6 +72,17 @@
                     ],
                     "properties": {
                         "name": {
+                            "const": "mlpipe.dsl.aggregators.StandardDeviation"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
                             "const": "mlpipe.dsl.aggregators.NanCounter"
                         }
                     }

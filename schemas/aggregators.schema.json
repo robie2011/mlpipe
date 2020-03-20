@@ -86,6 +86,16 @@
                     "type": "object",
                     "required": ["name", "sequence", "generate"],
                     "properties": {
+                        "name": {"const": "mlpipe.dsl.aggregators.StandardDeviation"},
+                        "sequence": {"type": "number", "description": "Window Size"},
+                        "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
+                        "_condition": {"$ref": "processors.schema.json#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": ["name", "sequence", "generate"],
+                    "properties": {
                         "name": {"const": "mlpipe.dsl.aggregators.NanCounter"},
                         "sequence": {"type": "number", "description": "Window Size"},
                         "generate": {"$ref": "#definitions/generateRequiredInputOutput"},
