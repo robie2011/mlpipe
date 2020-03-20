@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from mlpipe.exceptions.interface import MLMissingConfigurationException
+from mlpipe.exceptions.interface import MLConfigurationNotFound
 
 
 @dataclass
@@ -21,13 +21,13 @@ class AppConfigParser:
             if type(d) is dict and k in d:
                 d = d[k]
             else:
-                raise MLMissingConfigurationException(nested_key)
+                raise MLConfigurationNotFound(nested_key)
         return d
 
     def get_config_or_default(self, nested_key: str, default=None):
         try:
             return self.get_config(nested_key)
-        except MLMissingConfigurationException:
+        except MLConfigurationNotFound:
             return default
 
     def _find_dir_keys(self, config_dict):

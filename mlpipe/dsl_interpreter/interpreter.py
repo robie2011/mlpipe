@@ -8,6 +8,7 @@ from mlpipe.dsl_interpreter.evaluate_interpreter import _create_workflow_evaluat
 from mlpipe.dsl_interpreter.export_interpreter import _create_workflow_analyze_export
 from mlpipe.dsl_interpreter.integrate_interpreter import _create_workflow_integrate
 from mlpipe.dsl_interpreter.train_interpreter import _create_workflow_training
+from mlpipe.exceptions.interface import MLConfigurationNotFound
 
 module_logger = logging.getLogger(__name__)
 
@@ -46,11 +47,11 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
     try:
         execution_mode: ExecutionModes = ExecutionModes[description["@mode"]]
     except KeyError:
-        raise ValueError("Configuration file/object need the field '@mode' which specifies execution mode.")
+        raise MLConfigurationNotFound("Configuration file/object need the field '@mode' which specifies execution mode.")
 
     try:
         action = mode_action[execution_mode.name]
     except KeyError:
-        raise ValueError(f"No workflow manager found for '{execution_mode}'")
+        raise MLConfigurationNotFound(f"No workflow manager found for '{execution_mode}'")
 
     return action(description=description, execution_mode=execution_mode)

@@ -1,7 +1,7 @@
 import unittest
 
 from mlpipe.config.app_config_parser import AppConfigParser
-from mlpipe.exceptions.interface import MLMissingConfigurationException
+from mlpipe.exceptions.interface import MLConfigurationNotFound
 
 
 class TestAppConfig(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestAppConfig(unittest.TestCase):
         self.assertEqual("Robert", self.config["name"])
 
     def test_get_config(self):
-        self.assertRaises(MLMissingConfigurationException,
+        self.assertRaises(MLConfigurationNotFound,
                           lambda: self.config.get_config("address.country.code"))
 
     def test_get_config_or_default(self):

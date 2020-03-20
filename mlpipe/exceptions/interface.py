@@ -2,13 +2,13 @@ class MLException(Exception):
     pass
 
 
-class MLDslConfigurationException(MLException):
+class MLConfigurationError(MLException):
     pass
 
 
-class MLPipeError(MLException):
+class MLCreateInstanceException(MLException):
     pass
 
 
-class MLMissingConfigurationException(MLException):
+class MLConfigurationNotFound(MLException):
     pass

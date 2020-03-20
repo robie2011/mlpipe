@@ -4,7 +4,7 @@ from importlib import import_module
 from inspect import getmro
 from typing import List, Callable, Optional
 
-from mlpipe.exceptions.interface import MLException, MLPipeError
+from mlpipe.exceptions.interface import MLException, MLCreateInstanceException
 
 Funcs = Callable[[Optional[object]], object]
 
@@ -24,7 +24,7 @@ def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base
         else:
             return clazz()
     except Exception as e:
-        raise MLPipeError(
+        raise MLCreateInstanceException(
             "Can not initialize class {0}. \r\n{1}\r\nkwargs: {1}. Error: {2}".format(qualified_name, kwargs, e.args))
 
 

@@ -3,7 +3,7 @@ from typing import List, cast, Dict
 
 from mlpipe.aggregators.abstract_aggregator import AbstractAggregator
 from mlpipe.dsl_interpreter.descriptions import ExecutionModes
-from mlpipe.exceptions.interface import MLPipeError
+from mlpipe.exceptions.interface import MLCreateInstanceException
 from mlpipe.processors.interfaces import AbstractProcessor
 from mlpipe.processors.internal.multi_aggregation import MultiAggregation
 from mlpipe.pipeline.pipeline_executor import PipelineExecutor
@@ -24,7 +24,7 @@ def _initialize_processors_and_aggregators(descriptions: Dict):
             instance.id = definition['@id']
 
             pipeline.append(instance)
-        except MLPipeError as e:
+        except MLCreateInstanceException as e:
             module_logger.error(f"can not initialize pipe: {definition.get('name', 'NAME UNDEFINED')}")
             module_logger.error(e)
             raise

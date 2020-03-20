@@ -6,7 +6,7 @@ from typing import NamedTuple, List
 import numpy as np
 
 from mlpipe.utils.datautils import LabelSelector
-from mlpipe.exceptions.interface import MLDslConfigurationException
+from mlpipe.exceptions.interface import MLConfigurationError
 from mlpipe.processors.standard_data_format import StandardDataFormat
 from mlpipe.workflows.utils import get_class_name, get_qualified_name
 
@@ -77,7 +77,7 @@ class AbstractDatasourceAdapter(ABC):
             missing_fields = [f.name for f in required_fields if f.name not in raw.labels]
 
         if missing_fields:
-            raise MLDslConfigurationException(
+            raise MLConfigurationError(
                 f"source do not contains following fields: {', '.join(missing_fields)}. "
                 + f"Available fields are: {', '.join(raw.labels)}"
             )

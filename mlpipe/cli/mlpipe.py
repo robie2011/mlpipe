@@ -1,15 +1,23 @@
 import argparse
 import logging
 
+# fixing: backend info message from tensorflow by redirecting stdout
+# https://stackoverflow.com/questions/51456842/how-do-i-stop-keras-showing-using-xxx-backend
+import os, sys
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
+
 from mlpipe.cli.actions import list_models, describe_model, train_model, evaluate_model, analyze_data, integrate_model, \
     export_data
 from mlpipe.exceptions.interface import MLException
+
+sys.stderr = stderr
 
 module_logger = logging.getLogger(__name__)
 
 
 def action_not_implemented(args):
-    print("Action not implemented", args.action)
+    print("No subcommand entered. Use --help to see available commands.", args.action)
 
 
 def main():
