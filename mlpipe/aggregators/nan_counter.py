@@ -12,8 +12,6 @@ class NanCounter(AbstractAggregator):
         super().__init__(generate=generate, sequence=sequence)
 
     def aggregate(self, grouped_data: np.ndarray) -> AggregatorOutput:
-        if not np.any(grouped_data.mask):
-            print("1: no True / Mask value!")
         isnan = np.isnan(grouped_data)
         if isinstance(grouped_data, np.ma.MaskedArray):
             isnan[grouped_data.mask] = False
