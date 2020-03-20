@@ -54,4 +54,9 @@ def _create_workflow(desc_info: AbstractDescription, overrides: Dict = None):
     except KeyError:
         raise MLConfigurationNotFound(f"No workflow manager found for '{execution_mode}'")
 
-    return action(description=description, execution_mode=execution_mode)
+    try:
+        manager = action(description=description, execution_mode=execution_mode)
+        return manager
+    except KeyError as k:
+        module_logger.error(f"Error during initializing workflow manager: Missing configuration key in DSL instance: {k.args[0]}")
+        raise

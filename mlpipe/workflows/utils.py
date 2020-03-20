@@ -2,7 +2,7 @@ import copy
 import logging
 from importlib import import_module
 from inspect import getmro
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, cast
 
 from mlpipe.exceptions.interface import MLException, MLCreateInstanceException
 
@@ -17,6 +17,7 @@ def get_component_config(key_values: dict):
 
 
 def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base_classes=()):
+    module_logger.debug(f"create instance of {qualified_name}")
     try:
         clazz = load(qualified_name=qualified_name, assert_base_classes=assert_base_classes)
         if kwargs:
@@ -24,8 +25,9 @@ def create_instance(qualified_name: str, kwargs: dict = frozenset(), assert_base
         else:
             return clazz()
     except Exception as e:
-        raise MLCreateInstanceException(
-            "Can not initialize class {0}. \r\n{1}\r\nkwargs: {1}. Error: {2}".format(qualified_name, kwargs, e.args))
+        module_logger.error("Can not initialize class {0} with kwargs: {1}".format(qualified_name, kwargs))
+        args = e.args[0] if len(e.args) == 1 else e.args
+        raise MLCreateInstanceException(args)
 
 
 class NotImplementedBaseClass(Exception):

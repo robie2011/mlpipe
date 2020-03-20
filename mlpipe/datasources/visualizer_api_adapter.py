@@ -32,9 +32,17 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
             self.logger.info(f"getting data for field: {f.name} aka. {f.alias}")
             url = self._get_url(sensor_id=f.name, date_from=self.date_from, date_to=self.date_to)
             self.logger.debug(f"download data from: {url}")
-            resp = self.session.get(url)
+            try:
+                resp = self.session.get(url)
+            except requests.exceptions.ConnectionError as e:
+                self.logger.error(f"can not connect to server")
+                raise
 
             if resp.status_code != 200:
+                if resp.status_code == 401:
+                    self.logger.error(f"Authetification error: Check username/password configuration")
+                else:
+                    self.logger.error(f"Received invalid response from server. Code {resp.status_code}")
                 raise Exception(resp.text)
 
             if resp.text.strip() == "[]":

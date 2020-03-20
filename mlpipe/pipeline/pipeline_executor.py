@@ -20,6 +20,7 @@ class PipelineExecutor(InstanceLoggerMixin):
         self._set_states(states)
 
         for ix, pipe in enumerate(self.pipeline):
+            self.logger.debug(f"executing: {pipe.__class__.__name__}")
             self.flow_analyzer.before_pipe_handler(pipe.__class__.__name__, data)
             data = pipe.process(data)
             self.flow_analyzer.after_pipe_handler(pipe.__class__.__name__, data)
