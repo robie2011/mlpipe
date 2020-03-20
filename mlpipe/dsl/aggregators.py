@@ -9,6 +9,8 @@ from mlpipe.aggregators.mean import Mean
 # noinspection PyUnresolvedReferences
 from mlpipe.aggregators.min import Min
 # noinspection PyUnresolvedReferences
+from mlpipe.aggregators.missing_samples import MissingSamplesEstimation
+# noinspection PyUnresolvedReferences
 from mlpipe.aggregators.nan_counter import NanCounter
 # noinspection PyUnresolvedReferences
 from mlpipe.aggregators.outlier import Outlier
