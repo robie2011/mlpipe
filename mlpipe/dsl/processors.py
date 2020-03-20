@@ -9,6 +9,8 @@ from mlpipe.processors.interpolation import Interpolation
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.nan_remover import NanRemover
 # noinspection PyUnresolvedReferences
+from mlpipe.processors.nan_replacer import NanReplacer
+# noinspection PyUnresolvedReferences
 from mlpipe.processors.outlier_remover import OutlierRemover
 # noinspection PyUnresolvedReferences
 from mlpipe.processors.range_encoder import RangeEncoder

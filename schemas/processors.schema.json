@@ -18,6 +18,16 @@
             "oneOf": [
                 {
                     "type": "object",
+                    "required": ["name", "fields"],
+                    "properties": {
+                        "name": { "const": "mlpipe.dsl.processors.NanReplacer" },
+                        "fields": { "$ref": "#definitions/arrayOfStrings"},
+                        "replacement": { "type": "number", "description": "Replacement value (Default = 0)."},
+                        "_condition": {"$ref": "#definitions/conditions"}
+                    }
+                },
+                {
+                    "type": "object",
                     "required": ["name", "columns"],
                     "properties": {
                         "name": { "const": "mlpipe.dsl.processors.ColumnDropper" },
