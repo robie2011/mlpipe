@@ -59,6 +59,8 @@ class StandardDataFormat:
             raise MLException(f"Timestamps ({self.timestamps.shape[0]}) do not match. Data shape is {self.data.shape}")
 
         self.timestamps = self.timestamps.astype('datetime64[ns]')
+        self.data.flags.writeable = False
+        self.timestamps.flags.writeable = False
 
     @staticmethod
     def from_dataframe(df: pd.DataFrame):

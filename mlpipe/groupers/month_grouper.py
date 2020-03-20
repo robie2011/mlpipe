@@ -6,7 +6,7 @@ from .abstract_grouper import AbstractGrouper
 
 class MonthGrouper(AbstractGrouper):
     def group(self, timestamps: np.ndarray) -> np.ndarray:
-        return pd.Series(timestamps).dt.month.values
+        return pd.Series(timestamps.copy()).dt.month.values
 
     def get_pretty_group_names(self) -> [str]:
         return [

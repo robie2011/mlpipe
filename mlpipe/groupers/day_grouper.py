@@ -6,4 +6,4 @@ from .abstract_grouper import AbstractGrouper
 
 class DayGrouper(AbstractGrouper):
     def group(self, timestamps: np.ndarray) -> np.ndarray:
-        return pd.Series(timestamps).dt.day.values
+        return pd.Series(timestamps.copy()).dt.day.values
