@@ -28,7 +28,7 @@ class Scaler(AbstractProcessor):
 
         label_selection = LabelSelector(
             elements=processor_input.labels).select(self.fields)
-        data = processor_input.data
+        data = processor_input.data.copy()
         data[:, label_selection.indexes] = partial_data
 
         return processor_input.modify_copy(data=data)

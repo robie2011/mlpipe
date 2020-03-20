@@ -45,8 +45,8 @@ class TestAbstractNumpyReductions(unittest.TestCase):
 
         result_a, result_b = result[0]
 
-        self.assertEqual(result_a, sequences.shape[0])
-        self.assertEqual(result_b, sequences.shape[0])
+        self.assertEqual(result_a, 19)
+        self.assertEqual(result_b, 18)
 
     def test_max_aggregate(self):
         result = Max(sequence=np.nan, generate=[]).aggregate(
