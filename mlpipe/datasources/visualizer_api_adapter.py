@@ -51,8 +51,14 @@ class VisualizerApiAdapter(AbstractDatasourceAdapter):
             serie = pd.read_json(resp.text)
             serie = serie.set_index('timestamp')
             serie.index = serie.index.round("T")
+
+            # Looks like there are sometimes duplicate measurements
+            # therefore concat later will fail. Fix:
+            # https://vispud.blogspot.com/2018/12/pandas-concat-valueerror-shape-of.html
+            serie.drop_duplicates(inplace=True)
             serie = serie.rename({"value": f.name}, axis=1)
             series.append(serie)
+            self.logger.debug(f"received rows: {len(serie)}")
 
         df = pd.concat(series, axis=1)
         return StandardDataFormat.from_dataframe(df)
