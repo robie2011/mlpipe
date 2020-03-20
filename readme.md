@@ -6,6 +6,10 @@ die Ordnerstruktur dieser Repository,
 die Verwendung von Docker Image 
 sowie Beispiel DSL Instanzen.
 
+Die HTML-Applikation für die Visualisierung
+der Metriken kann im Repository 
+[github.com/robie2011/mlpipe-SensorReportViewer](https://github.com/robie2011/mlpipe-SensorReportViewer) gefunden werden.
+
 ## Projektbeschreibung
 
 Die Entwicklung von Machine-Learning-Modellen besteht aus mehreren Prozessschritten. 
