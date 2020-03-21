@@ -4,6 +4,8 @@ import logging
 # fixing: backend info message from tensorflow by redirecting stdout
 # https://stackoverflow.com/questions/51456842/how-do-i-stop-keras-showing-using-xxx-backend
 import os, sys
+from mlpipe.config.app_config_parser import ENVIRONMENT_VAR_PREFIX
+
 stderr = sys.stderr
 sys.stderr = open(os.devnull, 'w')
 
@@ -67,6 +69,10 @@ def main():
     domain_exception_classes = tuple([MLException] + object.__class__.__subclasses__(MLException))
 
     try:
+        for item, value in os.environ.items():
+            if item.startswith(ENVIRONMENT_VAR_PREFIX):
+                module_logger.info(f"Environment variable set: {item}={value}")
+
         action_switcher.get(args.action, action_not_implemented)(args)
     except domain_exception_classes as e:
         module_logger.error(e)

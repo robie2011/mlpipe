@@ -1,6 +1,6 @@
 PARENT=$(cd `dirname $0` && cd .. &&  pwd)
 
-DOCKERFILE="$PARENT/Docker/Dockerfile"
+DOCKERFILE="$PARENT/docker/Dockerfile"
 IMAGE="robie2011/mlpipe"
 cd $PARENT
 

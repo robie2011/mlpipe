@@ -3,6 +3,7 @@ from typing import Dict
 
 from mlpipe.exceptions.interface import MLConfigurationNotFound
 
+ENVIRONMENT_VAR_PREFIX="MLPIPE__"
 
 @dataclass
 class AppConfigParser:
@@ -16,6 +17,9 @@ class AppConfigParser:
         raise NotImplementedError()
 
     def get_config(self, nested_key: str):
+        return self._get_env_var(nested_key) or self._get_file_config(nested_key)
+
+    def _get_file_config(self, nested_key: str):
         d = self.config
         for k in nested_key.split("."):
             if type(d) is dict and k in d:
@@ -25,6 +29,9 @@ class AppConfigParser:
         return d
 
     def get_config_or_default(self, nested_key: str, default=None):
+        env_val = self._get_env_var(nested_key)
+        if env_val:
+            return env_val
         try:
             return self.get_config(nested_key)
         except MLConfigurationNotFound:
@@ -49,3 +56,8 @@ class AppConfigParser:
             path = pathlib.Path(p)
             if not path.is_dir():
                 os.makedirs(path)
+
+    def _get_env_var(self, nested_key: str):
+        import os
+        var_name = ENVIRONMENT_VAR_PREFIX + "__".join(map(lambda x: x.upper(), nested_key.split(".")))
+        return os.getenv(var_name)

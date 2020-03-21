@@ -24,7 +24,6 @@ class CachedDatasource(InstanceLoggerMixin):
             self.logger.info("caching disabled")
             return self._get()
 
-        import pickle
         import json
         import os
         logger = self.logger
@@ -38,6 +37,7 @@ class CachedDatasource(InstanceLoggerMixin):
             return StandardDataFormat.from_dataframe(df)
 
         else:
+            os.makedirs(AppConfig['general.dir_cache'], exist_ok=True)
             logger.info(MSG_CACHED_VERSION_NOT_FOUND)
             data = self._get()
             data.to_dataframe().to_pickle(path_to_cache)
