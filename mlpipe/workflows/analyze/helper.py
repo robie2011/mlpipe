@@ -12,6 +12,9 @@ def create_grouped_data(cgroups, n_max_group_members, features):
     # Numpy-Mask is used to mark empty elements
     # im groups with TRUE value.
     # see: https://docs.scipy.org/doc/numpy/reference/maskedarray.generic.html
+    #
+    # Default value for elements in array is 'np.nan'.
+    # This allow us to calculate nonnan-values with np.nan*-functions.
     data_shape = (len(cgroups), n_max_group_members, features.shape[1])
     grouped_data = np.ma.masked_array(
         np.full(data_shape, fill_value=np.nan)
@@ -20,6 +23,7 @@ def create_grouped_data(cgroups, n_max_group_members, features):
 
     for group_nr, group in enumerate(cgroups):
         group = cast(CombinedGroup, group)
+        # implication: by assigning new values array mask will be disabled for affected indexes
         grouped_data[group_nr, :len(group.indexes)] = features[group.indexes, :]
 
     grouped_data.flags.writeable = False
