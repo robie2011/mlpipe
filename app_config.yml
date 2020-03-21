@@ -4,7 +4,7 @@ general:
 reporting:
   hosting_url_prefix: "https://cdn.jsdelivr.net/gh/robie2011/mlpipe-SensorReportViewer@master/cdn/"
   base_href: "#"
-  html_template_path: "./templates/index.html"
+  html_template_path: "./mlpipe/analytics_report_template.html"
 
 training:
   dir_data: /tmp/mlpipe/training
