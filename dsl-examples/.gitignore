@@ -1,3 +1,4 @@
 report_*.json
 report_*.html
 credentials_*
+.live_monitoring

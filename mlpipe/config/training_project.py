@@ -7,6 +7,7 @@ from keras.engine.saving import load_model
 
 from mlpipe.config.app_settings import AppConfig
 from mlpipe.config.interface import HistorySummary, TrainingProjectFileNames
+from mlpipe.exceptions.interface import MLConfigurationError
 from mlpipe.utils import file_handlers
 
 
@@ -19,7 +20,7 @@ class TrainingProject(object):
             name,
             session_id)
         if not create and not os.path.isdir(self.path_training_dir):
-            raise ValueError("Training/Session not found {0}".format(self.path_training_dir))
+            raise MLConfigurationError("Can not find Training/Session: {0}".format(self.path_training_dir))
         else:
             os.makedirs(self.path_training_dir, exist_ok=True)
 

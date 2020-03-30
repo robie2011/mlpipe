@@ -2,6 +2,7 @@ import logging
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from pathlib import Path
 from time import sleep
 from typing import List
 
@@ -10,22 +11,21 @@ from ordered_set import OrderedSet
 from requests_ntlm import HttpNtlmAuth
 from typing_extensions import TypedDict
 
-from mlpipe.config.app_config_parser import AppConfigParser
-from mlpipe.config.app_settings import AppConfig
 from mlpipe.datasources.visualizer_api_adapter import VisualizerApiAdapter
 from mlpipe.outputs.internal.csv_stream_writer import CsvStreamWriter
 from mlpipe.utils.file_handlers import read_yaml
-from mlpipe.utils.path_tool import dir_code
 
 module_logger = logging.getLogger(__file__)
 
-secret_config = AppConfigParser(read_yaml("/Users/robert.rajakone/.credentials_empa"))
-username = secret_config['visualizer_api_auth.username']
-password = secret_config['visualizer_api_auth.password']
 
-metric = sys.argv[1]
 frequency_seconds = 30
-output_path = dir_code / "output" / f"{metric}.csv"
+
+config = read_yaml(".live_monitoring")
+username = config['username']
+password = config['password']
+output_path = Path(config['csv_file_out'])
+metric = str(config['metric'])
+
 
 module_logger.info(f"starting live data monitoring for metric = {metric}")
 module_logger.info(f"choosen frequency (seconds) = {frequency_seconds}")
@@ -69,6 +69,8 @@ def download() -> List[TimelineEntryDict]:
     resp = session.get(url)
 
     if resp.status_code != 200:
+        print(resp)
+        print(url)
         raise Exception(resp.text)
 
     if resp.text.strip() == "[]":
