@@ -10,7 +10,7 @@ cffi==1.14.0
 chardet==3.0.4
 Click==7.0
 coloredlogs==10.0
-cryptography==2.8
+cryptography==3.2
 dnspython==1.16.0
 gast==0.2.2
 google-pasta==0.1.8
